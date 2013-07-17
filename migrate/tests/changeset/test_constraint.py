@@ -7,8 +7,21 @@ from sqlalchemy.exc import *
 
 from migrate.exceptions import *
 from migrate.changeset import *
+from migrate.changeset.databases import sqlite
 
 from migrate.tests import fixture
+
+
+def uniques(*constraints):
+    """Make a sequence of UniqueConstraint instances easily comparable
+
+        Convert a sequence of UniqueConstraint instances into a set of
+        tuples of form (constraint_name, (constraint_columns)) so that
+        assertEquals() will be able to compare sets of unique constraints
+
+    """
+
+    return set((uc.name, tuple(uc.columns.keys())) for uc in constraints)
 
 
 class CommonTestConstraint(fixture.DB):
@@ -25,6 +38,8 @@ class CommonTestConstraint(fixture.DB):
     def _teardown(self):
         if hasattr(self, 'table') and self.engine.has_table(self.table.name):
             self.table.drop()
+        if hasattr(self, 'table2') and self.engine.has_table(self.table2.name):
+            self.table2.drop()
         super(CommonTestConstraint, self)._teardown()
 
     def _create_table(self):
@@ -38,6 +53,28 @@ class CommonTestConstraint(fixture.DB):
         if self.engine.has_table(self.table.name):
             self.table.drop()
         self.table.create()
+
+        self.table2 = Table(
+            'table2',
+            MetaData(self.engine),
+            Column('a', Integer),
+            Column('b', String(10)),
+            Column('c', Integer),
+            UniqueConstraint('a', 'b', name='unique_a_b'),
+            UniqueConstraint('b', 'c', name='unique_b_c')
+        )
+        if self.engine.has_table(self.table2.name):
+            self.table2.drop()
+        self.table2.create()
+
+        # NOTE(rpodolyaka): it's important to use the reflected table here
+        #                   rather than original one because this is what
+        #                   we actually do in db migrations code
+        self.reflected_table2 = Table(
+            'table2',
+            MetaData(self.engine),
+            autoload=True
+        )
 
         # make sure we start at zero
         self.assertEqual(len(self.table.primary_key), 0)
@@ -180,6 +217,42 @@ class TestConstraint(CommonTestConstraint):
         self.refresh_table()
         self.table.insert(values={'id': 2, 'fkey': 2}).execute()
         self.table.insert(values={'id': 1, 'fkey': 2}).execute()
+
+    @fixture.usedb(supported=['sqlite'])
+    def test_get_unique_constraints_sqlite(self):
+        table = self.reflected_table2
+
+        existing = uniques(*sqlite._get_unique_constraints(table))
+        should_be = uniques(
+            UniqueConstraint(table.c.a, table.c.b, name='unique_a_b'),
+            UniqueConstraint(table.c.b, table.c.c, name='unique_b_c'),
+        )
+
+        self.assertEquals(should_be, existing)
+
+    @fixture.usedb(supported=['sqlite'])
+    def test_add_unique_constraint_sqlite(self):
+        table = self.reflected_table2
+        UniqueConstraint(table.c.a, table.c.c, name='unique_a_c').create()
+
+        existing = uniques(*sqlite._get_unique_constraints(table))
+        should_be = uniques(
+            UniqueConstraint(table.c.a, table.c.b, name='unique_a_b'),
+            UniqueConstraint(table.c.b, table.c.c, name='unique_b_c'),
+            UniqueConstraint(table.c.a, table.c.c, name='unique_a_c'),
+        )
+        self.assertEquals(should_be, existing)
+
+    @fixture.usedb(supported=['sqlite'])
+    def test_drop_unique_constraint_sqlite(self):
+        table = self.reflected_table2
+        UniqueConstraint(table.c.a, table.c.b, name='unique_a_b').drop()
+
+        existing = uniques(*sqlite._get_unique_constraints(table))
+        should_be = uniques(
+            UniqueConstraint(table.c.b, table.c.c, name='unique_b_c'),
+        )
+        self.assertEquals(should_be, existing)
 
 
 class TestAutoname(CommonTestConstraint):

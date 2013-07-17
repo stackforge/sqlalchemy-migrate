@@ -5,14 +5,56 @@
 """
 from UserDict import DictMixin
 from copy import copy
+import re
 
 from sqlalchemy.databases import sqlite as sa_base
+from sqlalchemy.schema import UniqueConstraint
 
 from migrate import exceptions
 from migrate.changeset import ansisql
 
 
 SQLiteSchemaGenerator = sa_base.SQLiteDDLCompiler
+
+
+def _get_unique_constraints(table):
+    """Retrieve information about existing unique constraints of the table
+
+    This feature is needed for recreate_table() to work properly.
+    Unfortunately, it's not available in sqlalchemy 0.7.x/0.8.x.
+
+    """
+
+    data = table.metadata.bind.execute(
+        """SELECT sql
+           FROM sqlite_master
+           WHERE
+               type='table' AND
+               name=:table_name""",
+        table_name=table.name
+    ).fetchone()[0]
+
+    UNIQUE_PATTERN = "CONSTRAINT (\w+) UNIQUE \(([^\)]+)\)"
+
+    uniques = []
+    for name, cols in re.findall(UNIQUE_PATTERN, data):
+        try:
+            uc = UniqueConstraint(
+                *[getattr(table.columns, c.strip(' "'))
+                  for c in cols.split(",")],
+                name=name
+            )
+        except AttributeError:
+            # NOTE(rpodolyaka): this is a special case with removing of
+            #                   columns. One column of UC has been dropped, so
+            #                   UC itself must be dropped too, which is
+            #                   achieved by omitting it here and recreating of
+            #                   the table later
+            continue
+
+        uniques.append(uc)
+
+    return uniques
 
 
 class SQLiteCommon(object):
@@ -24,13 +66,23 @@ class SQLiteCommon(object):
 
 class SQLiteHelper(SQLiteCommon):
 
-    def recreate_table(self,table,column=None,delta=None):
+    def recreate_table(self, table, column=None, delta=None,
+                       omit_uniques=None):
         table_name = self.preparer.format_table(table)
 
         # we remove all indexes so as not to have
         # problems during copy and re-create
         for index in table.indexes:
             index.drop()
+
+        # reflect existing unique constraints
+        for uc in _get_unique_constraints(table):
+            table.append_constraint(uc)
+        # omit given unique constraints when creating a new table if required
+        table.constraints = set([
+            cons for cons in table.constraints
+            if omit_uniques is None or cons.name not in omit_uniques
+        ])
 
         self.append('ALTER TABLE %s RENAME TO migration_tmp' % table_name)
         self.execute()
@@ -123,8 +175,7 @@ class SQLiteConstraintGenerator(ansisql.ANSIConstraintGenerator, SQLiteHelper, S
 
 
 class SQLiteConstraintDropper(ansisql.ANSIColumnDropper,
-                              SQLiteCommon,
-                              ansisql.ANSIConstraintCommon):
+                              SQLiteConstraintGenerator):
 
     def visit_migrate_primary_key_constraint(self, constraint):
         tmpl = "DROP INDEX %s "
@@ -140,7 +191,7 @@ class SQLiteConstraintDropper(ansisql.ANSIColumnDropper,
         self._not_supported('ALTER TABLE DROP CONSTRAINT')
 
     def visit_migrate_unique_constraint(self, *p, **k):
-        self._not_supported('ALTER TABLE DROP CONSTRAINT')
+        self.recreate_table(p[0].table, omit_uniques=[p[0].name])
 
 
 # TODO: technically primary key is a NOT NULL + UNIQUE constraint, should add NOT NULL to index
