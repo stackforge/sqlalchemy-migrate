@@ -21,5 +21,4 @@ testtools>=0.9.27
 
 # NOTE: scripttest 1.0.1 removes base_path argument to ScriptTest
 scripttest==1.0
-pytz
 pysqlite
