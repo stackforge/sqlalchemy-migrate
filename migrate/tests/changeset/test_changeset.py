@@ -7,6 +7,7 @@ from sqlalchemy import *
 
 from migrate import changeset, exceptions
 from migrate.changeset import *
+from migrate.changeset import constraint
 from migrate.changeset.schema import ColumnDelta
 from migrate.tests import fixture
 from migrate.tests.fixture.warnings import catch_warnings
@@ -168,7 +169,7 @@ class TestAddDropColumn(fixture.DB):
         reftable.create()
 
         # create column with fk
-        col = Column('data', Integer, ForeignKey(reftable.c.id))
+        col = Column('data', Integer, ForeignKey(reftable.c.id, name='testfk'))
         col.create(self.table)
 
         # check if constraint is added
@@ -186,6 +187,11 @@ class TestAddDropColumn(fixture.DB):
         else:
             self.assertEqual(reftable.c.id.name,
                 col.foreign_keys[0].column.name)
+
+        if self.engine.name == 'mysql':
+            constraint.ForeignKeyConstraint([self.table.c.data],
+                                            [reftable.c.id],
+                                            name='testfk').drop()
         col.drop(self.table)
 
         if self.engine.has_table(reftable.name):
@@ -384,8 +390,8 @@ class TestAddDropColumn(fixture.DB):
         self.table = Table(
             self.table_name, self.meta,
             Column('id', Integer, primary_key=True),
-            Column('r1', Integer, ForeignKey('tmp_ref.id')),
-            Column('r2', Integer, ForeignKey('tmp_ref.id')),
+            Column('r1', Integer, ForeignKey('tmp_ref.id', name='test_fk1')),
+            Column('r2', Integer, ForeignKey('tmp_ref.id', name='test_fk2')),
             )
         self.table.create()
 
@@ -394,6 +400,9 @@ class TestAddDropColumn(fixture.DB):
                          self._actual_foreign_keys())
         
         # delete one
+        if self.engine.name == 'mysql':
+            constraint.ForeignKeyConstraint([self.table.c.r2], [reftable.c.id],
+                                            name='test_fk2').drop()
         self.table.c.r2.drop()
         
         # check remaining foreign key is there
@@ -435,6 +444,10 @@ class TestAddDropColumn(fixture.DB):
                          self._actual_foreign_keys())
         
         # delete one
+        if self.engine.name == 'mysql':
+            constraint.ForeignKeyConstraint([self.table.c.r1, self.table.c.r2],
+                                            [reftable.c.id, reftable.c.jd],
+                                            name='test_fk').drop()
         self.table.c.r2.drop()
         
         # check the constraint is gone, since part of it

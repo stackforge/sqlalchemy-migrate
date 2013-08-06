@@ -6,6 +6,7 @@ import logging
 from decorator import decorator
 
 from sqlalchemy import create_engine, Table, MetaData
+from sqlalchemy import exc as sa_exc
 from sqlalchemy.orm import create_session
 from sqlalchemy.pool import StaticPool
 
@@ -81,13 +82,17 @@ def usedb(supported=None, not_supported=None):
             try:
                 log.debug("Running test with engine %s", url)
                 try:
-                    try:
-                        self._setup(url)
-                    except Exception,e:
-                        setup_exception=e
-                    else:
-                        setup_exception=None
-                        f(self, *a, **kw)
+                    self._setup(url)
+                except sa_exc.OperationalError:
+                    log.info('Backend %s is not available, skip it', url)
+                    continue
+                except Exception as e:
+                    setup_exception = e
+                else:
+                    setup_exception = None
+
+                try:
+                    f(self, *a, **kw)
                 finally:
                     try:
                         self._teardown()
