@@ -1,0 +1,9 @@
+Code-Review+2: Monty Taylor <mordred@inaugust.com>
+Verified+2: Jenkins
+Approved+1: David Ripton <dripton@redhat.com>
+Code-Review+2: David Ripton <dripton@redhat.com>
+Submitted-by: Jenkins
+Submitted-at: Wed, 25 Sep 2013 19:41:23 +0000
+Reviewed-on: https://review.openstack.org/47847
+Project: stackforge/sqlalchemy-migrate
+Branch: refs/heads/master
