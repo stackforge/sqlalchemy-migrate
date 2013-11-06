@@ -8,6 +8,8 @@ coverage>=3.6
 discover
 feedparser
 fixtures>=0.3.12
+ibm_db_sa>=0.3.0
+mock>=1.0
 mox==0.5.3
 MySQL-python
 psycopg2

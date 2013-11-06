@@ -221,7 +221,17 @@ class Version(object):
                     "(needs to be ###_description_database_operation.sql)")
             version = parts[0]
             op = parts[-1]
-            dbms = parts[-2]
+            # NOTE(mriedem): check for ibm_db_sa as the database in the name
+            if 'ibm_db_sa' in basename:
+                if len(parts) == 6:
+                    dbms = '_'.join(parts[-4: -1])
+                else:
+                    raise exceptions.ScriptError(
+                        "Invalid ibm_db_sa SQL script name '%s'; "
+                        "(needs to be "
+                        "###_description_ibm_db_sa_operation.sql)" % basename)
+            else:
+                dbms = parts[-2]
         else:
             raise exceptions.ScriptError(
                 "Invalid SQL script name %s " % basename + \

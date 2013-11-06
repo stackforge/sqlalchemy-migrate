@@ -8,7 +8,8 @@ from migrate.changeset.databases import (sqlite,
                                          postgres,
                                          mysql,
                                          oracle,
-                                         firebird)
+                                         firebird,
+                                         ibmdb2)
 
 
 # Map SA dialects to the corresponding Migrate extensions
@@ -20,6 +21,7 @@ DIALECTS = {
     "mysql": mysql.MySQLDialect,
     "oracle": oracle.OracleDialect,
     "firebird": firebird.FBDialect,
+    "ibm_db_sa": ibmdb2.IBMDBDialect
 }
 
 
