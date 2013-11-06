@@ -157,7 +157,10 @@ class Test_getDiffOfModelAgainstDatabase(SchemaDiffBase):
             Column('data', Float()),
             )
 
-    @fixture.usedb()
+    # NOTE(mriedem): The ibm_db_sa driver handles the Float() as a DOUBLE()
+    # which extends Numeric() but isn't defined in sqlalchemy.types, so we
+    # can't check for it as a special case like is done in schemadiff.ColDiff.
+    @fixture.usedb(not_supported='ibm_db_sa')
     def test_float_vs_numeric(self):
         self._assert_diff(
             Column('data', Float()),

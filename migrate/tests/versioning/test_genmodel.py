@@ -39,7 +39,9 @@ class TestSchemaDiff(fixture.DB):
         diff = schemadiff.getDiffOfModelAgainstDatabase(self.meta, self.engine, excludeTables=['migrate_version'])
         genmodel.ModelGenerator(diff,self.engine).runB2A()
 
-    @fixture.usedb()
+    # NOTE(mriedem): DB2 handles UnicodeText as LONG VARGRAPHIC
+    # so the schema diffs on the columns don't work with this test.
+    @fixture.usedb(not_supported='ibm_db_sa')
     def test_functional(self):
 
         def assertDiff(isDiff, tablesMissingInDatabase, tablesMissingInModel, tablesWithDiff):

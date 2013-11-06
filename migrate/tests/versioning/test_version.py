@@ -160,6 +160,15 @@ class TestVersion(fixture.Pathed):
         ver = Version(1, self.temp_usable_dir, [])
         self.assertRaises(ScriptError, ver.add_script, '123.sql')
 
+        # tests bad ibm_db_sa filename
+        ver = Version(123, self.temp_usable_dir, [])
+        self.assertRaises(ScriptError, ver.add_script,
+                          '123_ibm_db_sa_upgrade.sql')
+
+        # tests that the name is ok but the script doesn't exist
+        self.assertRaises(InvalidScriptError, ver.add_script,
+                          '123_test_ibm_db_sa_upgrade.sql')
+
         pyscript = os.path.join(self.temp_usable_dir, 'bla.py')
         open(pyscript, 'w')
         ver.add_script(pyscript)
