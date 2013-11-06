@@ -7,4 +7,5 @@ __all__ = [
     'sqlite',
     'mysql',
     'oracle',
+    'ibm_db_sa',
 ]

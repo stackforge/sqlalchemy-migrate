@@ -231,18 +231,18 @@ class TestAddDropColumn(fixture.DB):
 
         col.drop()
 
-    @fixture.usedb(not_supported='mysql')
+    @fixture.usedb(not_supported=['mysql'])
     def test_check(self):
         """Can create columns with check constraint"""
-        col = Column('data',
+        col = Column('foo',
                      Integer,
-                     sqlalchemy.schema.CheckConstraint('data > 4'))
+                     sqlalchemy.schema.CheckConstraint('foo > 4'))
         col.create(self.table)
 
         # check if constraint was added (cannot test on objects)
-        self.table.insert(values={'data': 5}).execute()
+        self.table.insert(values={'foo': 5}).execute()
         try:
-            self.table.insert(values={'data': 3}).execute()
+            self.table.insert(values={'foo': 3}).execute()
         except (sqlalchemy.exc.IntegrityError,
                 sqlalchemy.exc.ProgrammingError):
             pass
@@ -272,10 +272,11 @@ class TestAddDropColumn(fixture.DB):
         col.drop(self.table)
 
 # TODO: remove already attached columns with uniques, pks, fks ..
-    @fixture.usedb(not_supported='postgresql')
+    @fixture.usedb(not_supported=['ibm_db_sa', 'postgresql'])
     def test_drop_column_of_composite_index(self):
         # NOTE(rpodolyaka): postgresql automatically drops a composite index
         #                   if one of its columns is dropped
+        # NOTE(mriedem): DB2 does the same.
         self.table_idx.c.b.drop()
 
         reflected = Table(self.table_idx.name, MetaData(), autoload=True,
@@ -441,7 +442,7 @@ class TestAddDropColumn(fixture.DB):
         # check remaining foreign key is there
         self.assertEqual([['r1']],
                          self._actual_foreign_keys())
-        
+
     @fixture.usedb()
     def test_drop_with_complex_foreign_keys(self):
         from sqlalchemy.schema import ForeignKeyConstraint
@@ -449,11 +450,16 @@ class TestAddDropColumn(fixture.DB):
         
         self.table.drop()
         self.meta.clear()
-        
+
+        # NOTE(mriedem): DB2 does not currently support unique constraints
+        # on nullable columns, so the columns that are used to create the
+        # foreign keys here need to be non-nullable for testing with DB2
+        # to work.
+
         # create FK's target
         reftable = Table('tmp_ref', self.meta,
             Column('id', Integer, primary_key=True),
-            Column('jd', Integer),
+            Column('jd', Integer, nullable=False),
             UniqueConstraint('id','jd')
             )
         if self.engine.has_table(reftable.name):
@@ -464,8 +470,8 @@ class TestAddDropColumn(fixture.DB):
         self.table = Table(
             self.table_name, self.meta,
             Column('id', Integer, primary_key=True),
-            Column('r1', Integer),
-            Column('r2', Integer),
+            Column('r1', Integer, nullable=False),
+            Column('r2', Integer, nullable=False),
             ForeignKeyConstraint(['r1','r2'],
                                  [reftable.c.id,reftable.c.jd],
                                  name='test_fk')
