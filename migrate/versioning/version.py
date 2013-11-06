@@ -37,8 +37,23 @@ class VerNum(object):
     def __sub__(self, value):
         return self + (int(value) * -1)
 
-    def __cmp__(self, value):
-        return int(self) - int(value)
+    def __eq__(self, value):
+        return int(self) == int(value)
+
+    def __ne__(self, value):
+        return int(self) != int(value)
+
+    def __lt__(self, value):
+        return int(self) < int(value)
+
+    def __gt__(self, value):
+        return int(self) > int(value)
+
+    def __ge__(self, value):
+        return int(self) >= int(value)
+
+    def __le__(self, value):
+        return int(self) <= int(value)
 
     def __repr__(self):
         return "<VerNum(%s)>" % self.value
