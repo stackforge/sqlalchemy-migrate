@@ -9,17 +9,22 @@ from migrate.versioning.template import Template
 
 log = logging.getLogger(__name__)
 
+
 class SqlScript(base.BaseScript):
+
     """A file containing plain SQL statements."""
 
     @classmethod
     def create(cls, path, **opts):
         """Create an empty migration script at specified path
-        
-        :returns: :class:`SqlScript instance <migrate.versioning.script.sql.SqlScript>`"""
+
+        :returns: :class:`SqlScript instance \
+        <migrate.versioning.script.sql.SqlScript>`
+        """
         cls.require_notfound(path)
 
-        src = Template(opts.pop('templates_path', None)).get_sql_script(theme=opts.pop('templates_theme', None))
+        src = Template(opts.pop('templates_path', None)).get_sql_script(
+            theme=opts.pop('templates_theme', None))
         shutil.copy(src, path)
         return cls(path)
 

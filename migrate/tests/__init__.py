@@ -9,6 +9,7 @@ import migrate
 
 
 class TestVersionDefined(TestCase):
+
     def test_version(self):
         """Test for migrate.__version__"""
         self.assertTrue(isinstance(migrate.__version__, basestring))

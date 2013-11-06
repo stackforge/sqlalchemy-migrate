@@ -1,12 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
-import shutil
-
 from migrate import exceptions
 from migrate.versioning.schema import *
-from migrate.versioning import script, schemadiff
+from migrate.versioning import schemadiff
 
 from sqlalchemy import *
 
@@ -52,8 +49,8 @@ class TestControlledSchema(fixture.Pathed, fixture.DB):
 
         # Trying to create another DB this way fails: table exists
         self.assertRaises(exceptions.DatabaseAlreadyControlledError,
-            ControlledSchema.create, self.engine, self.repos)
-        
+                          ControlledSchema.create, self.engine, self.repos)
+
         # We can load a controlled DB this way, too
         dbcontrol0 = ControlledSchema(self.engine, self.repos)
         self.assertEqual(dbcontrol, dbcontrol0)
@@ -67,15 +64,17 @@ class TestControlledSchema(fixture.Pathed, fixture.DB):
         dbcontrol0 = ControlledSchema(engine, self.repos.path)
         self.assertEqual(dbcontrol, dbcontrol0)
 
-        # Clean up: 
+        # Clean up:
         dbcontrol.drop()
 
         # Attempting to drop vc from a db without it should fail
-        self.assertRaises(exceptions.DatabaseNotControlledError, dbcontrol.drop)
+        self.assertRaises(
+            exceptions.DatabaseNotControlledError,
+            dbcontrol.drop)
 
         # No table defined should raise error
         self.assertRaises(exceptions.DatabaseNotControlledError,
-            ControlledSchema, self.engine, self.repos)
+                          ControlledSchema, self.engine, self.repos)
 
     @fixture.usedb()
     def test_version_control_specified(self):
@@ -84,7 +83,7 @@ class TestControlledSchema(fixture.Pathed, fixture.DB):
         version = 0
         dbcontrol = ControlledSchema.create(self.engine, self.repos, version)
         self.assertEqual(dbcontrol.version, version)
-        
+
         # Correct when we load it, too
         dbcontrol = ControlledSchema(self.engine, self.repos)
         self.assertEqual(dbcontrol.version, version)
@@ -98,7 +97,7 @@ class TestControlledSchema(fixture.Pathed, fixture.DB):
         self.assertEqual(self.repos.latest, version)
 
         # Test with some mid-range value
-        dbcontrol = ControlledSchema.create(self.engine,self.repos, 5)
+        dbcontrol = ControlledSchema.create(self.engine, self.repos, 5)
         self.assertEqual(dbcontrol.version, 5)
         dbcontrol.drop()
 
@@ -110,10 +109,10 @@ class TestControlledSchema(fixture.Pathed, fixture.DB):
     @fixture.usedb()
     def test_version_control_invalid(self):
         """Try to establish version control with an invalid version"""
-        versions = ('Thirteen', '-1', -1, '' , 13)
+        versions = ('Thirteen', '-1', -1, '', 13)
         # A fresh repository doesn't go up to version 13 yet
         for version in versions:
-            #self.assertRaises(ControlledSchema.InvalidVersionError,
+            # self.assertRaises(ControlledSchema.InvalidVersionError,
             # Can't have custom errors with assertRaises...
             try:
                 ControlledSchema.create(self.engine, self.repos, version)
@@ -125,7 +124,7 @@ class TestControlledSchema(fixture.Pathed, fixture.DB):
     def test_changeset(self):
         """Create changeset from controlled schema"""
         dbschema = ControlledSchema.create(self.engine, self.repos)
-        
+
         # empty schema doesn't have changesets
         cs = dbschema.changeset()
         self.assertEqual(cs, {})
@@ -143,7 +142,7 @@ class TestControlledSchema(fixture.Pathed, fixture.DB):
     @fixture.usedb()
     def test_upgrade_runchange(self):
         dbschema = ControlledSchema.create(self.engine, self.repos)
-        
+
         for i in range(10):
             self.repos.create_script('')
 
@@ -152,7 +151,12 @@ class TestControlledSchema(fixture.Pathed, fixture.DB):
         dbschema.upgrade(10)
 
         self.assertRaises(ValueError, dbschema.upgrade, 'a')
-        self.assertRaises(exceptions.InvalidVersionError, dbschema.runchange, 20, '', 1)
+        self.assertRaises(
+            exceptions.InvalidVersionError,
+            dbschema.runchange,
+            20,
+            '',
+            1)
 
         # TODO: test for table version in db
 
@@ -162,20 +166,32 @@ class TestControlledSchema(fixture.Pathed, fixture.DB):
     @fixture.usedb()
     def test_create_model(self):
         """Test workflow to generate create_model"""
-        model = ControlledSchema.create_model(self.engine, self.repos, declarative=False)
+        model = ControlledSchema.create_model(
+            self.engine,
+            self.repos,
+            declarative=False)
         self.assertTrue(isinstance(model, basestring))
 
-        model = ControlledSchema.create_model(self.engine, self.repos.path, declarative=True)
+        model = ControlledSchema.create_model(
+            self.engine,
+            self.repos.path,
+            declarative=True)
         self.assertTrue(isinstance(model, basestring))
 
     @fixture.usedb()
     def test_compare_model_to_db(self):
         meta = self.construct_model()
 
-        diff = ControlledSchema.compare_model_to_db(self.engine, meta, self.repos)
+        diff = ControlledSchema.compare_model_to_db(
+            self.engine,
+            meta,
+            self.repos)
         self.assertTrue(isinstance(diff, schemadiff.SchemaDiff))
 
-        diff = ControlledSchema.compare_model_to_db(self.engine, meta, self.repos.path)
+        diff = ControlledSchema.compare_model_to_db(
+            self.engine,
+            meta,
+            self.repos.path)
         self.assertTrue(isinstance(diff, schemadiff.SchemaDiff))
         meta.drop_all(self.engine)
 
@@ -184,7 +200,7 @@ class TestControlledSchema(fixture.Pathed, fixture.DB):
         dbschema = ControlledSchema.create(self.engine, self.repos)
 
         meta = self.construct_model()
-    
+
         dbschema.update_db_from_model(meta)
 
         # TODO: test for table version in db
@@ -196,7 +212,13 @@ class TestControlledSchema(fixture.Pathed, fixture.DB):
     def construct_model(self):
         meta = MetaData()
 
-        user = Table('temp_model_schema', meta, Column('id', Integer), Column('user', String(245)))
+        user = Table(
+            'temp_model_schema',
+            meta,
+            Column('id',
+                   Integer),
+            Column('user',
+                   String(245)))
 
         return meta
 

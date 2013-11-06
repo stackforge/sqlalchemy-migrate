@@ -4,8 +4,7 @@
 import sys
 import logging
 
-from sqlalchemy import (Table, Column, MetaData, String, Text, Integer,
-    create_engine)
+from sqlalchemy import (Table, Column, MetaData, String, Text, Integer)
 from sqlalchemy.sql import and_
 from sqlalchemy import exc as sa_exceptions
 from sqlalchemy.sql import bindparam
@@ -20,7 +19,9 @@ from migrate.versioning.version import VerNum
 
 log = logging.getLogger(__name__)
 
+
 class ControlledSchema(object):
+
     """A database under version control"""
 
     def __init__(self, engine, repository):
@@ -33,8 +34,8 @@ class ControlledSchema(object):
 
     def __eq__(self, other):
         """Compare two schemas by repositories and versions"""
-        return (self.repository is other.repository \
-            and self.version == other.version)
+        return (self.repository is other.repository
+                and self.version == other.version)
 
     def load(self):
         """Load controlled schema version info from DB"""
@@ -85,8 +86,8 @@ class ControlledSchema(object):
         endver = ver + step
         # Current database version must be correct! Don't run if corrupt!
         if self.version != startver:
-            raise exceptions.InvalidVersionError("%s is not %s" % \
-                                                     (self.version, startver))
+            raise exceptions.InvalidVersionError("%s is not %s" %
+                                                 (self.version, startver))
         # Run the change
         change.run(self.engine, step)
 
@@ -96,8 +97,10 @@ class ControlledSchema(object):
 
     def update_repository_table(self, startver, endver):
         """Update version_table with new information"""
-        update = self.table.update(and_(self.table.c.version == int(startver),
-             self.table.c.repository_id == str(self.repository.id)))
+        update = self.table.update(
+            and_(
+                self.table.c.version == int(startver),
+                self.table.c.repository_id == str(self.repository.id)))
         self.engine.execute(update, version=int(endver))
 
     def upgrade(self, version=None):
@@ -116,8 +119,8 @@ class ControlledSchema(object):
 
         diff = schemadiff.getDiffOfModelAgainstDatabase(
             model, self.engine, excludeTables=[self.repository.version_table]
-            )
-        genmodel.ModelGenerator(diff,self.engine).runB2A()
+        )
+        genmodel.ModelGenerator(diff, self.engine).runB2A()
 
         self.update_repository_table(self.version, int(self.repository.latest))
 
@@ -152,7 +155,7 @@ class ControlledSchema(object):
         if version is None:
             version = 0
         try:
-            version = VerNum(version) # raises valueerror
+            version = VerNum(version)  # raises valueerror
             if version < 0 or version > repository.latest:
                 raise ValueError()
         except ValueError:
@@ -188,9 +191,9 @@ class ControlledSchema(object):
 
         # Insert data
         engine.execute(table.insert().values(
-                           repository_id=repository.id,
-                           repository_path=repository.path,
-                           version=int(version)))
+            repository_id=repository.id,
+            repository_path=repository.path,
+            version=int(version)))
         return table
 
     @classmethod
@@ -216,5 +219,7 @@ class ControlledSchema(object):
 
         diff = schemadiff.getDiffOfModelAgainstDatabase(
             MetaData(), engine, excludeTables=[repository.version_table]
-            )
-        return genmodel.ModelGenerator(diff, engine, declarative).genBDefinition()
+        )
+        return (
+            genmodel.ModelGenerator(diff, engine, declarative).genBDefinition()
+        )

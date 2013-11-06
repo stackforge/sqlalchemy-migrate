@@ -3,10 +3,8 @@
 """
 import os
 import shutil
-import string
 import logging
 
-from pkg_resources import resource_filename
 from tempita import Template as TempitaTemplate
 
 from migrate import exceptions
@@ -17,13 +15,16 @@ from migrate.versioning.config import *
 
 log = logging.getLogger(__name__)
 
+
 class Changeset(dict):
+
     """A collection of changes to be applied to a database.
 
     Changesets are bound to a repository and manage a set of
     scripts from that repository.
 
-    Behaves like a dict, for the most part. Keys are ordered based on step value.
+    Behaves like a dict, for the most part. Keys are ordered based on
+    step value.
     """
 
     def __init__(self, start, *changes, **k):
@@ -67,6 +68,7 @@ class Changeset(dict):
 
 
 class Repository(pathed.Pathed):
+
     """A project's change script repository"""
 
     _config = 'migrate.cfg'
@@ -78,7 +80,7 @@ class Repository(pathed.Pathed):
         super(Repository, self).__init__(path)
         self.config = cfgparse.Config(os.path.join(self.path, self._config))
         self.versions = version.Collection(os.path.join(self.path,
-                                                      self._versions))
+                                                        self._versions))
         log.debug('Repository %s loaded successfully' % path)
         log.debug('Config: %r' % self.config.to_dict())
 
@@ -87,14 +89,15 @@ class Repository(pathed.Pathed):
         """
         Ensure the target path is a valid repository.
 
-        :raises: :exc:`InvalidRepositoryError <migrate.exceptions.InvalidRepositoryError>`
+        :raises: :exc:`InvalidRepositoryError \
+        <migrate.exceptions.InvalidRepositoryError>`
         """
         # Ensure the existence of required files
         try:
             cls.require_found(path)
             cls.require_found(os.path.join(path, cls._config))
             cls.require_found(os.path.join(path, cls._versions))
-        except exceptions.PathNotFoundError, e:
+        except exceptions.PathNotFoundError as e:
             raise exceptions.InvalidRepositoryError(path)
 
     @classmethod
@@ -147,18 +150,22 @@ class Repository(pathed.Pathed):
         # Create a management script
         manager = os.path.join(path, 'manage.py')
         Repository.create_manage_file(manager, templates_theme=theme,
-            templates_path=t_path, **opts)
+                                      templates_path=t_path, **opts)
 
         return cls(path)
 
     def create_script(self, description, **k):
-        """API to :meth:`migrate.versioning.version.Collection.create_new_python_version`"""
-        
+        """API to :meth:`migrate.versioning.version.Collection.\
+        create_new_python_version`
+        """
+
         k['use_timestamp_numbering'] = self.use_timestamp_numbering
         self.versions.create_new_python_version(description, **k)
 
     def create_script_sql(self, database, description, **k):
-        """API to :meth:`migrate.versioning.version.Collection.create_new_sql_version`"""
+        """API to :meth:`migrate.versioning.version.Collection.\
+        create_new_sql_version`
+        """
         k['use_timestamp_numbering'] = self.use_timestamp_numbering
         self.versions.create_new_sql_version(database, description, **k)
 
@@ -181,7 +188,11 @@ class Repository(pathed.Pathed):
     def use_timestamp_numbering(self):
         """Returns use_timestamp_numbering specified in config"""
         if self.config.has_option('db_settings', 'use_timestamp_numbering'):
-            return self.config.getboolean('db_settings', 'use_timestamp_numbering')
+            return (
+                self.config.getboolean(
+                    'db_settings',
+                    'use_timestamp_numbering')
+            )
         return False
 
     def version(self, *p, **k):
@@ -195,7 +206,8 @@ class Repository(pathed.Pathed):
         version.Collection.clear()
 
     def changeset(self, database, start, end=None):
-        """Create a changeset to migrate this database from ver. start to end/latest.
+        """Create a changeset to migrate this database from ver. start
+        to end/latest.
 
         :param database: name of database to generate changeset
         :param start: version to start at
@@ -203,7 +215,8 @@ class Repository(pathed.Pathed):
         :type database: string
         :type start: int
         :type end: int
-        :returns: :class:`Changeset instance <migration.versioning.repository.Changeset>`
+        :returns: :class:`Changeset instance \
+        <migration.versioning.repository.Changeset>`
         """
         start = version.VerNum(start)
 
@@ -229,9 +242,10 @@ class Repository(pathed.Pathed):
     @classmethod
     def create_manage_file(cls, file_, **opts):
         """Create a project management script (manage.py)
-        
+
         :param file_: Destination file to be written
-        :param opts: Options that are passed to :func:`migrate.versioning.shell.main`
+        :param opts: Options that are passed to \
+        :func:`migrate.versioning.shell.main`
         """
         mng_file = Template(opts.pop('templates_path', None))\
             .get_manage(theme=opts.pop('templates_theme', None))

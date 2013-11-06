@@ -7,8 +7,6 @@ from decorator import decorator
 
 from sqlalchemy import create_engine, Table, MetaData
 from sqlalchemy import exc as sa_exc
-from sqlalchemy.orm import create_session
-from sqlalchemy.pool import StaticPool
 
 from migrate.changeset.schema import ColumnDelta
 from migrate.versioning.util import Memoize
@@ -18,6 +16,7 @@ from migrate.tests.fixture.pathed import Pathed
 
 
 log = logging.getLogger(__name__)
+
 
 @Memoize
 def readurls():
@@ -31,8 +30,9 @@ def readurls():
     try:
         fd = open(fullpath)
     except IOError:
-        raise IOError("""You must specify the databases to use for testing!
-Copy %(filename)s.tmpl to %(filename)s and edit your database URLs.""" % locals())
+        raise IOError('You must specify the databases to use for testing! '
+                      'Copy %(filename)s.tmpl to %(filename)s and edit your '
+                      'database URLs.' % locals())
 
     for line in fd:
         if line.startswith('#'):
@@ -41,6 +41,7 @@ Copy %(filename)s.tmpl to %(filename)s and edit your database URLs.""" % locals(
         ret.append(line)
     fd.close()
     return ret
+
 
 def is_supported(url, supported, not_supported):
     db = url.split(':', 1)[0]
@@ -65,14 +66,19 @@ def usedb(supported=None, not_supported=None):
     @param supported: run tests for ONLY these databases
     @param not_supported: run tests for all databases EXCEPT these
 
-    If both supported and not_supported are empty, all dbs are assumed 
+    If both supported and not_supported are empty, all dbs are assumed
     to be supported
     """
     if supported is not None and not_supported is not None:
-        raise AssertionError("Can't specify both supported and not_supported in fixture.db()")
+        raise AssertionError(
+            "Can't specify both supported and not_supported in fixture.db()")
 
     urls = readurls()
-    my_urls = [url for url in urls if is_supported(url, supported, not_supported)]
+    my_urls = [
+        url for url in urls if is_supported(
+            url,
+            supported,
+            not_supported)]
 
     @decorator
     def dec(f, self, *a, **kw):
@@ -96,17 +102,17 @@ def usedb(supported=None, not_supported=None):
                 finally:
                     try:
                         self._teardown()
-                    except Exception,e:
-                        teardown_exception=e
+                    except Exception as e:
+                        teardown_exception = e
                     else:
-                        teardown_exception=None
+                        teardown_exception = None
                 if setup_exception or teardown_exception:
                     raise RuntimeError((
                         'Exception during _setup/_teardown:\n'
                         'setup: %r\n'
                         'teardown: %r\n'
-                        )%(setup_exception,teardown_exception))
-            except Exception,e:
+                    ) % (setup_exception, teardown_exception))
+            except Exception as e:
                 failed_for.append(url)
                 fail = True
         for url in failed_for:
@@ -126,7 +132,7 @@ class DB(Base):
     level = TXN
 
     def _engineInfo(self, url=None):
-        if url is None: 
+        if url is None:
             url = self.url
         return url
 
@@ -142,16 +148,17 @@ class DB(Base):
 
     def _connect(self, url):
         self.url = url
-        # TODO: seems like 0.5.x branch does not work with engine.dispose and staticpool
+        # TODO: seems like 0.5.x branch does not work with engine.dispose and
+        # staticpool
         #self.engine = create_engine(url, echo=True, poolclass=StaticPool)
         self.engine = create_engine(url, echo=True)
         # silence the logger added by SA, nose adds its own!
-        logging.getLogger('sqlalchemy').handlers=[]
+        logging.getLogger('sqlalchemy').handlers = []
         self.meta = MetaData(bind=self.engine)
         if self.level < self.CONNECT:
             return
         #self.session = create_session(bind=self.engine)
-        if self.level < self.TXN: 
+        if self.level < self.TXN:
             return
         #self.txn = self.session.begin()
 
@@ -160,12 +167,12 @@ class DB(Base):
             self.txn.rollback()
         if hasattr(self, 'session'):
             self.session.close()
-        #if hasattr(self,'conn'):
+        # if hasattr(self,'conn'):
         #    self.conn.close()
         self.engine.dispose()
 
     def _supported(self, url):
-        db = url.split(':',1)[0]
+        db = url.split(':', 1)[0]
         func = getattr(self, self._TestCase__testMethodName)
         if hasattr(func, 'supported'):
             return db in func.supported
@@ -199,12 +206,15 @@ class DB(Base):
         """Loop through all columns and compare them"""
         def key(column):
             return column.name
-        for c1, c2 in zip(sorted(columns1, key=key), sorted(columns2, key=key)):
+        for c1, c2 in zip(sorted(columns1, key=key),
+                          sorted(columns2, key=key)):
             diffs = ColumnDelta(c1, c2).diffs
             if ignore:
                 for key in ignore:
                     diffs.pop(key, None)
             if diffs:
-                self.fail("Comparing %s to %s failed: %s" % (columns1, columns2, diffs))
+                self.fail(
+                    "Comparing %s to %s failed: %s" %
+                    (columns1, columns2, diffs))
 
 # TODO: document engine.dispose and write tests

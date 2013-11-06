@@ -34,8 +34,8 @@ def move_file(src, tgt):
     log.info('Moving file %s to %s' % (src, tgt))
     if os.path.exists(tgt):
         raise Exception(
-            'Cannot move file %s because target %s already exists' % \
-                (src, tgt))
+            'Cannot move file %s because target %s already exists' %
+            (src, tgt))
     os.rename(src, tgt)
 
 
@@ -51,13 +51,11 @@ def migrate_repository(repos):
     versions = '%s/versions' % repos
     dirs = os.listdir(versions)
     # Only use int's in list.
-    numdirs = [int(dirname) for dirname in dirs if dirname.isdigit()]
-    numdirs.sort()  # Sort list.
+    numdirs = sorted([int(dirname) for dirname in dirs if dirname.isdigit()])
     for dirname in numdirs:
         origdir = '%s/%s' % (versions, dirname)
         log.info('Working on directory: %s' % origdir)
-        files = os.listdir(origdir)
-        files.sort()
+        files = sorted(os.listdir(origdir))
         for filename in files:
             # Delete compiled Python files.
             if filename.endswith('.pyc') or filename.endswith('.pyo'):

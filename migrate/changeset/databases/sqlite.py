@@ -4,7 +4,6 @@
    .. _`SQLite`: http://www.sqlite.org/
 """
 from UserDict import DictMixin
-from copy import copy
 
 from sqlalchemy.databases import sqlite as sa_base
 
@@ -19,12 +18,13 @@ class SQLiteCommon(object):
 
     def _not_supported(self, op):
         raise exceptions.NotSupportedError("SQLite does not support "
-            "%s; see http://www.sqlite.org/lang_altertable.html" % op)
+                                           "%s; see http://www.sqlite.org/"
+                                           "lang_altertable.html" % op)
 
 
 class SQLiteHelper(SQLiteCommon):
 
-    def recreate_table(self,table,column=None,delta=None):
+    def recreate_table(self, table, column=None, delta=None):
         table_name = self.preparer.format_table(table)
 
         # we remove all indexes so as not to have
@@ -42,7 +42,7 @@ class SQLiteHelper(SQLiteCommon):
         self.execute()
         self.append('DROP TABLE migration_tmp')
         self.execute()
-        
+
     def visit_column(self, delta):
         if isinstance(delta, DictMixin):
             column = delta.result_column
@@ -50,47 +50,52 @@ class SQLiteHelper(SQLiteCommon):
         else:
             column = delta
             table = self._to_table(column.table)
-        self.recreate_table(table,column,delta)
+        self.recreate_table(table, column, delta)
 
-class SQLiteColumnGenerator(SQLiteSchemaGenerator, 
+
+class SQLiteColumnGenerator(SQLiteSchemaGenerator,
                             ansisql.ANSIColumnGenerator,
                             # at the end so we get the normal
                             # visit_column by default
                             SQLiteHelper,
                             SQLiteCommon
                             ):
+
     """SQLite ColumnGenerator"""
 
     def _modify_table(self, table, column, delta):
         columns = ' ,'.join(map(
-                self.preparer.format_column,
-                [c for c in table.columns if c.name!=column.name]))
+            self.preparer.format_column,
+            [c for c in table.columns if c.name != column.name]))
         return ('INSERT INTO %%(table_name)s (%(cols)s) '
-                'SELECT %(cols)s from migration_tmp')%{'cols':columns}
+                'SELECT %(cols)s from migration_tmp') % {'cols': columns}
 
-    def visit_column(self,column):
+    def visit_column(self, column):
         if column.foreign_keys:
-            SQLiteHelper.visit_column(self,column)
+            SQLiteHelper.visit_column(self, column)
         else:
-            super(SQLiteColumnGenerator,self).visit_column(column)
+            super(SQLiteColumnGenerator, self).visit_column(column)
+
 
 class SQLiteColumnDropper(SQLiteHelper, ansisql.ANSIColumnDropper):
+
     """SQLite ColumnDropper"""
 
     def _modify_table(self, table, column, delta):
-        
+
         columns = ' ,'.join(map(self.preparer.format_column, table.columns))
         return 'INSERT INTO %(table_name)s SELECT ' + columns + \
             ' from migration_tmp'
 
-    def visit_column(self,column):
+    def visit_column(self, column):
         # For SQLite, we *have* to remove the column here so the table
         # is re-created properly.
-        column.remove_from_table(column.table,unset_table=False)
-        super(SQLiteColumnDropper,self).visit_column(column)
+        column.remove_from_table(column.table, unset_table=False)
+        super(SQLiteColumnDropper, self).visit_column(column)
 
 
 class SQLiteSchemaChanger(SQLiteHelper, ansisql.ANSISchemaChanger):
+
     """SQLite SchemaChanger"""
 
     def _modify_table(self, table, column, delta):
@@ -101,7 +106,8 @@ class SQLiteSchemaChanger(SQLiteHelper, ansisql.ANSISchemaChanger):
         self._not_supported('ALTER INDEX')
 
 
-class SQLiteConstraintGenerator(ansisql.ANSIConstraintGenerator, SQLiteHelper, SQLiteCommon):
+class SQLiteConstraintGenerator(ansisql.ANSIConstraintGenerator,
+                                SQLiteHelper, SQLiteCommon):
 
     def visit_migrate_primary_key_constraint(self, constraint):
         tmpl = "CREATE UNIQUE INDEX %s ON %s ( %s )"
@@ -143,7 +149,8 @@ class SQLiteConstraintDropper(ansisql.ANSIColumnDropper,
         self._not_supported('ALTER TABLE DROP CONSTRAINT')
 
 
-# TODO: technically primary key is a NOT NULL + UNIQUE constraint, should add NOT NULL to index
+# TODO: technically primary key is a NOT NULL + UNIQUE constraint, should
+# add NOT NULL to index
 
 class SQLiteDialect(ansisql.ANSIDialect):
     columngenerator = SQLiteColumnGenerator

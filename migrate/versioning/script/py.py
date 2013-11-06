@@ -2,34 +2,36 @@
 # -*- coding: utf-8 -*-
 
 import shutil
-import warnings
 import logging
 import inspect
 from StringIO import StringIO
 
-import migrate
 from migrate.versioning import genmodel, schemadiff
-from migrate.versioning.config import operations
 from migrate.versioning.template import Template
 from migrate.versioning.script import base
 from migrate.versioning.util import import_path, load_model, with_engine
-from migrate.exceptions import MigrateDeprecationWarning, InvalidScriptError, ScriptError
+from migrate.exceptions import (InvalidScriptError,
+                                ScriptError)
 
 log = logging.getLogger(__name__)
 __all__ = ['PythonScript']
 
 
 class PythonScript(base.BaseScript):
+
     """Base for Python scripts"""
 
     @classmethod
     def create(cls, path, **opts):
         """Create an empty migration script at specified path
 
-        :returns: :class:`PythonScript instance <migrate.versioning.script.py.PythonScript>`"""
+        :returns: :class:`PythonScript instance \
+        <migrate.versioning.script.py.PythonScript>`
+        """
         cls.require_notfound(path)
 
-        src = Template(opts.pop('templates_path', None)).get_script(theme=opts.pop('templates_theme', None))
+        src = Template(opts.pop('templates_path', None)).get_script(
+            theme=opts.pop('templates_theme', None))
         shutil.copy(src, path)
 
         return cls(path)
@@ -43,7 +45,8 @@ class PythonScript(base.BaseScript):
         :param oldmodel: dotted.module.name:SAClass or SAClass object
         :param model: dotted.module.name:SAClass or SAClass object
         :param engine: SQLAlchemy engine
-        :type repository: string or :class:`Repository instance <migrate.versioning.repository.Repository>`
+        :type repository: string or :class:`Repository instance \
+        <migrate.versioning.repository.Repository>`
         :type oldmodel: string or Class
         :type model: string or Class
         :type engine: Engine instance
@@ -66,10 +69,13 @@ class PythonScript(base.BaseScript):
             excludeTables=[repository.version_table])
         # TODO: diff can be False (there is no difference?)
         decls, upgradeCommands, downgradeCommands = \
-            genmodel.ModelGenerator(diff,engine).genB2AMigration()
+            genmodel.ModelGenerator(diff, engine).genB2AMigration()
 
         # Store differences into file.
-        src = Template(opts.pop('templates_path', None)).get_script(opts.pop('templates_theme', None))
+        src = Template(
+            opts.pop('templates_path',
+                     None)).get_script(opts.pop('templates_theme',
+                                                None))
         f = open(src)
         contents = f.read()
         f.close()
@@ -89,20 +95,22 @@ class PythonScript(base.BaseScript):
 
         :param path: Script location
         :type path: string
-        :raises: :exc:`InvalidScriptError <migrate.exceptions.InvalidScriptError>`
+        :raises: :exc:`InvalidScriptError \
+        <migrate.exceptions.InvalidScriptError>`
         :returns: Python module
         """
         # Try to import and get the upgrade() func
         module = import_path(path)
         try:
             assert callable(module.upgrade)
-        except Exception, e:
+        except Exception as e:
             raise InvalidScriptError(path + ': %s' % str(e))
         return module
 
     def preview_sql(self, url, step, **args):
         """Mocks SQLAlchemy Engine to store all executed calls in a string
-        and runs :meth:`PythonScript.run <migrate.versioning.script.py.PythonScript.run>`
+        and runs :meth:`PythonScript.run \
+        <migrate.versioning.script.py.PythonScript.run>`
 
         :returns: SQL file
         """
@@ -140,7 +148,7 @@ class PythonScript(base.BaseScript):
         # check for old way of using engine
         if not inspect.getargspec(script_func)[0]:
             raise TypeError("upgrade/downgrade functions must accept engine"
-                " parameter (since version 0.5.4)")
+                            " parameter (since version 0.5.4)")
 
         script_func(engine)
 

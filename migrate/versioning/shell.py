@@ -6,7 +6,8 @@
 import sys
 import inspect
 import logging
-from optparse import OptionParser, BadOptionError
+from optparse import BadOptionError
+from optparse import OptionParser
 
 from migrate import exceptions
 from migrate.versioning import api
@@ -20,6 +21,7 @@ alias = dict(
     dbv=api.db_version,
     v=api.version,
 )
+
 
 def alias_setup():
     global alias
@@ -55,6 +57,7 @@ class PassiveOptionParser(OptionParser):
                 largs.append(arg)
                 del rargs[0]
 
+
 def main(argv=None, **kwargs):
     """Shell interface to :mod:`migrate.versioning.api`.
 
@@ -68,8 +71,7 @@ def main(argv=None, **kwargs):
         argv = argv
     else:
         argv = list(sys.argv[1:])
-    commands = list(api.__all__)
-    commands.sort()
+    commands = sorted(api.__all__)
 
     usage = """%%prog COMMAND ...
 
@@ -77,14 +79,17 @@ def main(argv=None, **kwargs):
         %s
 
     Enter "%%prog help COMMAND" for information on a particular command.
-    """ % '\n\t'.join(["%s - %s" % (command.ljust(28), api.command_desc.get(command)) for command in commands])
+    """ % '\n\t'.join(["%s - %s" %
+                       (command.ljust(28),
+                        api.command_desc.get(command))
+                       for command in commands])
 
     parser = PassiveOptionParser(usage=usage)
     parser.add_option("-d", "--debug",
-                     action="store_true",
-                     dest="debug",
-                     default=False,
-                     help="Shortcut to turn on DEBUG mode for logging")
+                      action="store_true",
+                      dest="debug",
+                      default=False,
+                      help="Shortcut to turn on DEBUG mode for logging")
     parser.add_option("-q", "--disable_logging",
                       action="store_true",
                       dest="disable_logging",
@@ -167,6 +172,7 @@ def main(argv=None, **kwargs):
     if not asbool(kwargs.pop('disable_logging', False)):
         # filter to log =< INFO into stdout and rest to stderr
         class SingleLevelFilter(logging.Filter):
+
             def __init__(self, min=None, max=None):
                 self.min = min or 0
                 self.max = max or 100
@@ -199,15 +205,15 @@ def main(argv=None, **kwargs):
     f_args_default = f_args[len(f_args) - num_defaults:]
     required = list(set(f_required) - set(f_args_default))
     if required:
-        parser.error("Not enough arguments for command %s: %s not specified" \
-            % (command, ', '.join(required)))
+        parser.error("Not enough arguments for command %s: %s not specified"
+                     % (command, ', '.join(required)))
 
     # handle command
     try:
         ret = command_func(**kwargs)
         if ret is not None:
             log.info(ret)
-    except (exceptions.UsageError, exceptions.KnownError), e:
+    except (exceptions.UsageError, exceptions.KnownError) as e:
         parser.error(e.args[0])
 
 if __name__ == "__main__":

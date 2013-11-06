@@ -6,13 +6,9 @@ Some of this is borrowed heavily from the AutoCode project at:
 http://code.google.com/p/sqlautocode/
 """
 
-import sys
 import logging
 
 import sqlalchemy
-
-import migrate
-import migrate.changeset
 
 
 log = logging.getLogger(__name__)
@@ -34,6 +30,7 @@ Base = declarative.declarative_base()
 
 
 class ModelGenerator(object):
+
     """Various transformations from an A, B diff.
 
     In the implementation, A tends to be called the model and B
@@ -75,7 +72,7 @@ class ModelGenerator(object):
         type_ = col.type
         for cls in col.type.__class__.__mro__:
             if cls.__module__ == 'sqlalchemy.types' and \
-                not cls.__name__.isupper():
+                    not cls.__name__.isupper():
                 if cls is not type_.__class__:
                     type_ = cls()
                 break
@@ -102,7 +99,7 @@ class ModelGenerator(object):
         if self.declarative:
             out.append("class %(table)s(Base):" % {'table': tableName})
             out.append("    __tablename__ = '%(table)s'\n" %
-                            {'table': tableName})
+                       {'table': tableName})
             for col in table.columns:
                 out.append("    %s" % self.column_repr(col))
             out.append('\n')
@@ -114,13 +111,13 @@ class ModelGenerator(object):
             out.append(")\n")
         return out
 
-    def _get_tables(self,missingA=False,missingB=False,modified=False):
+    def _get_tables(self, missingA=False, missingB=False, modified=False):
         to_process = []
-        for bool_,names,metadata in (
-            (missingA,self.diff.tables_missing_from_A,self.diff.metadataB),
-            (missingB,self.diff.tables_missing_from_B,self.diff.metadataA),
-            (modified,self.diff.tables_different,self.diff.metadataA),
-                ):
+        for bool_, names, metadata in (
+            (missingA, self.diff.tables_missing_from_A, self.diff.metadataB),
+            (missingB, self.diff.tables_missing_from_B, self.diff.metadataA),
+            (modified, self.diff.tables_different, self.diff.metadataA),
+        ):
             if bool_:
                 for name in names:
                     yield metadata.tables.get(name)
@@ -153,7 +150,7 @@ class ModelGenerator(object):
         decls = ['from migrate.changeset import schema',
                  'pre_meta = MetaData()',
                  'post_meta = MetaData()',
-                ]
+                 ]
         upgradeCommands = ['pre_meta.bind = migrate_engine',
                            'post_meta.bind = migrate_engine']
         downgradeCommands = list(upgradeCommands)
@@ -194,25 +191,26 @@ class ModelGenerator(object):
                     'post_meta.tables[%r].columns[%r].create()' % (tn, col))
                 downgradeCommands.append(
                     'post_meta.tables[%r].columns[%r].drop()' % (tn, col))
-            for modelCol, databaseCol, modelDecl, databaseDecl in td.columns_different:
+            for (modelCol, databaseCol,
+                 modelDecl, databaseDecl) in td.columns_different:
                 upgradeCommands.append(
                     'assert False, "Can\'t alter columns: %s:%s=>%s"' % (
-                    tn, modelCol.name, databaseCol.name))
+                        tn, modelCol.name, databaseCol.name))
                 downgradeCommands.append(
                     'assert False, "Can\'t alter columns: %s:%s=>%s"' % (
-                    tn, modelCol.name, databaseCol.name))
+                        tn, modelCol.name, databaseCol.name))
 
         return (
             '\n'.join(decls),
             '\n'.join('%s%s' % (indent, line) for line in upgradeCommands),
             '\n'.join('%s%s' % (indent, line) for line in downgradeCommands))
 
-    def _db_can_handle_this_change(self,td):
+    def _db_can_handle_this_change(self, td):
         """Check if the database can handle going from B to A."""
 
         if (td.columns_missing_from_B
             and not td.columns_missing_from_A
-            and not td.columns_different):
+                and not td.columns_different):
             # Even sqlite can handle column additions.
             return True
         else:
@@ -270,8 +268,8 @@ class ModelGenerator(object):
                 trans = connection.begin()
                 try:
                     connection.execute(
-                        'CREATE TEMPORARY TABLE %s as SELECT * from %s' % \
-                            (tempName, modelTable.name))
+                        'CREATE TEMPORARY TABLE %s as SELECT * from %s' %
+                        (tempName, modelTable.name))
                     # make sure the drop takes place inside our
                     # transaction with the bind parameter
                     modelTable.drop(bind=connection)
@@ -282,4 +280,3 @@ class ModelGenerator(object):
                 except:
                     trans.rollback()
                     raise
-

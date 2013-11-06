@@ -9,6 +9,7 @@ from migrate.versioning import pathed
 
 
 class Parser(ConfigParser):
+
     """A project configuration file."""
 
     def to_dict(self, sections=None):
@@ -17,6 +18,7 @@ class Parser(ConfigParser):
 
 
 class Config(pathed.Pathed, Parser):
+
     """Configuration class."""
 
     def __init__(self, path, *p, **k):
