@@ -231,7 +231,8 @@ class TestAddDropColumn(fixture.DB):
 
         col.drop()
 
-    @fixture.usedb(not_supported='mysql')
+    # NOTE(mriedem): This test fails with an SQL0548N error for ibm_db_sa.
+    @fixture.usedb(not_supported=['ibm_db_sa', 'mysql'])
     def test_check(self):
         """Can create columns with check constraint"""
         col = Column('data',
@@ -272,10 +273,11 @@ class TestAddDropColumn(fixture.DB):
         col.drop(self.table)
 
 # TODO: remove already attached columns with uniques, pks, fks ..
-    @fixture.usedb(not_supported='postgresql')
+    @fixture.usedb(not_supported=['ibm_db_sa', 'postgresql'])
     def test_drop_column_of_composite_index(self):
         # NOTE(rpodolyaka): postgresql automatically drops a composite index
         #                   if one of its columns is dropped
+        # NOTE(mriedem): DB2 does the same.
         self.table_idx.c.b.drop()
 
         reflected = Table(self.table_idx.name, MetaData(), autoload=True,
@@ -441,8 +443,9 @@ class TestAddDropColumn(fixture.DB):
         # check remaining foreign key is there
         self.assertEqual([['r1']],
                          self._actual_foreign_keys())
-        
-    @fixture.usedb()
+
+    # NOTE(mriedem): This test fails with an SQL0573N error for ibm_db_sa.
+    @fixture.usedb(not_supported='ibm_db_sa')
     def test_drop_with_complex_foreign_keys(self):
         from sqlalchemy.schema import ForeignKeyConstraint
         from sqlalchemy.schema import UniqueConstraint
