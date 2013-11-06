@@ -31,7 +31,7 @@ import logging
 
 from migrate import exceptions
 from migrate.versioning import (repository, schema, version,
-    script as script_) # command name conflict
+                                script as script_)  # command name conflict
 from migrate.versioning.util import catch_known_errors, with_engine
 
 
@@ -42,18 +42,25 @@ command_desc = {
     'script': 'create an empty change Python script',
     'script_sql': 'create empty change SQL scripts for given database',
     'version': 'display the latest version available in a repository',
-    'db_version': 'show the current version of the repository under version control',
-    'source': 'display the Python code for a particular version in this repository',
-    'version_control': 'mark a database as under this repository\'s version control',
+    'db_version':
+    'show the current version of the repository under version control',
+    'source':
+    'display the Python code for a particular version in this repository',
+    'version_control':
+    'mark a database as under this repository\'s version control',
     'upgrade': 'upgrade a database to a later version',
     'downgrade': 'downgrade a database to an earlier version',
     'drop_version_control': 'removes version control from a database',
-    'manage': 'creates a Python script that runs Migrate with a set of default values',
+    'manage':
+    'creates a Python script that runs Migrate with a set of default values',
     'test': 'performs the upgrade and downgrade command on the given database',
-    'compare_model_to_db': 'compare MetaData against the current database state',
+    'compare_model_to_db':
+    'compare MetaData against the current database state',
     'create_model': 'dump the current database as a Python model to stdout',
-    'make_update_script_for_model': 'create a script changing the old MetaData to the new (current) MetaData',
-    'update_db_from_model': 'modify the database to match the structure of the current MetaData',
+    'make_update_script_for_model':
+    'create a script changing the old MetaData to the new (current) MetaData',
+    'update_db_from_model':
+    'modify the database to match the structure of the current MetaData',
 }
 __all__ = command_desc.keys()
 
@@ -81,6 +88,7 @@ def help(cmd=None, **opts):
     if sys.argv[0]:
         ret = ret.replace('%prog', sys.argv[0])
     return ret
+
 
 @catch_known_errors
 def create(repository, name, **opts):
@@ -200,6 +208,7 @@ def downgrade(url, repository, version, **opts):
     err = "Cannot downgrade a database of version %s to version %s. "\
         "Try 'upgrade' instead."
     return _migrate(url, repository, version, upgrade=False, err=err, **opts)
+
 
 @with_engine
 def test(url, repository, **opts):
@@ -335,6 +344,7 @@ def update_db_from_model(url, repository, model, **opts):
     schema = ControlledSchema(engine, repository)
     schema.update_db_from_model(model)
 
+
 @with_engine
 def _migrate(url, repository, version, upgrade, err, **opts):
     engine = opts.pop('engine')
@@ -356,7 +366,7 @@ def _migrate(url, repository, version, upgrade, err, **opts):
         elif opts.get('preview_py'):
             if not isinstance(change, PythonScript):
                 raise exceptions.UsageError("Python source can be only displayed"
-                    " for python migration files")
+                                            " for python migration files")
             source_ver = max(ver, nextver)
             module = schema.repository.version(source_ver).script().module
             funcname = upgrade and "upgrade" or "downgrade"

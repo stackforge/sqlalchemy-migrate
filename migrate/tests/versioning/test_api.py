@@ -102,7 +102,13 @@ class TestSchemaAPI(fixture.DB, Pathed):
 
         api.upgrade(self.url, self.repo, 1)
         api.script_sql('default', 'desc', self.repo)
-        self.assertRaises(UsageError, api.upgrade, self.url, self.repo, 2, preview_py=True)
+        self.assertRaises(
+            UsageError,
+            api.upgrade,
+            self.url,
+            self.repo,
+            2,
+            preview_py=True)
         out = api.upgrade(self.url, self.repo, 2, preview_sql=True)
 
         # cant upgrade to version 1, already at version 1
@@ -119,8 +125,15 @@ class TestSchemaAPI(fixture.DB, Pathed):
 
     @fixture.usedb()
     def test_make_update_script_for_model(self):
-        model = api.make_update_script_for_model(self.url, self.repo, models.meta_old_rundiffs, models.meta_rundiffs)
+        model = api.make_update_script_for_model(
+            self.url,
+            self.repo,
+            models.meta_old_rundiffs,
+            models.meta_rundiffs)
 
     @fixture.usedb()
     def test_update_db_from_model(self):
-        model = api.update_db_from_model(self.url, self.repo, models.meta_rundiffs)
+        model = api.update_db_from_model(
+            self.url,
+            self.repo,
+            models.meta_rundiffs)

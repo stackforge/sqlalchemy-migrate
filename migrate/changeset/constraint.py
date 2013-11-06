@@ -5,7 +5,9 @@ from sqlalchemy import schema
 
 from migrate.exceptions import *
 
+
 class ConstraintChangeset(object):
+
     """Base class for Constraint classes."""
 
     def _normalize_columns(self, cols, table_name=False):
@@ -60,11 +62,12 @@ class ConstraintChangeset(object):
         # the spirit of Constraint objects is that they
         # are immutable (just like in a DB.  they're only ADDed
         # or DROPped).
-        #self.columns.clear()
+        # self.columns.clear()
         return self
 
 
 class PrimaryKeyConstraint(ConstraintChangeset, schema.PrimaryKeyConstraint):
+
     """Construct PrimaryKeyConstraint
 
     Migrate's additional parameters:
@@ -84,13 +87,13 @@ class PrimaryKeyConstraint(ConstraintChangeset, schema.PrimaryKeyConstraint):
         if table is not None:
             self._set_parent(table)
 
-
     def autoname(self):
         """Mimic the database's automatic constraint names"""
         return "%s_pkey" % self.table.name
 
 
 class ForeignKeyConstraint(ConstraintChangeset, schema.ForeignKeyConstraint):
+
     """Construct ForeignKeyConstraint
 
     Migrate's additional parameters:
@@ -110,8 +113,9 @@ class ForeignKeyConstraint(ConstraintChangeset, schema.ForeignKeyConstraint):
         table = kwargs.pop('table', table)
         refcolnames, reftable = self._normalize_columns(refcolumns,
                                                         table_name=True)
-        super(ForeignKeyConstraint, self).__init__(colnames, refcolnames, *args,
-                                                   **kwargs)
+        super(
+            ForeignKeyConstraint, self).__init__(colnames, refcolnames, *args,
+                                                 **kwargs)
         if table is not None:
             self._set_parent(table)
 
@@ -140,6 +144,7 @@ class ForeignKeyConstraint(ConstraintChangeset, schema.ForeignKeyConstraint):
 
 
 class CheckConstraint(ConstraintChangeset, schema.CheckConstraint):
+
     """Construct CheckConstraint
 
     Migrate's additional parameters:
@@ -159,7 +164,7 @@ class CheckConstraint(ConstraintChangeset, schema.CheckConstraint):
         cols = kwargs.pop('columns', [])
         if not cols and not kwargs.get('name', False):
             raise InvalidConstraintError('You must either set "name"'
-                'parameter or "columns" to autogenarate it.')
+                                         'parameter or "columns" to autogenarate it.')
         colnames, table = self._normalize_columns(cols)
         table = kwargs.pop('table', table)
         schema.CheckConstraint.__init__(self, sqltext, *args, **kwargs)
@@ -173,6 +178,7 @@ class CheckConstraint(ConstraintChangeset, schema.CheckConstraint):
 
 
 class UniqueConstraint(ConstraintChangeset, schema.UniqueConstraint):
+
     """Construct UniqueConstraint
 
     Migrate's additional parameters:

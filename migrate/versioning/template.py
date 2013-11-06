@@ -12,6 +12,7 @@ from migrate.versioning import pathed
 
 
 class Collection(pathed.Pathed):
+
     """A collection of templates of a specific type"""
     _mask = None
 
@@ -22,18 +23,23 @@ class Collection(pathed.Pathed):
 class RepositoryCollection(Collection):
     _mask = '%s'
 
+
 class ScriptCollection(Collection):
     _mask = '%s.py_tmpl'
+
 
 class ManageCollection(Collection):
     _mask = '%s.py_tmpl'
 
+
 class SQLScriptCollection(Collection):
     _mask = '%s.py_tmpl'
 
+
 class Template(pathed.Pathed):
+
     """Finds the paths/packages of various Migrate templates.
-    
+
     :param path: Templates are loaded from migrate package
     if `path` is not provided.
     """
@@ -48,7 +54,8 @@ class Template(pathed.Pathed):
         if path is None:
             path = Template._find_path(self.pkg)
         super(Template, self).__init__(path)
-        self.repository = RepositoryCollection(os.path.join(path, 'repository'))
+        self.repository = RepositoryCollection(
+            os.path.join(path, 'repository'))
         self.script = ScriptCollection(os.path.join(path, 'script'))
         self.manage = ManageCollection(os.path.join(path, 'manage'))
         self.sql_script = SQLScriptCollection(os.path.join(path, 'sql_script'))
@@ -65,7 +72,7 @@ class Template(pathed.Pathed):
 
     def _get_item(self, collection, theme=None):
         """Locates and returns collection.
-        
+
         :param collection: name of collection to locate
         :param type_: type of subfolder in collection (defaults to "_default")
         :returns: (package, source)
@@ -79,7 +86,7 @@ class Template(pathed.Pathed):
     def get_repository(self, *a, **kw):
         """Calls self._get_item('repository', *a, **kw)"""
         return self._get_item('repository', *a, **kw)
-    
+
     def get_script(self, *a, **kw):
         """Calls self._get_item('script', *a, **kw)"""
         return self._get_item('script', *a, **kw)

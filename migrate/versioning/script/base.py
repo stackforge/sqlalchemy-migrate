@@ -9,7 +9,9 @@ from migrate.versioning import pathed
 
 log = logging.getLogger(__name__)
 
+
 class BaseScript(pathed.Pathed):
+
     """Base class for other types of scripts.
     All scripts have the following properties:
 
@@ -21,14 +23,14 @@ class BaseScript(pathed.Pathed):
       The operations defined by the script: upgrade(), downgrade() or both.
       Returns a tuple of operations.
       Can also check for an operation with ex. script.operation(Script.ops.up)
-    """ # TODO: sphinxfy this and implement it correctly
+    """  # TODO: sphinxfy this and implement it correctly
 
     def __init__(self, path):
         log.debug('Loading script %s...' % path)
         self.verify(path)
         super(BaseScript, self).__init__(path)
         log.debug('Script %s loaded successfully' % path)
-    
+
     @classmethod
     def verify(cls, path):
         """Ensure this is a valid script

@@ -19,14 +19,15 @@ class TestSchemaDiff(fixture.DB):
         super(TestSchemaDiff, self)._setup(url)
         self.meta = MetaData(self.engine)
         self.meta.reflect()
-        self.meta.drop_all()  # in case junk tables are lying around in the test database
+        # in case junk tables are lying around in the test database
+        self.meta.drop_all()
         self.meta = MetaData(self.engine)
         self.meta.reflect()  # needed if we just deleted some tables
         self.table = Table(self.table_name, self.meta,
-            Column('id',Integer(), primary_key=True),
-            Column('name', UnicodeText()),
-            Column('data', UnicodeText()),
-        )
+                           Column('id', Integer(), primary_key=True),
+                           Column('name', UnicodeText()),
+                           Column('data', UnicodeText()),
+                           )
 
     def _teardown(self):
         if self.table.exists():
@@ -36,14 +37,21 @@ class TestSchemaDiff(fixture.DB):
         super(TestSchemaDiff, self)._teardown()
 
     def _applyLatestModel(self):
-        diff = schemadiff.getDiffOfModelAgainstDatabase(self.meta, self.engine, excludeTables=['migrate_version'])
-        genmodel.ModelGenerator(diff,self.engine).runB2A()
+        diff = schemadiff.getDiffOfModelAgainstDatabase(
+            self.meta,
+            self.engine,
+            excludeTables=['migrate_version'])
+        genmodel.ModelGenerator(diff, self.engine).runB2A()
 
     @fixture.usedb()
     def test_functional(self):
 
-        def assertDiff(isDiff, tablesMissingInDatabase, tablesMissingInModel, tablesWithDiff):
-            diff = schemadiff.getDiffOfModelAgainstDatabase(self.meta, self.engine, excludeTables=['migrate_version'])
+        def assertDiff(isDiff, tablesMissingInDatabase,
+                       tablesMissingInModel, tablesWithDiff):
+            diff = schemadiff.getDiffOfModelAgainstDatabase(
+                self.meta,
+                self.engine,
+                excludeTables=['migrate_version'])
             self.assertEqual(
                 (diff.tables_missing_from_B,
                  diff.tables_missing_from_A,
@@ -53,14 +61,18 @@ class TestSchemaDiff(fixture.DB):
                  tablesMissingInModel,
                  tablesWithDiff,
                  isDiff)
-                )
+            )
 
         # Model is defined but database is empty.
         assertDiff(True, [self.table_name], [], [])
 
         # Check Python upgrade and downgrade of database from updated model.
-        diff = schemadiff.getDiffOfModelAgainstDatabase(self.meta, self.engine, excludeTables=['migrate_version'])
-        decls, upgradeCommands, downgradeCommands = genmodel.ModelGenerator(diff,self.engine).genB2AMigration()
+        diff = schemadiff.getDiffOfModelAgainstDatabase(
+            self.meta,
+            self.engine,
+            excludeTables=['migrate_version'])
+        decls, upgradeCommands, downgradeCommands = genmodel.ModelGenerator(
+            diff, self.engine).genB2AMigration()
 
         # Feature test for a recent SQLa feature;
         # expect different output in that case.
@@ -92,8 +104,11 @@ class TestSchemaDiff(fixture.DB):
         assertDiff(False, [], [], [])
 
         # Check Python code gen from database.
-        diff = schemadiff.getDiffOfModelAgainstDatabase(MetaData(), self.engine, excludeTables=['migrate_version'])
-        src = genmodel.ModelGenerator(diff,self.engine).genBDefinition()
+        diff = schemadiff.getDiffOfModelAgainstDatabase(
+            MetaData(),
+            self.engine,
+            excludeTables=['migrate_version'])
+        src = genmodel.ModelGenerator(diff, self.engine).genBDefinition()
 
         exec src in locals()
 
@@ -104,18 +119,21 @@ class TestSchemaDiff(fixture.DB):
 
         if not self.engine.name == 'oracle':
             # Add data, later we'll make sure it's still present.
-            result = self.engine.execute(self.table.insert(), id=1, name=u'mydata')
+            result = self.engine.execute(
+                self.table.insert(),
+                id=1,
+                name=u'mydata')
             dataId = result.inserted_primary_key[0]
 
         # Modify table in model (by removing it and adding it back to model)
         # Drop column data, add columns data2 and data3.
         self.meta.remove(self.table)
-        self.table = Table(self.table_name,self.meta,
-            Column('id',Integer(),primary_key=True),
-            Column('name',UnicodeText(length=None)),
-            Column('data2',Integer(),nullable=True),
-            Column('data3',Integer(),nullable=True),
-        )
+        self.table = Table(self.table_name, self.meta,
+                           Column('id', Integer(), primary_key=True),
+                           Column('name', UnicodeText(length=None)),
+                           Column('data2', Integer(), nullable=True),
+                           Column('data3', Integer(), nullable=True),
+                           )
         assertDiff(True, [], [], [self.table_name])
 
         # Apply latest model changes and find no more diffs.
@@ -124,17 +142,18 @@ class TestSchemaDiff(fixture.DB):
 
         # Drop column data3, add data4
         self.meta.remove(self.table)
-        self.table = Table(self.table_name,self.meta,
-            Column('id',Integer(),primary_key=True),
-            Column('name',UnicodeText(length=None)),
-            Column('data2',Integer(),nullable=True),
-            Column('data4',Float(),nullable=True),
-        )
+        self.table = Table(self.table_name, self.meta,
+                           Column('id', Integer(), primary_key=True),
+                           Column('name', UnicodeText(length=None)),
+                           Column('data2', Integer(), nullable=True),
+                           Column('data4', Float(), nullable=True),
+                           )
         assertDiff(True, [], [], [self.table_name])
 
         diff = schemadiff.getDiffOfModelAgainstDatabase(
             self.meta, self.engine, excludeTables=['migrate_version'])
-        decls, upgradeCommands, downgradeCommands = genmodel.ModelGenerator(diff,self.engine).genB2AMigration(indent='')
+        decls, upgradeCommands, downgradeCommands = genmodel.ModelGenerator(
+            diff, self.engine).genB2AMigration(indent='')
 
         # decls have changed since genBDefinition
         exec decls in locals()
@@ -154,22 +173,27 @@ class TestSchemaDiff(fixture.DB):
 
         if not self.engine.name == 'oracle':
             # Make sure data is still present.
-            result = self.engine.execute(self.table.select(self.table.c.id==dataId))
+            result = self.engine.execute(
+                self.table.select(self.table.c.id == dataId))
             rows = result.fetchall()
             self.assertEqual(len(rows), 1)
             self.assertEqual(rows[0].name, 'mydata')
 
             # Add data, later we'll make sure it's still present.
-            result = self.engine.execute(self.table.insert(), id=2, name=u'mydata2', data2=123)
+            result = self.engine.execute(
+                self.table.insert(),
+                id=2,
+                name=u'mydata2',
+                data2=123)
             dataId2 = result.inserted_primary_key[0]
 
         # Change column type in model.
         self.meta.remove(self.table)
-        self.table = Table(self.table_name,self.meta,
-            Column('id',Integer(),primary_key=True),
-            Column('name',UnicodeText(length=None)),
-            Column('data2',String(255),nullable=True),
-        )
+        self.table = Table(self.table_name, self.meta,
+                           Column('id', Integer(), primary_key=True),
+                           Column('name', UnicodeText(length=None)),
+                           Column('data2', String(255), nullable=True),
+                           )
 
         # XXX test type diff
         return
@@ -182,25 +206,28 @@ class TestSchemaDiff(fixture.DB):
 
         if not self.engine.name == 'oracle':
             # Make sure data is still present.
-            result = self.engine.execute(self.table.select(self.table.c.id==dataId2))
+            result = self.engine.execute(
+                self.table.select(self.table.c.id == dataId2))
             rows = result.fetchall()
             self.assertEqual(len(rows), 1)
             self.assertEqual(rows[0].name, 'mydata2')
             self.assertEqual(rows[0].data2, '123')
 
             # Delete data, since we're about to make a required column.
-            # Not even using sqlalchemy.PassiveDefault helps because we're doing explicit column select.
+            # Not even using sqlalchemy.PassiveDefault helps because we're
+            # doing explicit column select.
             self.engine.execute(self.table.delete(), id=dataId)
 
         if not self.engine.name == 'firebird':
             # Change column nullable in model.
             self.meta.remove(self.table)
-            self.table = Table(self.table_name,self.meta,
-                Column('id',Integer(),primary_key=True),
-                Column('name',UnicodeText(length=None)),
-                Column('data2',String(255),nullable=False),
-            )
-            assertDiff(True, [], [], [self.table_name])  # TODO test nullable diff
+            self.table = Table(self.table_name, self.meta,
+                               Column('id', Integer(), primary_key=True),
+                               Column('name', UnicodeText(length=None)),
+                               Column('data2', String(255), nullable=False),
+                               )
+            # TODO test nullable diff
+            assertDiff(True, [], [], [self.table_name])
 
             # Apply latest model changes and find no more diffs.
             self._applyLatestModel()

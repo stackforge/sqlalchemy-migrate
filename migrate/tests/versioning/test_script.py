@@ -29,6 +29,7 @@ class TestBaseScript(fixture.Pathed):
 
 class TestPyScript(fixture.Pathed, fixture.DB):
     cls = PythonScript
+
     def test_create(self):
         """We can create a migration script"""
         path = self.tmp_py()
@@ -38,7 +39,7 @@ class TestPyScript(fixture.Pathed, fixture.DB):
         # Created file should be a valid script (If not, raises an error)
         self.cls.verify(path)
         # Can't create it again: it already exists
-        self.assertRaises(exceptions.PathFoundError,self.cls.create,path)
+        self.assertRaises(exceptions.PathFoundError, self.cls.create, path)
 
     @fixture.usedb(supported='sqlite')
     def test_run(self):
@@ -74,20 +75,20 @@ class TestPyScript(fixture.Pathed, fixture.DB):
         path = self.tmp_py()
         self.assertFalse(os.path.exists(path))
         # Fails on empty path
-        self.assertRaises(exceptions.InvalidScriptError,self.cls.verify,path)
-        self.assertRaises(exceptions.InvalidScriptError,self.cls,path)
+        self.assertRaises(exceptions.InvalidScriptError, self.cls.verify, path)
+        self.assertRaises(exceptions.InvalidScriptError, self.cls, path)
 
     def test_verify_invalidpy(self):
         """Correctly verify a python migration script: invalid python file"""
-        path=self.tmp_py()
+        path = self.tmp_py()
         # Create empty file
-        f = open(path,'w')
+        f = open(path, 'w')
         f.write("def fail")
         f.close()
-        self.assertRaises(Exception,self.cls.verify_module,path)
+        self.assertRaises(Exception, self.cls.verify_module, path)
         # script isn't verified on creation, but on module reference
         py = self.cls(path)
-        self.assertRaises(Exception,(lambda x: x.module),py)
+        self.assertRaises(Exception, (lambda x: x.module), py)
 
     def test_verify_nofuncs(self):
         """Correctly verify a python migration script: valid python file; no upgrade func"""
@@ -96,10 +97,16 @@ class TestPyScript(fixture.Pathed, fixture.DB):
         f = open(path, 'w')
         f.write("def zergling():\n\tprint 'rush'")
         f.close()
-        self.assertRaises(exceptions.InvalidScriptError, self.cls.verify_module, path)
+        self.assertRaises(
+            exceptions.InvalidScriptError,
+            self.cls.verify_module,
+            path)
         # script isn't verified on creation, but on module reference
         py = self.cls(path)
-        self.assertRaises(exceptions.InvalidScriptError,(lambda x: x.module),py)
+        self.assertRaises(
+            exceptions.InvalidScriptError,
+            (lambda x: x.module),
+            py)
 
     @fixture.usedb(supported='sqlite')
     def test_preview_sql(self):
@@ -149,7 +156,10 @@ def upgrade(migrate_engine):
 
         self.setup_model_params()
         self.write_file(self.first_model_path, self.base_source)
-        self.write_file(self.second_model_path, self.base_source + self.model_source)
+        self.write_file(
+            self.second_model_path,
+            self.base_source +
+            self.model_source)
 
         source_script = self.pyscript.make_update_script_for_model(
             engine=self.engine,
@@ -166,8 +176,14 @@ def upgrade(migrate_engine):
         """Try to make update script from two identical models"""
 
         self.setup_model_params()
-        self.write_file(self.first_model_path, self.base_source + self.model_source)
-        self.write_file(self.second_model_path, self.base_source + self.model_source)
+        self.write_file(
+            self.first_model_path,
+            self.base_source +
+            self.model_source)
+        self.write_file(
+            self.second_model_path,
+            self.base_source +
+            self.model_source)
 
         source_script = self.pyscript.make_update_script_for_model(
             engine=self.engine,
@@ -185,7 +201,10 @@ def upgrade(migrate_engine):
 
         self.setup_model_params()
         self.write_file(self.first_model_path, self.base_source)
-        self.write_file(self.second_model_path, self.base_source + self.model_source)
+        self.write_file(
+            self.second_model_path,
+            self.base_source +
+            self.model_source)
 
         source_script = self.pyscript.make_update_script_for_model(
             engine=self.engine,
@@ -203,8 +222,12 @@ def upgrade(migrate_engine):
     def setup_model_params(self):
         self.script_path = self.tmp_py()
         self.repo_path = self.tmp()
-        self.first_model_path = os.path.join(self.temp_usable_dir, 'testmodel_first.py')
-        self.second_model_path = os.path.join(self.temp_usable_dir, 'testmodel_second.py')
+        self.first_model_path = os.path.join(
+            self.temp_usable_dir,
+            'testmodel_first.py')
+        self.second_model_path = os.path.join(
+            self.temp_usable_dir,
+            'testmodel_second.py')
 
         self.base_source = """from sqlalchemy import *\nmeta = MetaData()\n"""
         self.model_source = """
@@ -223,7 +246,7 @@ User = Table('User', meta,
         f = open(path, 'w')
         f.write(contents)
         f.close()
-        
+
 
 class TestSqlScript(fixture.Pathed, fixture.DB):
 
@@ -249,8 +272,11 @@ class TestSqlScript(fixture.Pathed, fixture.DB):
 
         # populate python script
         contents = open(script_path, 'r').read()
-        contents = contents.replace("pass", "tmp_sql_table.create(migrate_engine)")
-        contents = 'from migrate.tests.fixture.models import tmp_sql_table\n' + contents
+        contents = contents.replace(
+            "pass",
+            "tmp_sql_table.create(migrate_engine)")
+        contents = 'from migrate.tests.fixture.models import tmp_sql_table\n' + \
+            contents
         f = open(script_path, 'w')
         f.write(contents)
         f.close()

@@ -12,8 +12,9 @@ from migrate.tests import fixture
 
 
 class CommonTestConstraint(fixture.DB):
+
     """helper functions to test constraints.
-    
+
     we just create a fresh new table and make sure everything is
     as required.
     """
@@ -32,9 +33,9 @@ class CommonTestConstraint(fixture.DB):
         self.meta = MetaData(self.engine)
         self.tablename = 'mytable'
         self.table = Table(self.tablename, self.meta,
-            Column(u'id', Integer, nullable=False),
-            Column(u'fkey', Integer, nullable=False),
-            mysql_engine='InnoDB')
+                           Column(u'id', Integer, nullable=False),
+                           Column(u'fkey', Integer, nullable=False),
+                           mysql_engine='InnoDB')
         if self.engine.has_table(self.table.name):
             self.table.drop()
         self.table.create()
@@ -42,7 +43,7 @@ class CommonTestConstraint(fixture.DB):
         # make sure we start at zero
         self.assertEqual(len(self.table.primary_key), 0)
         self.assert_(isinstance(self.table.primary_key,
-            schema.PrimaryKeyConstraint), self.table.primary_key.__class__)
+                                schema.PrimaryKeyConstraint), self.table.primary_key.__class__)
 
 
 class TestConstraint(CommonTestConstraint):
@@ -52,30 +53,43 @@ class TestConstraint(CommonTestConstraint):
         # Add a pk by creating a PK constraint
         if (self.engine.name in ('oracle', 'firebird')):
             # Can't drop Oracle PKs without an explicit name
-            pk = PrimaryKeyConstraint(table=self.table, name='temp_pk_key', *cols)
+            pk = PrimaryKeyConstraint(
+                table=self.table,
+                name='temp_pk_key',
+                *cols)
         else:
             pk = PrimaryKeyConstraint(table=self.table, *cols)
         self.compare_columns_equal(pk.columns, cols)
         pk.create()
         self.refresh_table()
         if not self.url.startswith('sqlite'):
-            self.compare_columns_equal(self.table.primary_key, cols, ['type', 'autoincrement'])
+            self.compare_columns_equal(
+                self.table.primary_key,
+                cols,
+                ['type',
+                 'autoincrement'])
 
         # Drop the PK constraint
-        #if (self.engine.name in ('oracle', 'firebird')):
-        #    # Apparently Oracle PK names aren't introspected
+        # if (self.engine.name in ('oracle', 'firebird')):
+        # Apparently Oracle PK names aren't introspected
         #    pk.name = self.table.primary_key.name
         pk.drop()
         self.refresh_table()
         self.assertEqual(len(self.table.primary_key), 0)
-        self.assert_(isinstance(self.table.primary_key, schema.PrimaryKeyConstraint))
+        self.assert_(
+            isinstance(
+                self.table.primary_key,
+                schema.PrimaryKeyConstraint))
         return pk
 
     @fixture.usedb(not_supported='sqlite')
     def test_define_fk(self):
         """FK constraints can be defined, created, and dropped"""
         # FK target must be unique
-        pk = PrimaryKeyConstraint(self.table.c.id, table=self.table, name="pkid")
+        pk = PrimaryKeyConstraint(
+            self.table.c.id,
+            table=self.table,
+            name="pkid")
         pk.create()
 
         # Add a FK by creating a FK constraint
@@ -183,6 +197,7 @@ class TestConstraint(CommonTestConstraint):
 
 
 class TestAutoname(CommonTestConstraint):
+
     """Every method tests for a type of constraint wether it can autoname
     itself and if you can pass object instance and names to classes.
     """
@@ -197,7 +212,11 @@ class TestAutoname(CommonTestConstraint):
         self.refresh_table()
         if not self.url.startswith('sqlite'):
             # TODO: test for index for sqlite
-            self.compare_columns_equal(cons.columns, self.table.primary_key, ['autoincrement', 'type'])
+            self.compare_columns_equal(
+                cons.columns,
+                self.table.primary_key,
+                ['autoincrement',
+                 'type'])
 
         # Remove the name, drop the constraint; it should succeed
         cons.name = None
@@ -239,7 +258,10 @@ class TestAutoname(CommonTestConstraint):
             self.assertEqual(self.table.c.fkey.foreign_keys._list, list())
 
         # test string names
-        cons = ForeignKeyConstraint(['fkey'], ['%s.id' % self.tablename], table=self.table)
+        cons = ForeignKeyConstraint(
+            ['fkey'],
+            ['%s.id' % self.tablename],
+            table=self.table)
         cons.create()
         self.refresh_table()
         if SQLA_07:
@@ -257,7 +279,7 @@ class TestAutoname(CommonTestConstraint):
         cons = CheckConstraint('id > 3', columns=[self.table.c.id])
         cons.create()
         self.refresh_table()
-    
+
         if not self.engine.name == 'mysql':
             self.table.insert(values={'id': 4, 'fkey': 1}).execute()
             try:
@@ -280,7 +302,7 @@ class TestAutoname(CommonTestConstraint):
         cons = UniqueConstraint(self.table.c.fkey)
         cons.create()
         self.refresh_table()
-    
+
         self.table.insert(values={'fkey': 4, 'id': 1}).execute()
         try:
             self.table.insert(values={'fkey': 4, 'id': 2}).execute()

@@ -29,9 +29,10 @@ __all__ = [
     'ColumnDelta',
 ]
 
+
 def create_column(column, table=None, *p, **kw):
     """Create a column, given the table.
-    
+
     API to :meth:`ChangesetColumn.create`.
     """
     if table is not None:
@@ -41,7 +42,7 @@ def create_column(column, table=None, *p, **kw):
 
 def drop_column(column, table=None, *p, **kw):
     """Drop a column, given the table.
-    
+
     API to :meth:`ChangesetColumn.drop`.
     """
     if table is not None:
@@ -105,12 +106,12 @@ def alter_column(*p, **k):
     :param engine:
       The :class:`~sqlalchemy.engine.base.Engine` to use for table
       reflection and schema alterations.
-    
+
     :returns: A :class:`ColumnDelta` instance representing the change.
 
-    
+
     """
-    
+
     if 'table' not in k and isinstance(p[0], sqlalchemy.Column):
         k['table'] = p[0].table
     if 'engine' not in k:
@@ -122,14 +123,14 @@ def alter_column(*p, **k):
             "Passing a Column object to alter_column is deprecated."
             " Just pass in keyword parameters instead.",
             MigrateDeprecationWarning
-            )
+        )
     engine = k['engine']
 
     # enough tests seem to break when metadata is always altered
     # that this crutch has to be left in until they can be sorted
     # out
-    k['alter_metadata']=True
-    
+    k['alter_metadata'] = True
+
     delta = ColumnDelta(*p, **k)
 
     visitorcallable = get_engine_visitor(engine, 'schemachanger')
@@ -163,6 +164,7 @@ def _to_index(index, table=None, engine=None):
 
 
 class ColumnDelta(DictMixin, sqlalchemy.schema.SchemaItem):
+
     """Extracts the differences between two columns/column-parameters
 
         May receive parameters arranged in several different ways:
@@ -183,10 +185,10 @@ class ColumnDelta(DictMixin, sqlalchemy.schema.SchemaItem):
         :param table: Table at which current Column should be bound to.\
         If table name is given, reflection will be used.
         :type table: string or Table instance
-        
+
         :param metadata: A :class:`MetaData` instance to store
                          reflected table names
-                         
+
         :param engine: When reflecting tables, either engine or metadata must \
         be specified to acquire engine object.
         :type engine: :class:`Engine` instance
@@ -202,7 +204,7 @@ class ColumnDelta(DictMixin, sqlalchemy.schema.SchemaItem):
 
     # Column attributes that can be altered
     diff_keys = ('name', 'type', 'primary_key', 'nullable',
-        'server_onupdate', 'server_default', 'autoincrement')
+                 'server_onupdate', 'server_default', 'autoincrement')
     diffs = dict()
     __visit_name__ = 'column'
 
@@ -211,7 +213,7 @@ class ColumnDelta(DictMixin, sqlalchemy.schema.SchemaItem):
         # as a crutch until the tests that fail when 'alter_metadata'
         # behaviour always happens can be sorted out
         self.alter_metadata = kw.pop("alter_metadata", False)
-        
+
         self.meta = kw.pop("metadata", None)
         self.engine = kw.pop("engine", None)
 
@@ -238,16 +240,16 @@ class ColumnDelta(DictMixin, sqlalchemy.schema.SchemaItem):
         return '<ColumnDelta altermetadata=%r, %s>' % (
             self.alter_metadata,
             super(ColumnDelta, self).__repr__()
-            )
-    
+        )
+
     def __getitem__(self, key):
         if key not in self.keys():
-            raise KeyError("No such diff key, available: %s" % self.diffs )
+            raise KeyError("No such diff key, available: %s" % self.diffs)
         return getattr(self.result_column, key)
 
     def __setitem__(self, key, value):
         if key not in self.keys():
-            raise KeyError("No such diff key, available: %s" % self.diffs )
+            raise KeyError("No such diff key, available: %s" % self.diffs)
         setattr(self.result_column, key, value)
 
     def __delitem__(self, key):
@@ -278,7 +280,7 @@ class ColumnDelta(DictMixin, sqlalchemy.schema.SchemaItem):
         """Compares two Column objects"""
         self.process_column(new_col)
         self.table = k.pop('table', None)
-        # we cannot use bool() on table in SA06 
+        # we cannot use bool() on table in SA06
         if self.table is None:
             self.table = old_col.table
         if self.table is None:
@@ -323,8 +325,8 @@ class ColumnDelta(DictMixin, sqlalchemy.schema.SchemaItem):
 
         # String length is a special case
         if ret and isinstance(new_type, sqlalchemy.types.String):
-            ret = (getattr(old_type, 'length', None) == \
-                       getattr(new_type, 'length', None))
+            ret = (getattr(old_type, 'length', None) ==
+                   getattr(new_type, 'length', None))
         return ret
 
     def _extract_parameters(self, p, k, column):
@@ -361,7 +363,7 @@ class ColumnDelta(DictMixin, sqlalchemy.schema.SchemaItem):
                 toinit.append(column.server_default)
             else:
                 toinit.append(sqlalchemy.DefaultClause(column.server_onupdate,
-                                            for_update=True))
+                                                       for_update=True))
         if toinit:
             column._init_items(*toinit)
 
@@ -373,14 +375,14 @@ class ColumnDelta(DictMixin, sqlalchemy.schema.SchemaItem):
             if self.alter_metadata:
                 if not self.meta:
                     raise ValueError("metadata must be specified for table"
-                        " reflection when using alter_metadata")
+                                     " reflection when using alter_metadata")
                 meta = self.meta
                 if self.engine:
                     meta.bind = self.engine
             else:
                 if not self.engine and not self.meta:
                     raise ValueError("engine or metadata must be specified"
-                        " to reflect tables")
+                                     " to reflect tables")
                 if not self.engine:
                     self.engine = self.meta.bind
                 meta = sqlalchemy.MetaData(bind=self.engine)
@@ -389,6 +391,7 @@ class ColumnDelta(DictMixin, sqlalchemy.schema.SchemaItem):
             self._table = table
             if not self.alter_metadata:
                 self._table.meta = sqlalchemy.MetaData(bind=self._table.bind)
+
     def _get_result_column(self):
         return getattr(self, '_result_column', None)
 
@@ -407,6 +410,7 @@ class ColumnDelta(DictMixin, sqlalchemy.schema.SchemaItem):
 
 
 class ChangesetTable(object):
+
     """Changeset extensions to SQLAlchemy tables."""
 
     def create_column(self, column, *p, **kw):
@@ -478,11 +482,12 @@ class ChangesetTable(object):
 
 
 class ChangesetColumn(object):
+
     """Changeset extensions to SQLAlchemy columns."""
 
     def alter(self, *p, **k):
         """Makes a call to :func:`alter_column` for the column this
-        method is called on. 
+        method is called on.
         """
         if 'table' not in k:
             k['table'] = self.table
@@ -529,7 +534,8 @@ populated with defaults
 
         # TODO: reuse existing connection
         if self.populate_default and self.default is not None:
-            stmt = table.update().values({self: engine._execute_default(self.default)})
+            stmt = table.update().values(
+                {self: engine._execute_default(self.default)})
             engine.execute(stmt)
 
         return self
@@ -552,25 +558,25 @@ populated with defaults
         return self
 
     def add_to_table(self, table):
-        if table is not None  and self.table is None:
+        if table is not None and self.table is None:
             if SQLA_07:
                 table.append_column(self)
             else:
                 self._set_parent(table)
 
-    def _col_name_in_constraint(self,cons,name):
+    def _col_name_in_constraint(self, cons, name):
         return False
-    
+
     def remove_from_table(self, table, unset_table=True):
         # TODO: remove primary keys, constraints, etc
         if unset_table:
             self.table = None
-            
+
         to_drop = set()
         for index in table.indexes:
             columns = []
             for col in index.columns:
-                if col.name!=self.name:
+                if col.name != self.name:
                     columns.append(col)
             if columns:
                 index.columns = columns
@@ -579,19 +585,19 @@ populated with defaults
             else:
                 to_drop.add(index)
         table.indexes = table.indexes - to_drop
-        
+
         to_drop = set()
         for cons in table.constraints:
             # TODO: deal with other types of constraint
-            if isinstance(cons,(ForeignKeyConstraint,
-                                UniqueConstraint)):
+            if isinstance(cons, (ForeignKeyConstraint,
+                                 UniqueConstraint)):
                 for col_name in cons.columns:
-                    if not isinstance(col_name,basestring):
+                    if not isinstance(col_name, basestring):
                         col_name = col_name.name
-                    if self.name==col_name:
+                    if self.name == col_name:
                         to_drop.add(cons)
         table.constraints = table.constraints - to_drop
-        
+
         if table.c.contains_column(self):
             if SQLA_07:
                 table._columns.remove(self)
@@ -602,30 +608,31 @@ populated with defaults
     def copy_fixed(self, **kw):
         """Create a copy of this ``Column``, with all attributes."""
         return sqlalchemy.Column(self.name, self.type, self.default,
-            key=self.key,
-            primary_key=self.primary_key,
-            nullable=self.nullable,
-            quote=self.quote,
-            index=self.index,
-            unique=self.unique,
-            onupdate=self.onupdate,
-            autoincrement=self.autoincrement,
-            server_default=self.server_default,
-            server_onupdate=self.server_onupdate,
-            *[c.copy(**kw) for c in self.constraints])
+                                 key=self.key,
+                                 primary_key=self.primary_key,
+                                 nullable=self.nullable,
+                                 quote=self.quote,
+                                 index=self.index,
+                                 unique=self.unique,
+                                 onupdate=self.onupdate,
+                                 autoincrement=self.autoincrement,
+                                 server_default=self.server_default,
+                                 server_onupdate=self.server_onupdate,
+                                 *[c.copy(**kw) for c in self.constraints])
 
     def _check_sanity_constraints(self, name):
         """Check if constraints names are correct"""
         obj = getattr(self, name)
         if (getattr(self, name[:-5]) and not obj):
             raise InvalidConstraintError("Column.create() accepts index_name,"
-            " primary_key_name and unique_name to generate constraints")
+                                         " primary_key_name and unique_name to generate constraints")
         if not isinstance(obj, basestring) and obj is not None:
             raise InvalidConstraintError(
-            "%s argument for column must be constraint name" % name)
+                "%s argument for column must be constraint name" % name)
 
 
 class ChangesetIndex(object):
+
     """Changeset extensions to SQLAlchemy Indexes."""
 
     __visit_name__ = 'index'
@@ -646,6 +653,7 @@ class ChangesetIndex(object):
 
 
 class ChangesetDefaultClause(object):
+
     """Implements comparison between :class:`DefaultClause` instances"""
 
     def __eq__(self, other):

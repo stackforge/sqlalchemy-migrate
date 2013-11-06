@@ -13,6 +13,7 @@ from migrate.versioning import api
 
 import warnings
 
+
 class TestUtil(fixture.Pathed):
 
     def test_construct_engine(self):
@@ -37,7 +38,7 @@ class TestUtil(fixture.Pathed):
 
         # test precedance
         engine = construct_engine(url, engine_dict={'encoding': 'iso-8859-1'},
-            engine_arg_encoding='utf-8')
+                                  engine_arg_encoding='utf-8')
         self.assertEqual(engine.dialect.encoding, 'utf-8')
 
         # deprecated echo=True parameter
@@ -45,12 +46,12 @@ class TestUtil(fixture.Pathed):
             # py 2.4 compatability :-/
             cw = catch_warnings(record=True)
             w = cw.__enter__()
-            
+
             warnings.simplefilter("always")
             engine = construct_engine(url, echo='True')
             self.assertTrue(engine.echo)
 
-            self.assertEqual(len(w),1)
+            self.assertEqual(len(w), 1)
             self.assertTrue(issubclass(w[-1].category,
                                        MigrateDeprecationWarning))
             self.assertEqual(
@@ -69,7 +70,7 @@ class TestUtil(fixture.Pathed):
         api.create(repo, 'temp')
         api.script('First Version', repo)
         engine = construct_engine('sqlite:///:memory:')
-        
+
         api.version_control(engine, repo)
         api.upgrade(engine, repo)
 
@@ -90,7 +91,6 @@ class TestUtil(fixture.Pathed):
         self.assertRaises(ValueError, asbool, 'test')
         self.assertRaises(ValueError, asbool, object)
 
-
     def test_load_model(self):
         """load model from dotted name"""
         model_path = os.path.join(self.temp_usable_dir, 'test_load_model.py')
@@ -103,21 +103,21 @@ class TestUtil(fixture.Pathed):
             # py 2.4 compatability :-/
             cw = catch_warnings(record=True)
             w = cw.__enter__()
-            
+
             warnings.simplefilter("always")
 
             # deprecated spelling
             FakeFloat = load_model('test_load_model.FakeFloat')
             self.assert_(isinstance(FakeFloat(), int))
 
-            self.assertEqual(len(w),1)
+            self.assertEqual(len(w), 1)
             self.assertTrue(issubclass(w[-1].category,
                                        MigrateDeprecationWarning))
             self.assertEqual(
                 'model should be in form of module.model:User '
                 'and not module.model.User',
                 str(w[-1].message))
-            
+
         finally:
             cw.__exit__()
 

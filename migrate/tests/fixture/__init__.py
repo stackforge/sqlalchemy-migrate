@@ -3,16 +3,17 @@
 
 import testtools
 
+
 def main(imports=None):
     if imports:
         global suite
         suite = suite(imports)
-        defaultTest='fixture.suite'
+        defaultTest = 'fixture.suite'
     else:
-        defaultTest=None
+        defaultTest = None
     return testtools.TestProgram(defaultTest=defaultTest)
 
 from base import Base
 from migrate.tests.fixture.pathed import Pathed
 from shell import Shell
-from database import DB,usedb
+from database import DB, usedb

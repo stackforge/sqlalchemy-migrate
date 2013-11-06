@@ -20,6 +20,7 @@ __all__ = ['PythonScript']
 
 
 class PythonScript(base.BaseScript):
+
     """Base for Python scripts"""
 
     @classmethod
@@ -29,7 +30,8 @@ class PythonScript(base.BaseScript):
         :returns: :class:`PythonScript instance <migrate.versioning.script.py.PythonScript>`"""
         cls.require_notfound(path)
 
-        src = Template(opts.pop('templates_path', None)).get_script(theme=opts.pop('templates_theme', None))
+        src = Template(opts.pop('templates_path', None)).get_script(
+            theme=opts.pop('templates_theme', None))
         shutil.copy(src, path)
 
         return cls(path)
@@ -66,10 +68,13 @@ class PythonScript(base.BaseScript):
             excludeTables=[repository.version_table])
         # TODO: diff can be False (there is no difference?)
         decls, upgradeCommands, downgradeCommands = \
-            genmodel.ModelGenerator(diff,engine).genB2AMigration()
+            genmodel.ModelGenerator(diff, engine).genB2AMigration()
 
         # Store differences into file.
-        src = Template(opts.pop('templates_path', None)).get_script(opts.pop('templates_theme', None))
+        src = Template(
+            opts.pop('templates_path',
+                     None)).get_script(opts.pop('templates_theme',
+                                                None))
         f = open(src)
         contents = f.read()
         f.close()
@@ -96,7 +101,7 @@ class PythonScript(base.BaseScript):
         module = import_path(path)
         try:
             assert callable(module.upgrade)
-        except Exception, e:
+        except Exception as e:
             raise InvalidScriptError(path + ': %s' % str(e))
         return module
 
@@ -140,7 +145,7 @@ class PythonScript(base.BaseScript):
         # check for old way of using engine
         if not inspect.getargspec(script_func)[0]:
             raise TypeError("upgrade/downgrade functions must accept engine"
-                " parameter (since version 0.5.4)")
+                            " parameter (since version 0.5.4)")
 
         script_func(engine)
 

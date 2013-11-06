@@ -11,6 +11,7 @@ from migrate.changeset import ansisql
 
 MySQLSchemaGenerator = sa_base.MySQLDDLCompiler
 
+
 class MySQLColumnGenerator(MySQLSchemaGenerator, ansisql.ANSIColumnGenerator):
     pass
 
@@ -26,9 +27,9 @@ class MySQLSchemaChanger(MySQLSchemaGenerator, ansisql.ANSISchemaChanger):
         colspec = self.get_column_specification(delta.result_column)
         if delta.result_column.autoincrement:
             primary_keys = [c for c in table.primary_key.columns
-                       if (c.autoincrement and
-                            isinstance(c.type, sqltypes.Integer) and
-                            not c.foreign_keys)]
+                            if (c.autoincrement and
+                                isinstance(c.type, sqltypes.Integer) and
+                                not c.foreign_keys)]
 
             if primary_keys:
                 first = primary_keys.pop(0)
@@ -52,9 +53,10 @@ class MySQLConstraintGenerator(ansisql.ANSIConstraintGenerator):
 
 
 class MySQLConstraintDropper(MySQLSchemaGenerator, ansisql.ANSIConstraintDropper):
+
     def visit_migrate_check_constraint(self, *p, **k):
         raise exceptions.NotSupportedError("MySQL does not support CHECK"
-            " constraints, use triggers instead.")
+                                           " constraints, use triggers instead.")
 
 
 class MySQLDialect(ansisql.ANSIDialect):

@@ -17,7 +17,9 @@ from migrate.versioning.config import *
 
 log = logging.getLogger(__name__)
 
+
 class Changeset(dict):
+
     """A collection of changes to be applied to a database.
 
     Changesets are bound to a repository and manage a set of
@@ -67,6 +69,7 @@ class Changeset(dict):
 
 
 class Repository(pathed.Pathed):
+
     """A project's change script repository"""
 
     _config = 'migrate.cfg'
@@ -78,7 +81,7 @@ class Repository(pathed.Pathed):
         super(Repository, self).__init__(path)
         self.config = cfgparse.Config(os.path.join(self.path, self._config))
         self.versions = version.Collection(os.path.join(self.path,
-                                                      self._versions))
+                                                        self._versions))
         log.debug('Repository %s loaded successfully' % path)
         log.debug('Config: %r' % self.config.to_dict())
 
@@ -94,7 +97,7 @@ class Repository(pathed.Pathed):
             cls.require_found(path)
             cls.require_found(os.path.join(path, cls._config))
             cls.require_found(os.path.join(path, cls._versions))
-        except exceptions.PathNotFoundError, e:
+        except exceptions.PathNotFoundError as e:
             raise exceptions.InvalidRepositoryError(path)
 
     @classmethod
@@ -147,13 +150,13 @@ class Repository(pathed.Pathed):
         # Create a management script
         manager = os.path.join(path, 'manage.py')
         Repository.create_manage_file(manager, templates_theme=theme,
-            templates_path=t_path, **opts)
+                                      templates_path=t_path, **opts)
 
         return cls(path)
 
     def create_script(self, description, **k):
         """API to :meth:`migrate.versioning.version.Collection.create_new_python_version`"""
-        
+
         k['use_timestamp_numbering'] = self.use_timestamp_numbering
         self.versions.create_new_python_version(description, **k)
 
@@ -181,7 +184,11 @@ class Repository(pathed.Pathed):
     def use_timestamp_numbering(self):
         """Returns use_timestamp_numbering specified in config"""
         if self.config.has_option('db_settings', 'use_timestamp_numbering'):
-            return self.config.getboolean('db_settings', 'use_timestamp_numbering')
+            return (
+                self.config.getboolean(
+                    'db_settings',
+                    'use_timestamp_numbering')
+            )
         return False
 
     def version(self, *p, **k):
@@ -229,7 +236,7 @@ class Repository(pathed.Pathed):
     @classmethod
     def create_manage_file(cls, file_, **opts):
         """Create a project management script (manage.py)
-        
+
         :param file_: Destination file to be written
         :param opts: Options that are passed to :func:`migrate.versioning.shell.main`
         """

@@ -18,11 +18,12 @@ from migrate.versioning.util.importpath import import_path
 
 log = logging.getLogger(__name__)
 
+
 def load_model(dotted_name):
     """Import module and use module-level variable".
 
     :param dotted_name: path to model in form of string: ``some.python.module:Class``
-    
+
     .. versionchanged:: 0.5.4
 
     """
@@ -30,12 +31,13 @@ def load_model(dotted_name):
         if ':' not in dotted_name:
             # backwards compatibility
             warnings.warn('model should be in form of module.model:User '
-                'and not module.model.User', exceptions.MigrateDeprecationWarning)
+                          'and not module.model.User', exceptions.MigrateDeprecationWarning)
             dotted_name = ':'.join(dotted_name.rsplit('.', 1))
         return EntryPoint.parse('x=%s' % dotted_name).load(False)
     else:
         # Assume it's already loaded.
         return dotted_name
+
 
 def asbool(obj):
     """Do everything to use object as bool"""
@@ -52,11 +54,12 @@ def asbool(obj):
     else:
         raise ValueError("String is not true/false: %r" % obj)
 
+
 def guess_obj_type(obj):
     """Do everything to guess object type from string
-    
+
     Tries to convert to `int`, `bool` and finally returns if not succeded.
-    
+
     .. versionadded: 0.5.4
     """
 
@@ -78,17 +81,19 @@ def guess_obj_type(obj):
     else:
         return obj
 
+
 @decorator
 def catch_known_errors(f, *a, **kw):
     """Decorator that catches known api errors
-    
+
     .. versionadded: 0.5.4
     """
 
     try:
         return f(*a, **kw)
-    except exceptions.PathFoundError, e:
+    except exceptions.PathFoundError as e:
         raise exceptions.KnownError("The path %s already exists" % e.args[0])
+
 
 def construct_engine(engine, **opts):
     """.. versionadded:: 0.5.4
@@ -113,7 +118,8 @@ def construct_engine(engine, **opts):
     if isinstance(engine, Engine):
         return engine
     elif not isinstance(engine, basestring):
-        raise ValueError("you need to pass either an existing engine or a database uri")
+        raise ValueError(
+            "you need to pass either an existing engine or a database uri")
 
     # get options for create_engine
     if opts.get('engine_dict') and isinstance(opts['engine_dict'], dict):
@@ -125,8 +131,8 @@ def construct_engine(engine, **opts):
     echo = asbool(opts.get('echo', False))
     if echo:
         warnings.warn('echo=True parameter is deprecated, pass '
-            'engine_arg_echo=True or engine_dict={"echo": True}',
-            exceptions.MigrateDeprecationWarning)
+                      'engine_arg_echo=True or engine_dict={"echo": True}',
+                      exceptions.MigrateDeprecationWarning)
         kwargs['echo'] = echo
 
     # parse keyword arguments
@@ -138,6 +144,7 @@ def construct_engine(engine, **opts):
     # TODO: return create_engine(engine, poolclass=StaticPool, **kwargs)
     # seems like 0.5.x branch does not work with engine.dispose and staticpool
     return create_engine(engine, **kwargs)
+
 
 @decorator
 def with_engine(f, *a, **kw):
@@ -164,16 +171,18 @@ def with_engine(f, *a, **kw):
 
 
 class Memoize:
+
     """Memoize(fn) - an instance which acts like fn but memoizes its arguments
        Will only work on functions with non-mutable arguments
 
        ActiveState Code 52201
     """
+
     def __init__(self, fn):
         self.fn = fn
         self.memo = {}
 
     def __call__(self, *args):
-        if not self.memo.has_key(args):
+        if args not in self.memo:
             self.memo[args] = self.fn(*args)
         return self.memo[args]

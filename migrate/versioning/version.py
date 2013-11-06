@@ -13,7 +13,9 @@ from datetime import datetime
 
 log = logging.getLogger(__name__)
 
+
 class VerNum(object):
+
     """A version number that behaves like a string and int at the same time"""
 
     _instances = dict()
@@ -25,7 +27,7 @@ class VerNum(object):
         ret = cls._instances[val]
         return ret
 
-    def __init__(self,value):
+    def __init__(self, value):
         self.value = str(int(value))
         if self < 0:
             raise ValueError("Version number cannot be negative")
@@ -51,6 +53,7 @@ class VerNum(object):
 
 
 class Collection(pathed.Pathed):
+
     """A collection of versioning scripts in a repository"""
 
     FILENAME_WITH_VERSION = re.compile(r'^(\d{3,}).*')
@@ -60,14 +63,14 @@ class Collection(pathed.Pathed):
         and store them in self.versions
         """
         super(Collection, self).__init__(path)
-        
+
         # Create temporary list of files, allowing skipped version numbers.
         files = os.listdir(path)
         if '1' in files:
             # deprecation
             raise Exception('It looks like you have a repository in the old '
-                'format (with directories for each version). '
-                'Please convert repository before proceeding.')
+                            'format (with directories for each version). '
+                            'Please convert repository before proceeding.')
 
         tempVersions = dict()
         for filename in files:
@@ -111,7 +114,7 @@ class Collection(pathed.Pathed):
 
         script.PythonScript.create(filepath, **k)
         self.versions[ver] = Version(ver, self.path, [filename])
-        
+
     def create_new_sql_version(self, database, description, **k):
         """Create SQL files for new version"""
         ver = self._next_ver_num(k.pop('use_timestamp_numbering', False))
@@ -131,7 +134,7 @@ class Collection(pathed.Pathed):
             filepath = self._version_path(filename)
             script.SqlScript.create(filepath, **k)
             self.versions[ver].add_script(filepath)
-        
+
     def version(self, vernum=None):
         """Returns latest Version if vernum is not given.
         Otherwise, returns wanted version"""
@@ -149,8 +152,9 @@ class Collection(pathed.Pathed):
 
 
 class Version(object):
+
     """A single version in a collection
-    :param vernum: Version Number 
+    :param vernum: Version Number
     :param path: Path to script files
     :param filelist: List of scripts
     :type vernum: int, VerNum
@@ -167,7 +171,7 @@ class Version(object):
 
         for script in filelist:
             self.add_script(os.path.join(path, script))
-    
+
     def script(self, database=None, operation=None):
         """Returns SQL or Python Script"""
         for db in (database, 'default'):
@@ -196,20 +200,20 @@ class Version(object):
     def _add_script_sql(self, path):
         basename = os.path.basename(path)
         match = self.SQL_FILENAME.match(basename)
-        
+
         if match:
             basename = basename.replace('.sql', '')
             parts = basename.split('_')
             if len(parts) < 3:
                 raise exceptions.ScriptError(
-                    "Invalid SQL script name %s " % basename + \
+                    "Invalid SQL script name %s " % basename +
                     "(needs to be ###_description_database_operation.sql)")
             version = parts[0]
             op = parts[-1]
             dbms = parts[-2]
         else:
             raise exceptions.ScriptError(
-                "Invalid SQL script name %s " % basename + \
+                "Invalid SQL script name %s " % basename +
                 "(needs to be ###_description_database_operation.sql)")
 
         # File the script into a dictionary
@@ -218,21 +222,28 @@ class Version(object):
     def _add_script_py(self, path):
         if self.python is not None:
             raise exceptions.ScriptError('You can only have one Python script '
-                'per version, but you have: %s and %s' % (self.python, path))
+                                         'per version, but you have: %s and %s' % (self.python, path))
         self.python = script.PythonScript(path)
 
 
 class Extensions:
+
     """A namespace for file extensions"""
     py = 'py'
     sql = 'sql'
+
 
 def str_to_filename(s):
     """Replaces spaces, (double and single) quotes
     and double underscores to underscores
     """
 
-    s = s.replace(' ', '_').replace('"', '_').replace("'", '_').replace(".", "_")
+    s = s.replace(
+        ' ',
+        '_').replace('"',
+                     '_').replace("'",
+                                  '_').replace(".",
+                                               "_")
     while '__' in s:
         s = s.replace('__', '_')
     return s

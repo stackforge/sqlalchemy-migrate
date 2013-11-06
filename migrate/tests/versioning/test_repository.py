@@ -13,6 +13,7 @@ from datetime import datetime
 
 
 class TestRepository(fixture.Pathed):
+
     def test_create(self):
         """Repositories are created successfully"""
         path = self.tmp_repos()
@@ -30,9 +31,13 @@ class TestRepository(fixture.Pathed):
         self.assert_(os.path.exists(manage_path))
 
         # Can't create it again: it already exists
-        self.assertRaises(exceptions.PathFoundError, Repository.create, path, name)
+        self.assertRaises(
+            exceptions.PathFoundError,
+            Repository.create,
+            path,
+            name)
         return path
-    
+
     def test_load(self):
         """We should be able to load information about an existing repository"""
         # Create a repository to load
@@ -44,8 +49,12 @@ class TestRepository(fixture.Pathed):
         self.assert_(repos.config.get('db_settings', 'version_table'))
 
         # version_table's default isn't none
-        self.assertNotEquals(repos.config.get('db_settings', 'version_table'), 'None')
-    
+        self.assertNotEquals(
+            repos.config.get(
+                'db_settings',
+                'version_table'),
+            'None')
+
     def test_load_notfound(self):
         """Nonexistant repositories shouldn't be loaded"""
         path = self.tmp_repos()
@@ -54,7 +63,7 @@ class TestRepository(fixture.Pathed):
 
     def test_load_invalid(self):
         """Invalid repos shouldn't be loaded"""
-        # Here, invalid=empty directory. There may be other conditions too, 
+        # Here, invalid=empty directory. There may be other conditions too,
         # but we shouldn't need to test all of them
         path = self.tmp_repos()
         os.mkdir(path)
@@ -62,6 +71,7 @@ class TestRepository(fixture.Pathed):
 
 
 class TestVersionedRepository(fixture.Pathed):
+
     """Tests on an existing repository with a single python script"""
 
     def setUp(self):
@@ -96,7 +106,6 @@ class TestVersionedRepository(fixture.Pathed):
         self.assert_(repos.latest >= 2)
         self.assert_(repos.latest < 3)
 
-
     def test_timestmap_numbering_version(self):
         repos = Repository(self.path_repos)
         repos.config.set('db_settings', 'use_timestamp_numbering', 'True')
@@ -126,7 +135,8 @@ class TestVersionedRepository(fixture.Pathed):
         source = repo.version(1).script().source()
         self.assertTrue(source.find('def upgrade') >= 0)
 
-        import pprint; pprint.pprint(repo.version(2).sql)
+        import pprint
+        pprint.pprint(repo.version(2).sql)
         source = repo.version(2).script('postgres', 'upgrade').source()
         self.assertEqual(source.strip(), '')
 
@@ -136,7 +146,7 @@ class TestVersionedRepository(fixture.Pathed):
         repos.create_script('')
         self.assert_(repos.version(repos.latest) is repos.version())
         self.assert_(repos.version() is not None)
-    
+
     def test_changeset(self):
         """Repositories can create changesets properly"""
         # Create a nonzero-version repository of empty scripts
@@ -160,10 +170,12 @@ class TestVersionedRepository(fixture.Pathed):
 
         # Upgrade to a specified version...
         cs = check_changeset((0, 10), 10)
-        self.assertEqual(cs.keys().pop(0),0 ) # 0 -> 1: index is starting version
-        self.assertEqual(cs.keys().pop(), 9) # 9 -> 10: index is starting version
-        self.assertEqual(cs.start, 0) # starting version
-        self.assertEqual(cs.end, 10) # ending version
+        # 0 -> 1: index is starting version
+        self.assertEqual(cs.keys().pop(0), 0)
+        # 9 -> 10: index is starting version
+        self.assertEqual(cs.keys().pop(), 9)
+        self.assertEqual(cs.start, 0)  # starting version
+        self.assertEqual(cs.end, 10)  # ending version
         check_changeset((0, 1), 1)
         check_changeset((0, 5), 5)
         check_changeset((0, 0), 0)
@@ -189,29 +201,30 @@ class TestVersionedRepository(fixture.Pathed):
         # run changes
         cs.run('postgres', 'upgrade')
 
-        # Can't request a changeset of higher/lower version than this repository
+        # Can't request a changeset of higher/lower version than this
+        # repository
         self.assertRaises(Exception, repos.changeset, 'postgres', 11)
         self.assertRaises(Exception, repos.changeset, 'postgres', -1)
 
         # Downgrade
-        cs = check_changeset((10, 0),10)
-        self.assertEqual(cs.keys().pop(0), 10) # 10 -> 9
+        cs = check_changeset((10, 0), 10)
+        self.assertEqual(cs.keys().pop(0), 10)  # 10 -> 9
         self.assertEqual(cs.keys().pop(), 1)    # 1 -> 0
         self.assertEqual(cs.start, 10)
         self.assertEqual(cs.end, 0)
         check_changeset((10, 5), 5)
         check_changeset((5, 0), 5)
-        
+
     def test_many_versions(self):
         """Test what happens when lots of versions are created"""
         repos = Repository(self.path_repos)
-        for i in range(1001):  
+        for i in range(1001):
             repos.create_script('')
 
         # since we normally create 3 digit ones, let's see if we blow up
         self.assert_(os.path.exists('%s/versions/1000.py' % self.path_repos))
         self.assert_(os.path.exists('%s/versions/1001.py' % self.path_repos))
 
-        
+
 # TODO: test manage file
 # TODO: test changeset

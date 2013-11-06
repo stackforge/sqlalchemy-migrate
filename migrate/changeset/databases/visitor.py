@@ -57,8 +57,9 @@ def get_dialect_visitor(sa_dialect, name):
 
     return visitor
 
+
 def run_single_visitor(engine, visitorcallable, element,
-    connection=None, **kwargs):
+                       connection=None, **kwargs):
     """Taken from :meth:`sqlalchemy.engine.base.Engine._run_single_visitor`
     with support for migrate visitors.
     """

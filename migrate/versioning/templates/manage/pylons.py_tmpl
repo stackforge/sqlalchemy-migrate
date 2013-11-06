@@ -6,7 +6,7 @@ from sqlalchemy import engine_from_config
 from paste.deploy.loadwsgi import ConfigLoader
 
 from migrate.versioning.shell import main
-from {{ locals().pop('repository_name') }}.model import migrations
+from {{locals().pop('repository_name')}}.model import migrations
 
 
 if '-c' in sys.argv:
@@ -17,14 +17,14 @@ else:
     conf_path = 'development.ini'
 
 {{py:
-_vars = locals().copy()
-del _vars['__template_name__']
-defaults = ", ".join(["%s='%s'" % var for var in _vars.iteritems()])
-}}
+  _vars = locals().copy()
+  del _vars['__template_name__']
+  defaults = ", ".join(["%s='%s'" % var for var in _vars.iteritems()])
+  }}
 
 conf_dict = ConfigLoader(conf_path).parser._sections['app:main']
 
 # migrate supports passing url as an existing Engine instance (since 0.6.0)
 # usage: migrate -c path/to/config.ini COMMANDS
 if __name__ == '__main__':
-    main(url=engine_from_config(conf_dict), repository=migrations.__path__[0],{{ defaults }})
+    main(url=engine_from_config(conf_dict), repository=migrations.__path__[0], {{defaults}})
