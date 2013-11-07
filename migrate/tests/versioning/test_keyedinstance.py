@@ -4,6 +4,7 @@
 from migrate.tests import fixture
 from migrate.versioning.util.keyedinstance import *
 
+
 class TestKeydInstance(fixture.Base):
     def test_unique(self):
         """UniqueInstance should produce unique object instances"""

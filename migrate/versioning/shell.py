@@ -21,6 +21,7 @@ alias = dict(
     v=api.version,
 )
 
+
 def alias_setup():
     global alias
     for key, val in alias.iteritems():
@@ -54,6 +55,7 @@ class PassiveOptionParser(OptionParser):
             elif self.allow_interspersed_args:
                 largs.append(arg)
                 del rargs[0]
+
 
 def main(argv=None, **kwargs):
     """Shell interface to :mod:`migrate.versioning.api`.

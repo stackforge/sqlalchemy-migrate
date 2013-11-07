@@ -4,6 +4,7 @@
 import re
 import testtools
 
+
 class Base(testtools.TestCase):
 
     def assertEqualIgnoreWhitespace(self, v1, v2):

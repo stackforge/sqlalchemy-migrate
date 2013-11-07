@@ -3,6 +3,7 @@
 
 import testtools
 
+
 def main(imports=None):
     if imports:
         global suite

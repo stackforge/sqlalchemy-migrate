@@ -18,6 +18,7 @@ from migrate.versioning.util.importpath import import_path
 
 log = logging.getLogger(__name__)
 
+
 def load_model(dotted_name):
     """Import module and use module-level variable".
 
@@ -37,6 +38,7 @@ def load_model(dotted_name):
         # Assume it's already loaded.
         return dotted_name
 
+
 def asbool(obj):
     """Do everything to use object as bool"""
     if isinstance(obj, basestring):
@@ -51,6 +53,7 @@ def asbool(obj):
         return bool(obj)
     else:
         raise ValueError("String is not true/false: %r" % obj)
+
 
 def guess_obj_type(obj):
     """Do everything to guess object type from string
@@ -78,6 +81,7 @@ def guess_obj_type(obj):
     else:
         return obj
 
+
 @decorator
 def catch_known_errors(f, *a, **kw):
     """Decorator that catches known api errors
@@ -89,6 +93,7 @@ def catch_known_errors(f, *a, **kw):
         return f(*a, **kw)
     except exceptions.PathFoundError, e:
         raise exceptions.KnownError("The path %s already exists" % e.args[0])
+
 
 def construct_engine(engine, **opts):
     """.. versionadded:: 0.5.4
@@ -138,6 +143,7 @@ def construct_engine(engine, **opts):
     # TODO: return create_engine(engine, poolclass=StaticPool, **kwargs)
     # seems like 0.5.x branch does not work with engine.dispose and staticpool
     return create_engine(engine, **kwargs)
+
 
 @decorator
 def with_engine(f, *a, **kw):

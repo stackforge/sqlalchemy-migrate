@@ -9,6 +9,7 @@ from migrate.changeset import ansisql
 
 FBSchemaGenerator = sa_base.FBDDLCompiler
 
+
 class FBColumnGenerator(FBSchemaGenerator, ansisql.ANSIColumnGenerator):
     """Firebird column generator implementation."""
 
