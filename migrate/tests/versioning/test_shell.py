@@ -210,7 +210,7 @@ class TestShellDatabase(Shell, DB):
         url = self.url
         result = self.env.run('migrate create %s repository_name' % repos)
 
-        result = self.env.run('migrate drop_version_control %(url)s %(repos)s'\
+        result = self.env.run('migrate drop_version_control %(url)s %(repos)s'
             % locals(), expect_error=True)
         self.assertEqual(result.returncode, 1)
         result = self.env.run('migrate version_control %(url)s %(repos)s' % locals())
@@ -218,7 +218,7 @@ class TestShellDatabase(Shell, DB):
         # Clean up
         result = self.env.run('migrate drop_version_control %(url)s %(repos)s' % locals())
         # Attempting to drop vc from a database without it should fail
-        result = self.env.run('migrate drop_version_control %(url)s %(repos)s'\
+        result = self.env.run('migrate drop_version_control %(url)s %(repos)s'
             % locals(), expect_error=True)
         self.assertEqual(result.returncode, 1)
 
@@ -471,29 +471,29 @@ class TestShellDatabase(Shell, DB):
         self.assertEqual(self.run_db_version(self.url, repos_path), 0)
 
         # Setup helper script.
-        result = self.env.run('migrate manage %s --repository=%s --url=%s --model=%s'\
+        result = self.env.run('migrate manage %s --repository=%s --url=%s --model=%s'
             % (script_path, repos_path, self.url, model_module))
         self.assert_(os.path.exists(script_path))
 
         # Model is defined but database is empty.
-        result = self.env.run('migrate compare_model_to_db %s %s --model=%s' \
+        result = self.env.run('migrate compare_model_to_db %s %s --model=%s'
             % (self.url, repos_path, model_module))
         self.assert_("tables missing from database: tmp_account_rundiffs" in result.stdout)
 
         # Test Deprecation
-        result = self.env.run('migrate compare_model_to_db %s %s --model=%s' \
+        result = self.env.run('migrate compare_model_to_db %s %s --model=%s'
             % (self.url, repos_path, model_module.replace(":", ".")), expect_error=True)
         self.assertEqual(result.returncode, 0)
         self.assertTrue("DeprecationWarning" in result.stderr)
         self.assert_("tables missing from database: tmp_account_rundiffs" in result.stdout)
 
         # Update db to latest model.
-        result = self.env.run('migrate update_db_from_model %s %s %s'\
+        result = self.env.run('migrate update_db_from_model %s %s %s'
             % (self.url, repos_path, model_module))
         self.assertEqual(self.run_version(repos_path), 0)
         self.assertEqual(self.run_db_version(self.url, repos_path), 0)  # version did not get bumped yet because new version not yet created
 
-        result = self.env.run('migrate compare_model_to_db %s %s %s'\
+        result = self.env.run('migrate compare_model_to_db %s %s %s'
             % (self.url, repos_path, model_module))
         self.assert_("No schema diffs" in result.stdout)
 

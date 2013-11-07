@@ -34,7 +34,7 @@ class ControlledSchema(object):
 
     def __eq__(self, other):
         """Compare two schemas by repositories and versions"""
-        return (self.repository is other.repository \
+        return (self.repository is other.repository
             and self.version == other.version)
 
     def load(self):
@@ -86,7 +86,7 @@ class ControlledSchema(object):
         endver = ver + step
         # Current database version must be correct! Don't run if corrupt!
         if self.version != startver:
-            raise exceptions.InvalidVersionError("%s is not %s" % \
+            raise exceptions.InvalidVersionError("%s is not %s" %
                                                      (self.version, startver))
         # Run the change
         change.run(self.engine, step)

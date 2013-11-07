@@ -50,12 +50,12 @@ class OracleSchemaChanger(OracleSchemaGenerator, ansisql.ANSISchemaChanger):
         # Oracle cannot drop a default once created, but it can set it
         # to null.  We'll do that if default=None
         # http://forums.oracle.com/forums/message.jspa?messageID=1273234#1273234
-        dropdefault_hack = (column.server_default is None \
+        dropdefault_hack = (column.server_default is None
                                 and 'server_default' in delta.keys())
         # Oracle apparently doesn't like it when we say "not null" if
         # the column's already not null. Fudge it, so we don't need a
         # new function
-        notnull_hack = ((not column.nullable) \
+        notnull_hack = ((not column.nullable)
                             and ('nullable' not in delta.keys()))
         # We need to specify NULL if we're removing a NOT NULL
         # constraint

@@ -270,7 +270,7 @@ class ModelGenerator(object):
                 trans = connection.begin()
                 try:
                     connection.execute(
-                        'CREATE TEMPORARY TABLE %s as SELECT * from %s' % \
+                        'CREATE TEMPORARY TABLE %s as SELECT * from %s' %
                             (tempName, modelTable.name))
                     # make sure the drop takes place inside our
                     # transaction with the bind parameter

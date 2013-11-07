@@ -324,7 +324,7 @@ class ColumnDelta(DictMixin, sqlalchemy.schema.SchemaItem):
 
         # String length is a special case
         if ret and isinstance(new_type, sqlalchemy.types.String):
-            ret = (getattr(old_type, 'length', None) == \
+            ret = (getattr(old_type, 'length', None) ==
                        getattr(new_type, 'length', None))
         return ret
 
