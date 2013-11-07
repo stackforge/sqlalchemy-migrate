@@ -14,4 +14,3 @@ def import_path(fullpath):
     reload(module) # Might be out of date during tests
     del sys.path[-1]
     return module
-
