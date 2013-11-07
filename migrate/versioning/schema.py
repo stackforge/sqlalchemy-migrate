@@ -20,6 +20,7 @@ from migrate.versioning.version import VerNum
 
 log = logging.getLogger(__name__)
 
+
 class ControlledSchema(object):
     """A database under version control"""
 

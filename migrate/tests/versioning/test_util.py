@@ -13,6 +13,7 @@ from migrate.versioning import api
 
 import warnings
 
+
 class TestUtil(fixture.Pathed):
 
     def test_construct_engine(self):

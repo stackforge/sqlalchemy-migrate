@@ -13,6 +13,7 @@ from datetime import datetime
 
 log = logging.getLogger(__name__)
 
+
 class VerNum(object):
     """A version number that behaves like a string and int at the same time"""
 
@@ -241,6 +242,7 @@ class Extensions:
     """A namespace for file extensions"""
     py = 'py'
     sql = 'sql'
+
 
 def str_to_filename(s):
     """Replaces spaces, (double and single) quotes

@@ -12,6 +12,7 @@ from migrate.changeset.schema import ColumnDelta
 from migrate.tests import fixture
 from migrate.tests.fixture.warnings import catch_warnings
 
+
 class TestAddDropColumn(fixture.DB):
     """Test add/drop column through all possible interfaces
     also test for constraints
@@ -489,6 +490,7 @@ class TestAddDropColumn(fixture.DB):
         # and insist that the constraint is deleted first, separately?
         self.assertEqual([],
                          self._actual_foreign_keys())
+
 
 class TestRename(fixture.DB):
     """Tests for table and index rename methods"""

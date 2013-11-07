@@ -1,6 +1,7 @@
 # lifted from Python 2.6, so we can use it in Python 2.5
 import sys
 
+
 class WarningMessage(object):
 
     """Holds the result of a single showwarning() call."""

@@ -13,6 +13,7 @@ from migrate.versioning.util import KeyedInstance
 
 log = logging.getLogger(__name__)
 
+
 class Pathed(KeyedInstance):
     """
     A class associated with a path/directory tree.

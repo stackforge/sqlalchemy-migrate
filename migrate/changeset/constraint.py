@@ -5,6 +5,7 @@ from sqlalchemy import schema
 
 from migrate.exceptions import *
 
+
 class ConstraintChangeset(object):
     """Base class for Constraint classes."""
 

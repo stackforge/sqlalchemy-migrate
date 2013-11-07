@@ -11,6 +11,7 @@ from migrate.changeset import ansisql
 
 MySQLSchemaGenerator = sa_base.MySQLDDLCompiler
 
+
 class MySQLColumnGenerator(MySQLSchemaGenerator, ansisql.ANSIColumnGenerator):
     pass
 

@@ -1,6 +1,7 @@
 from migrate.tests import fixture
 from migrate.versioning.pathed import *
 
+
 class TestPathed(fixture.Base):
     def test_parent_path(self):
         """Default parent_path should behave correctly"""

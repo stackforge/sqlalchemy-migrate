@@ -52,6 +52,7 @@ class SQLiteHelper(SQLiteCommon):
             table = self._to_table(column.table)
         self.recreate_table(table, column, delta)
 
+
 class SQLiteColumnGenerator(SQLiteSchemaGenerator,
                             ansisql.ANSIColumnGenerator,
                             # at the end so we get the normal
@@ -73,6 +74,7 @@ class SQLiteColumnGenerator(SQLiteSchemaGenerator,
             SQLiteHelper.visit_column(self, column)
         else:
             super(SQLiteColumnGenerator, self).visit_column(column)
+
 
 class SQLiteColumnDropper(SQLiteHelper, ansisql.ANSIColumnDropper):
     """SQLite ColumnDropper"""

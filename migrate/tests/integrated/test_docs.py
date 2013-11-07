@@ -14,5 +14,6 @@ paths = [os.path.join(*(dir+(f,))) for f in files]
 assert len(paths) > 0
 suite = doctest.DocFileSuite(*paths)
 
+
 def test_docs():
     suite.debug()
