@@ -51,28 +51,28 @@ class TestShellCommands(Shell):
         from runpy import run_module
         try:
             original = sys.argv
-            sys.argv=['X','--help']
+            sys.argv=['X', '--help']
             
             run_module('migrate.versioning.shell', run_name='__main__')
 
         finally:
             sys.argv = original
 
-    def _check_error(self,args,code,expected,**kw):
+    def _check_error(self, args, code, expected, **kw):
         original = sys.stderr
         try:
             actual = StringIO()
             sys.stderr = actual
             try:
-                shell.main(args,**kw)
+                shell.main(args, **kw)
             except SystemExit, e:
-                self.assertEqual(code,e.args[0])
+                self.assertEqual(code, e.args[0])
             else:
                 self.fail('No exception raised')
         finally:
             sys.stderr = original
         actual = actual.getvalue()
-        self.assertTrue(expected in actual,'%r not in:\n"""\n%s\n"""'%(expected,actual))
+        self.assertTrue(expected in actual, '%r not in:\n"""\n%s\n"""'%(expected, actual))
             
     def test_main(self):
         """Test main() function"""
@@ -83,10 +83,10 @@ class TestShellCommands(Shell):
         shell.main(['version', '--', '--repository=%s' % repos])
         shell.main(['version', '-d', '--repository=%s' % repos, '--version=2'])
 
-        self._check_error(['foobar'],2,'error: Invalid command foobar')
-        self._check_error(['create', 'f', 'o', 'o'],2,'error: Too many arguments for command create: o')
-        self._check_error(['create'],2,'error: Not enough arguments for command create: name, repository not specified')
-        self._check_error(['create', 'repo_name'],2,'already exists', repository=repos)
+        self._check_error(['foobar'], 2, 'error: Invalid command foobar')
+        self._check_error(['create', 'f', 'o', 'o'], 2, 'error: Too many arguments for command create: o')
+        self._check_error(['create'], 2, 'error: Not enough arguments for command create: name, repository not specified')
+        self._check_error(['create', 'repo_name'], 2, 'already exists', repository=repos)
 
     def test_create(self):
         """Repositories are created successfully"""

@@ -558,7 +558,7 @@ populated with defaults
             else:
                 self._set_parent(table)
 
-    def _col_name_in_constraint(self,cons,name):
+    def _col_name_in_constraint(self, cons, name):
         return False
     
     def remove_from_table(self, table, unset_table=True):
@@ -583,10 +583,10 @@ populated with defaults
         to_drop = set()
         for cons in table.constraints:
             # TODO: deal with other types of constraint
-            if isinstance(cons,(ForeignKeyConstraint,
+            if isinstance(cons, (ForeignKeyConstraint,
                                 UniqueConstraint)):
                 for col_name in cons.columns:
-                    if not isinstance(col_name,basestring):
+                    if not isinstance(col_name, basestring):
                         col_name = col_name.name
                     if self.name==col_name:
                         to_drop.add(cons)

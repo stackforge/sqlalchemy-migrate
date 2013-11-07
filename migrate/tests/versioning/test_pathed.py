@@ -20,7 +20,7 @@ class TestPathed(fixture.Base):
             attr=None
         o1=Test(path)
         o2=Test(path)
-        self.assert_(isinstance(o1,Test))
+        self.assert_(isinstance(o1, Test))
         self.assert_(o1.path==path)
         self.assert_(o1 is o2)
         o1.attr='herring'
@@ -33,7 +33,7 @@ class TestPathed(fixture.Base):
         class Parent(Pathed):
             parent=None
             children=0
-            def _init_child(self,child,path):
+            def _init_child(self, child, path):
                 """Keep a tally of children. 
                 (A real class might do something more interesting here)
                 """
@@ -45,7 +45,7 @@ class TestPathed(fixture.Base):
         path='/fgsfds/moot.py'
         parent_path='/fgsfds'
         object=Child(path)
-        self.assert_(isinstance(object,Child))
-        self.assert_(isinstance(object.parent,Parent))
+        self.assert_(isinstance(object, Child))
+        self.assert_(isinstance(object.parent, Parent))
         self.assert_(object.path==path)
         self.assert_(object.parent.path==parent_path)

@@ -33,7 +33,7 @@ class FBColumnDropper(ansisql.ANSIColumnDropper):
                 # TODO: recreate index if it references more than this column
         
         for cons in column.table.constraints:
-            if isinstance(cons,PrimaryKeyConstraint):
+            if isinstance(cons, PrimaryKeyConstraint):
                 # will be deleted only when the column its on
                 # is deleted!
                 continue

@@ -38,7 +38,7 @@ class TestPyScript(fixture.Pathed, fixture.DB):
         # Created file should be a valid script (If not, raises an error)
         self.cls.verify(path)
         # Can't create it again: it already exists
-        self.assertRaises(exceptions.PathFoundError,self.cls.create,path)
+        self.assertRaises(exceptions.PathFoundError, self.cls.create, path)
 
     @fixture.usedb(supported='sqlite')
     def test_run(self):
@@ -74,20 +74,20 @@ class TestPyScript(fixture.Pathed, fixture.DB):
         path = self.tmp_py()
         self.assertFalse(os.path.exists(path))
         # Fails on empty path
-        self.assertRaises(exceptions.InvalidScriptError,self.cls.verify,path)
-        self.assertRaises(exceptions.InvalidScriptError,self.cls,path)
+        self.assertRaises(exceptions.InvalidScriptError, self.cls.verify, path)
+        self.assertRaises(exceptions.InvalidScriptError, self.cls, path)
 
     def test_verify_invalidpy(self):
         """Correctly verify a python migration script: invalid python file"""
         path=self.tmp_py()
         # Create empty file
-        f = open(path,'w')
+        f = open(path, 'w')
         f.write("def fail")
         f.close()
-        self.assertRaises(Exception,self.cls.verify_module,path)
+        self.assertRaises(Exception, self.cls.verify_module, path)
         # script isn't verified on creation, but on module reference
         py = self.cls(path)
-        self.assertRaises(Exception,(lambda x: x.module),py)
+        self.assertRaises(Exception, (lambda x: x.module), py)
 
     def test_verify_nofuncs(self):
         """Correctly verify a python migration script: valid python file; no upgrade func"""
@@ -99,7 +99,7 @@ class TestPyScript(fixture.Pathed, fixture.DB):
         self.assertRaises(exceptions.InvalidScriptError, self.cls.verify_module, path)
         # script isn't verified on creation, but on module reference
         py = self.cls(path)
-        self.assertRaises(exceptions.InvalidScriptError,(lambda x: x.module),py)
+        self.assertRaises(exceptions.InvalidScriptError, (lambda x: x.module), py)
 
     @fixture.usedb(supported='sqlite')
     def test_preview_sql(self):

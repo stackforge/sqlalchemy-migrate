@@ -96,7 +96,7 @@ def usedb(supported=None, not_supported=None):
                 finally:
                     try:
                         self._teardown()
-                    except Exception,e:
+                    except Exception, e:
                         teardown_exception=e
                     else:
                         teardown_exception=None
@@ -105,8 +105,8 @@ def usedb(supported=None, not_supported=None):
                         'Exception during _setup/_teardown:\n'
                         'setup: %r\n'
                         'teardown: %r\n'
-                        )%(setup_exception,teardown_exception))
-            except Exception,e:
+                        )%(setup_exception, teardown_exception))
+            except Exception, e:
                 failed_for.append(url)
                 fail = True
         for url in failed_for:
@@ -165,7 +165,7 @@ class DB(Base):
         self.engine.dispose()
 
     def _supported(self, url):
-        db = url.split(':',1)[0]
+        db = url.split(':', 1)[0]
         func = getattr(self, self._TestCase__testMethodName)
         if hasattr(func, 'supported'):
             return db in func.supported
