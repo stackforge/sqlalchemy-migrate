@@ -6,7 +6,7 @@ from migrate.tests import fixture
 
 # Collect tests for all handwritten docs: doc/*.rst
 
-dir = ('..','..','..','doc','source')
+dir = ('..', '..', '..', 'doc', 'source')
 absdir = (os.path.dirname(os.path.abspath(__file__)),)+dir
 dirpath = os.path.join(*absdir)
 files = [f for f in os.listdir(dirpath) if f.endswith('.rst')]

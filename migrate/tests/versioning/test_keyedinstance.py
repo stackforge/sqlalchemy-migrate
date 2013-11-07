@@ -9,15 +9,15 @@ class TestKeydInstance(fixture.Base):
         """UniqueInstance should produce unique object instances"""
         class Uniq1(KeyedInstance):
             @classmethod
-            def _key(cls,key):
+            def _key(cls, key):
                 return str(key)
-            def __init__(self,value):
+            def __init__(self, value):
                 self.value=value
         class Uniq2(KeyedInstance):
             @classmethod
-            def _key(cls,key):
+            def _key(cls, key):
                 return str(key)
-            def __init__(self,value):
+            def __init__(self, value):
                 self.value=value
         
         a10 = Uniq1('a')
@@ -35,7 +35,7 @@ class TestKeydInstance(fixture.Base):
         self.assert_(a10 is a11)
 
         # __init__ is called
-        self.assertEqual(a10.value,'a')
+        self.assertEqual(a10.value, 'a')
 
         # clear() causes us to forget all existing instances
         Uniq1.clear()

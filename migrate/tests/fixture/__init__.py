@@ -15,4 +15,4 @@ def main(imports=None):
 from base import Base
 from migrate.tests.fixture.pathed import Pathed
 from shell import Shell
-from database import DB,usedb
+from database import DB, usedb

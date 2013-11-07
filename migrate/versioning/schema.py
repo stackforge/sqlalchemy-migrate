@@ -117,7 +117,7 @@ class ControlledSchema(object):
         diff = schemadiff.getDiffOfModelAgainstDatabase(
             model, self.engine, excludeTables=[self.repository.version_table]
             )
-        genmodel.ModelGenerator(diff,self.engine).runB2A()
+        genmodel.ModelGenerator(diff, self.engine).runB2A()
 
         self.update_repository_table(self.version, int(self.repository.latest))
 

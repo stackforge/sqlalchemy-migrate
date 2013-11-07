@@ -160,7 +160,7 @@ class TestVersionedRepository(fixture.Pathed):
 
         # Upgrade to a specified version...
         cs = check_changeset((0, 10), 10)
-        self.assertEqual(cs.keys().pop(0),0 ) # 0 -> 1: index is starting version
+        self.assertEqual(cs.keys().pop(0), 0 ) # 0 -> 1: index is starting version
         self.assertEqual(cs.keys().pop(), 9) # 9 -> 10: index is starting version
         self.assertEqual(cs.start, 0) # starting version
         self.assertEqual(cs.end, 10) # ending version
@@ -194,7 +194,7 @@ class TestVersionedRepository(fixture.Pathed):
         self.assertRaises(Exception, repos.changeset, 'postgres', -1)
 
         # Downgrade
-        cs = check_changeset((10, 0),10)
+        cs = check_changeset((10, 0), 10)
         self.assertEqual(cs.keys().pop(0), 10) # 10 -> 9
         self.assertEqual(cs.keys().pop(), 1)    # 1 -> 0
         self.assertEqual(cs.start, 10)
