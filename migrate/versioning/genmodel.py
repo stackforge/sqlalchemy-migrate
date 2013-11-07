@@ -282,4 +282,3 @@ class ModelGenerator(object):
                 except:
                     trans.rollback()
                     raise
-

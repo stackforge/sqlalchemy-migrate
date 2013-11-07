@@ -87,5 +87,3 @@ class catch_warnings(object):
             raise RuntimeError("Cannot exit %r without entering first" % self)
         self._module.filters = self._filters
         self._module.showwarning = self._showwarning
-
-
