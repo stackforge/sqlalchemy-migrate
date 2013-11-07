@@ -22,7 +22,7 @@ def load_model(dotted_name):
     """Import module and use module-level variable".
 
     :param dotted_name: path to model in form of string: ``some.python.module:Class``
-    
+
     .. versionchanged:: 0.5.4
 
     """
@@ -54,9 +54,9 @@ def asbool(obj):
 
 def guess_obj_type(obj):
     """Do everything to guess object type from string
-    
+
     Tries to convert to `int`, `bool` and finally returns if not succeded.
-    
+
     .. versionadded: 0.5.4
     """
 
@@ -81,7 +81,7 @@ def guess_obj_type(obj):
 @decorator
 def catch_known_errors(f, *a, **kw):
     """Decorator that catches known api errors
-    
+
     .. versionadded: 0.5.4
     """
 

@@ -65,7 +65,7 @@ def usedb(supported=None, not_supported=None):
     @param supported: run tests for ONLY these databases
     @param not_supported: run tests for all databases EXCEPT these
 
-    If both supported and not_supported are empty, all dbs are assumed 
+    If both supported and not_supported are empty, all dbs are assumed
     to be supported
     """
     if supported is not None and not_supported is not None:
@@ -126,7 +126,7 @@ class DB(Base):
     level = TXN
 
     def _engineInfo(self, url=None):
-        if url is None: 
+        if url is None:
             url = self.url
         return url
 
@@ -151,7 +151,7 @@ class DB(Base):
         if self.level < self.CONNECT:
             return
         #self.session = create_session(bind=self.engine)
-        if self.level < self.TXN: 
+        if self.level < self.TXN:
             return
         #self.txn = self.session.begin()
 
