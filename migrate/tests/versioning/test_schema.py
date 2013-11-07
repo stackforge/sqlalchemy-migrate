@@ -113,7 +113,7 @@ class TestControlledSchema(fixture.Pathed, fixture.DB):
         versions = ('Thirteen', '-1', -1, '', 13)
         # A fresh repository doesn't go up to version 13 yet
         for version in versions:
-            #self.assertRaises(ControlledSchema.InvalidVersionError,
+            # self.assertRaises(ControlledSchema.InvalidVersionError,
             # Can't have custom errors with assertRaises...
             try:
                 ControlledSchema.create(self.engine, self.repos, version)

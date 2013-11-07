@@ -31,7 +31,7 @@ import logging
 
 from migrate import exceptions
 from migrate.versioning import (repository, schema, version,
-    script as script_) # command name conflict
+    script as script_)  # command name conflict
 from migrate.versioning.util import catch_known_errors, with_engine
 
 

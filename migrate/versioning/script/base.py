@@ -22,7 +22,7 @@ class BaseScript(pathed.Pathed):
       The operations defined by the script: upgrade(), downgrade() or both.
       Returns a tuple of operations.
       Can also check for an operation with ex. script.operation(Script.ops.up)
-    """ # TODO: sphinxfy this and implement it correctly
+    """  # TODO: sphinxfy this and implement it correctly
 
     def __init__(self, path):
         log.debug('Loading script %s...' % path)

@@ -162,7 +162,7 @@ class DB(Base):
             self.txn.rollback()
         if hasattr(self, 'session'):
             self.session.close()
-        #if hasattr(self,'conn'):
+        # if hasattr(self,'conn'):
         #    self.conn.close()
         self.engine.dispose()
 

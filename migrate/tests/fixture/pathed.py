@@ -24,7 +24,7 @@ class Pathed(base.Base):
         try:
             sys.path.remove(self.temp_usable_dir)
         except:
-            pass # w00t?
+            pass  # w00t?
         Pathed.purge(self.temp_usable_dir)
 
     @classmethod

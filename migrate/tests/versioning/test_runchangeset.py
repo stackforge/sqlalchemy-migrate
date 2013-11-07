@@ -38,7 +38,7 @@ class TestRunChangeset(fixture.Pathed, fixture.DB):
         self.assertEqual(db.version, 5)
         db.upgrade(5)
         self.assertEqual(db.version, 5)
-        db.upgrade(None) # Latest is implied
+        db.upgrade(None)  # Latest is implied
         self.assertEqual(db.version, 10)
         self.assertRaises(Exception, db.upgrade, 11)
         self.assertEqual(db.version, 10)

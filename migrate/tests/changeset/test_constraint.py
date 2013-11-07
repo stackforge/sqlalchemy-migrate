@@ -62,8 +62,8 @@ class TestConstraint(CommonTestConstraint):
             self.compare_columns_equal(self.table.primary_key, cols, ['type', 'autoincrement'])
 
         # Drop the PK constraint
-        #if (self.engine.name in ('oracle', 'firebird')):
-        #    # Apparently Oracle PK names aren't introspected
+        # if (self.engine.name in ('oracle', 'firebird')):
+        # Apparently Oracle PK names aren't introspected
         #    pk.name = self.table.primary_key.name
         pk.drop()
         self.refresh_table()

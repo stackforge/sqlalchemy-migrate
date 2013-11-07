@@ -508,47 +508,47 @@ class TestShellDatabase(Shell, DB):
 
         # TODO: compare whole table
         self.compare_columns_equal(models.tmp_account_rundiffs.c, temp_dict['tmp_account_rundiffs'].c, ['type'])
-        ##self.assertTrue("""tmp_account_rundiffs = Table('tmp_account_rundiffs', meta,
+        # self.assertTrue("""tmp_account_rundiffs = Table('tmp_account_rundiffs', meta,
   ##Column('id', Integer(),  primary_key=True, nullable=False),
   ##Column('login', String(length=None, convert_unicode=False, assert_unicode=None)),
-  ##Column('passwd', String(length=None, convert_unicode=False, assert_unicode=None))""" in result.stdout)
+  # Column('passwd', String(length=None, convert_unicode=False, assert_unicode=None))""" in result.stdout)
 
-        ## We're happy with db changes, make first db upgrade script to go from version 0 -> 1.
+        # We're happy with db changes, make first db upgrade script to go from version 0 -> 1.
         #result = self.env.run('migrate make_update_script_for_model', expect_error=True)
         #self.assertTrue('Not enough arguments' in result.stderr)
 
-        #result_script = self.env.run('migrate make_update_script_for_model %s %s %s %s'\
+        # result_script = self.env.run('migrate make_update_script_for_model %s %s %s %s'\
             #% (self.url, repos_path, old_model_module, model_module))
-        #self.assertEqualIgnoreWhitespace(result_script.stdout,
+        # self.assertEqualIgnoreWhitespace(result_script.stdout,
         #'''from sqlalchemy import *
         #from migrate import *
 
         #from migrate.changeset import schema
 
         #meta = MetaData()
-        #tmp_account_rundiffs = Table('tmp_account_rundiffs', meta,
+        # tmp_account_rundiffs = Table('tmp_account_rundiffs', meta,
           #Column('id', Integer(),  primary_key=True, nullable=False),
           #Column('login', Text(length=None, convert_unicode=False, assert_unicode=None, unicode_error=None, _warn_on_bytestring=False)),
           #Column('passwd', Text(length=None, convert_unicode=False, assert_unicode=None, unicode_error=None, _warn_on_bytestring=False)),
         #)
 
-        #def upgrade(migrate_engine):
-            ## Upgrade operations go here. Don't create your own engine; bind migrate_engine
-            ## to your metadata
+        # def upgrade(migrate_engine):
+            # Upgrade operations go here. Don't create your own engine; bind migrate_engine
+            # to your metadata
             #meta.bind = migrate_engine
-            #tmp_account_rundiffs.create()
+            # tmp_account_rundiffs.create()
 
-        #def downgrade(migrate_engine):
-            ## Operations to reverse the above upgrade go here.
+        # def downgrade(migrate_engine):
+            # Operations to reverse the above upgrade go here.
             #meta.bind = migrate_engine
-            #tmp_account_rundiffs.drop()''')
+            # tmp_account_rundiffs.drop()''')
 
-        ## Save the upgrade script.
+        # Save the upgrade script.
         #result = self.env.run('migrate script Desc %s' % repos_path)
         #upgrade_script_path = '%s/versions/001_Desc.py' % repos_path
         #open(upgrade_script_path, 'w').write(result_script.stdout)
 
-        #result = self.env.run('migrate compare_model_to_db %s %s %s'\
+        # result = self.env.run('migrate compare_model_to_db %s %s %s'\
             #% (self.url, repos_path, model_module))
         #self.assert_("No schema diffs" in result.stdout)
 
