@@ -32,7 +32,7 @@ class TestRepository(fixture.Pathed):
         # Can't create it again: it already exists
         self.assertRaises(exceptions.PathFoundError, Repository.create, path, name)
         return path
-    
+
     def test_load(self):
         """We should be able to load information about an existing repository"""
         # Create a repository to load
@@ -45,7 +45,7 @@ class TestRepository(fixture.Pathed):
 
         # version_table's default isn't none
         self.assertNotEquals(repos.config.get('db_settings', 'version_table'), 'None')
-    
+
     def test_load_notfound(self):
         """Nonexistant repositories shouldn't be loaded"""
         path = self.tmp_repos()
@@ -136,7 +136,7 @@ class TestVersionedRepository(fixture.Pathed):
         repos.create_script('')
         self.assert_(repos.version(repos.latest) is repos.version())
         self.assert_(repos.version() is not None)
-    
+
     def test_changeset(self):
         """Repositories can create changesets properly"""
         # Create a nonzero-version repository of empty scripts
@@ -201,7 +201,7 @@ class TestVersionedRepository(fixture.Pathed):
         self.assertEqual(cs.end, 0)
         check_changeset((10, 5), 5)
         check_changeset((5, 0), 5)
-        
+
     def test_many_versions(self):
         """Test what happens when lots of versions are created"""
         repos = Repository(self.path_repos)
@@ -212,6 +212,6 @@ class TestVersionedRepository(fixture.Pathed):
         self.assert_(os.path.exists('%s/versions/1000.py' % self.path_repos))
         self.assert_(os.path.exists('%s/versions/1001.py' % self.path_repos))
 
-        
+
 # TODO: test manage file
 # TODO: test changeset

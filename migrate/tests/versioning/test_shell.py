@@ -52,7 +52,7 @@ class TestShellCommands(Shell):
         try:
             original = sys.argv
             sys.argv=['X', '--help']
-            
+
             run_module('migrate.versioning.shell', run_name='__main__')
 
         finally:
@@ -73,7 +73,7 @@ class TestShellCommands(Shell):
             sys.stderr = original
         actual = actual.getvalue()
         self.assertTrue(expected in actual, '%r not in:\n"""\n%s\n"""'%(expected, actual))
-            
+
     def test_main(self):
         """Test main() function"""
         repos = self.tmp_repos()
@@ -106,7 +106,7 @@ class TestShellCommands(Shell):
         result = self.env.run('migrate create %s repository_name' % repos,
             expect_error=True)
         self.assertEqual(result.returncode, 2)
-    
+
     def test_script(self):
         """We can create a migration script via the command line"""
         repos = self.tmp_repos()
@@ -202,7 +202,7 @@ class TestShellDatabase(Shell, DB):
     # we need to connect to the DB to see if things worked
 
     level = DB.CONNECT
-        
+
     @usedb()
     def test_version_control(self):
         """Ensure we can set version control on a database"""
@@ -298,7 +298,7 @@ class TestShellDatabase(Shell, DB):
 
         result = self.env.run('migrate upgrade %s %s' % (self.url, repos_path))
         self.assertEqual(self.run_db_version(self.url, repos_path), 1)
-        
+
         # Downgrade must have a valid version specified
         result = self.env.run('migrate downgrade %s %s' % (self.url, repos_path), expect_error=True)
         self.assertEqual(result.returncode, 2)
@@ -307,10 +307,10 @@ class TestShellDatabase(Shell, DB):
         result = self.env.run('migrate downgrade %s %s 2' % (self.url, repos_path), expect_error=True)
         self.assertEqual(result.returncode, 2)
         self.assertEqual(self.run_db_version(self.url, repos_path), 1)
-        
+
         result = self.env.run('migrate downgrade %s %s 0' % (self.url, repos_path))
         self.assertEqual(self.run_db_version(self.url, repos_path), 0)
-        
+
         result = self.env.run('migrate downgrade %s %s 1' % (self.url, repos_path), expect_error=True)
         self.assertEqual(result.returncode, 2)
         self.assertEqual(self.run_db_version(self.url, repos_path), 0)
@@ -362,7 +362,7 @@ class TestShellDatabase(Shell, DB):
         """
         self.meta.drop_all()
         self._run_test_sqlfile(upgrade_script, downgrade_script)
-        
+
     @usedb(supported='postgres')
     def test_sqlfile_comment(self):
         upgrade_script = """
@@ -447,7 +447,7 @@ class TestShellDatabase(Shell, DB):
         result = self.env.run('migrate test %s %s' % (self.url, repos_path))
         self.assertEqual(self.run_version(repos_path), 1)
         self.assertEqual(self.run_db_version(self.url, repos_path), 0)
-        
+
     @usedb()
     def test_rundiffs_in_shell(self):
         # This is a variant of the test_schemadiff tests but run through the shell level.
@@ -542,7 +542,7 @@ class TestShellDatabase(Shell, DB):
             ## Operations to reverse the above upgrade go here.
             #meta.bind = migrate_engine
             #tmp_account_rundiffs.drop()''')
-    
+
         ## Save the upgrade script.
         #result = self.env.run('migrate script Desc %s' % repos_path)
         #upgrade_script_path = '%s/versions/001_Desc.py' % repos_path

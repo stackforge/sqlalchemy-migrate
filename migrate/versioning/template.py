@@ -79,7 +79,7 @@ class Template(pathed.Pathed):
     def get_repository(self, *a, **kw):
         """Calls self._get_item('repository', *a, **kw)"""
         return self._get_item('repository', *a, **kw)
-    
+
     def get_script(self, *a, **kw):
         """Calls self._get_item('script', *a, **kw)"""
         return self._get_item('script', *a, **kw)

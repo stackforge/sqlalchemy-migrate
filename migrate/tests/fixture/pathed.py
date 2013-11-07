@@ -43,7 +43,7 @@ class Pathed(base.Base):
     @classmethod
     def tmp(cls, *p, **k):
         return cls._tmp(*p, **k)
-        
+
     @classmethod
     def tmp_py(cls, *p, **k):
         return cls._tmp(suffix='.py', *p, **k)

@@ -42,7 +42,7 @@ class SQLiteHelper(SQLiteCommon):
         self.execute()
         self.append('DROP TABLE migration_tmp')
         self.execute()
-        
+
     def visit_column(self, delta):
         if isinstance(delta, DictMixin):
             column = delta.result_column
@@ -78,7 +78,7 @@ class SQLiteColumnDropper(SQLiteHelper, ansisql.ANSIColumnDropper):
     """SQLite ColumnDropper"""
 
     def _modify_table(self, table, column, delta):
-        
+
         columns = ' ,'.join(map(self.preparer.format_column, table.columns))
         return 'INSERT INTO %(table_name)s SELECT ' + columns + \
             ' from migration_tmp'

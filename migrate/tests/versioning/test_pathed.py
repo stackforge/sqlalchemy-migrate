@@ -12,7 +12,7 @@ class TestPathed(fixture.Base):
         self.assert_(result==Pathed._parent_path(filepath))
         self.assert_(result==Pathed._parent_path(dirpath))
         self.assert_(result==Pathed._parent_path(sdirpath))
-    
+
     def test_new(self):
         """Pathed(path) shouldn't create duplicate objects of the same path"""
         path='/fgsfds'

@@ -153,7 +153,7 @@ class Repository(pathed.Pathed):
 
     def create_script(self, description, **k):
         """API to :meth:`migrate.versioning.version.Collection.create_new_python_version`"""
-        
+
         k['use_timestamp_numbering'] = self.use_timestamp_numbering
         self.versions.create_new_python_version(description, **k)
 

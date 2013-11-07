@@ -110,7 +110,7 @@ def alter_column(*p, **k):
 
     
     """
-    
+
     if 'table' not in k and isinstance(p[0], sqlalchemy.Column):
         k['table'] = p[0].table
     if 'engine' not in k:
@@ -129,7 +129,7 @@ def alter_column(*p, **k):
     # that this crutch has to be left in until they can be sorted
     # out
     k['alter_metadata']=True
-    
+
     delta = ColumnDelta(*p, **k)
 
     visitorcallable = get_engine_visitor(engine, 'schemachanger')
@@ -211,7 +211,7 @@ class ColumnDelta(DictMixin, sqlalchemy.schema.SchemaItem):
         # as a crutch until the tests that fail when 'alter_metadata'
         # behaviour always happens can be sorted out
         self.alter_metadata = kw.pop("alter_metadata", False)
-        
+
         self.meta = kw.pop("metadata", None)
         self.engine = kw.pop("engine", None)
 
@@ -239,7 +239,7 @@ class ColumnDelta(DictMixin, sqlalchemy.schema.SchemaItem):
             self.alter_metadata,
             super(ColumnDelta, self).__repr__()
             )
-    
+
     def __getitem__(self, key):
         if key not in self.keys():
             raise KeyError("No such diff key, available: %s" % self.diffs )
@@ -560,12 +560,12 @@ populated with defaults
 
     def _col_name_in_constraint(self, cons, name):
         return False
-    
+
     def remove_from_table(self, table, unset_table=True):
         # TODO: remove primary keys, constraints, etc
         if unset_table:
             self.table = None
-            
+
         to_drop = set()
         for index in table.indexes:
             columns = []
@@ -579,7 +579,7 @@ populated with defaults
             else:
                 to_drop.add(index)
         table.indexes = table.indexes - to_drop
-        
+
         to_drop = set()
         for cons in table.constraints:
             # TODO: deal with other types of constraint
@@ -591,7 +591,7 @@ populated with defaults
                     if self.name==col_name:
                         to_drop.add(cons)
         table.constraints = table.constraints - to_drop
-        
+
         if table.c.contains_column(self):
             if SQLA_07:
                 table._columns.remove(self)
