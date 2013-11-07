@@ -34,7 +34,7 @@ def move_file(src, tgt):
     log.info('Moving file %s to %s' % (src, tgt))
     if os.path.exists(tgt):
         raise Exception(
-            'Cannot move file %s because target %s already exists' % \
+            'Cannot move file %s because target %s already exists' %
                 (src, tgt))
     os.rename(src, tgt)
 

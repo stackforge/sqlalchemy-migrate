@@ -218,14 +218,14 @@ class Version(object):
             parts = basename.split('_')
             if len(parts) < 3:
                 raise exceptions.ScriptError(
-                    "Invalid SQL script name %s " % basename + \
+                    "Invalid SQL script name %s " % basename +
                     "(needs to be ###_description_database_operation.sql)")
             version = parts[0]
             op = parts[-1]
             dbms = parts[-2]
         else:
             raise exceptions.ScriptError(
-                "Invalid SQL script name %s " % basename + \
+                "Invalid SQL script name %s " % basename +
                 "(needs to be ###_description_database_operation.sql)")
 
         # File the script into a dictionary
