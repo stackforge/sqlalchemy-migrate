@@ -45,7 +45,7 @@ class TestUtil(fixture.Pathed):
             # py 2.4 compatability :-/
             cw = catch_warnings(record=True)
             w = cw.__enter__()
-            
+
             warnings.simplefilter("always")
             engine = construct_engine(url, echo='True')
             self.assertTrue(engine.echo)
@@ -69,7 +69,7 @@ class TestUtil(fixture.Pathed):
         api.create(repo, 'temp')
         api.script('First Version', repo)
         engine = construct_engine('sqlite:///:memory:')
-        
+
         api.version_control(engine, repo)
         api.upgrade(engine, repo)
 
@@ -103,7 +103,7 @@ class TestUtil(fixture.Pathed):
             # py 2.4 compatability :-/
             cw = catch_warnings(record=True)
             w = cw.__enter__()
-            
+
             warnings.simplefilter("always")
 
             # deprecated spelling
@@ -117,7 +117,7 @@ class TestUtil(fixture.Pathed):
                 'model should be in form of module.model:User '
                 'and not module.model.User',
                 str(w[-1].message))
-            
+
         finally:
             cw.__exit__()
 

@@ -18,7 +18,7 @@ class SchemaDiffBase(fixture.DB):
         )
         if kw.get('create', True):
             self.table.create()
-        
+
     def _assert_diff(self, col_A, col_B):
         self._make_table(col_A)
         self.meta.clear()
@@ -43,16 +43,16 @@ class SchemaDiffBase(fixture.DB):
                 self.name2,
                 cd.col_B
                 ), str(diff))
-        
+
 class Test_getDiffOfModelAgainstDatabase(SchemaDiffBase):
     name1 = 'model'
     name2 = 'database'
-    
+
     def _run_diff(self, **kw):
         return schemadiff.getDiffOfModelAgainstDatabase(
             self.meta, self.engine, **kw
             )
-    
+
     @fixture.usedb()
     def test_table_missing_in_db(self):
         self._make_table(create=False)
@@ -184,7 +184,7 @@ class Test_getDiffOfModelAgainstDatabase(SchemaDiffBase):
             Column('data', String(10)),
             Column('data', String(20)),
             )
-        
+
     @fixture.usedb()
     def test_integer_identical(self):
         self._make_table(
@@ -193,7 +193,7 @@ class Test_getDiffOfModelAgainstDatabase(SchemaDiffBase):
         diff = self._run_diff()
         self.assertEqual('No schema diffs', str(diff))
         self.assertFalse(diff)
-        
+
     @fixture.usedb()
     def test_string_identical(self):
         self._make_table(

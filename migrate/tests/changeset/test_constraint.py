@@ -13,7 +13,7 @@ from migrate.tests import fixture
 
 class CommonTestConstraint(fixture.DB):
     """helper functions to test constraints.
-    
+
     we just create a fresh new table and make sure everything is
     as required.
     """
@@ -257,7 +257,7 @@ class TestAutoname(CommonTestConstraint):
         cons = CheckConstraint('id > 3', columns=[self.table.c.id])
         cons.create()
         self.refresh_table()
-    
+
         if not self.engine.name == 'mysql':
             self.table.insert(values={'id': 4, 'fkey': 1}).execute()
             try:
@@ -280,7 +280,7 @@ class TestAutoname(CommonTestConstraint):
         cons = UniqueConstraint(self.table.c.fkey)
         cons.create()
         self.refresh_table()
-    
+
         self.table.insert(values={'fkey': 4, 'id': 1}).execute()
         try:
             self.table.insert(values={'fkey': 4, 'id': 2}).execute()

@@ -28,7 +28,7 @@ class BaseScript(pathed.Pathed):
         self.verify(path)
         super(BaseScript, self).__init__(path)
         log.debug('Script %s loaded successfully' % path)
-    
+
     @classmethod
     def verify(cls, path):
         """Ensure this is a valid script

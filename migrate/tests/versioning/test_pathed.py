@@ -12,7 +12,7 @@ class TestPathed(fixture.Base):
         self.assert_(result==Pathed._parent_path(filepath))
         self.assert_(result==Pathed._parent_path(dirpath))
         self.assert_(result==Pathed._parent_path(sdirpath))
-    
+
     def test_new(self):
         """Pathed(path) shouldn't create duplicate objects of the same path"""
         path='/fgsfds'
@@ -34,7 +34,7 @@ class TestPathed(fixture.Base):
             parent=None
             children=0
             def _init_child(self, child, path):
-                """Keep a tally of children. 
+                """Keep a tally of children.
                 (A real class might do something more interesting here)
                 """
                 self.__class__.children+=1

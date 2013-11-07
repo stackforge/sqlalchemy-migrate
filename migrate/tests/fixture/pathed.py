@@ -30,10 +30,10 @@ class Pathed(base.Base):
     @classmethod
     def _tmp(cls, prefix='', suffix=''):
         """Generate a temporary file name that doesn't exist
-        All filenames are generated inside a temporary directory created by 
-        tempfile.mkdtemp(); only the creating user has access to this directory. 
-        It should be secure to return a nonexistant temp filename in this 
-        directory, unless the user is messing with their own files. 
+        All filenames are generated inside a temporary directory created by
+        tempfile.mkdtemp(); only the creating user has access to this directory.
+        It should be secure to return a nonexistant temp filename in this
+        directory, unless the user is messing with their own files.
         """
         file, ret = tempfile.mkstemp(suffix, prefix, cls._tmpdir)
         os.close(file)
@@ -43,7 +43,7 @@ class Pathed(base.Base):
     @classmethod
     def tmp(cls, *p, **k):
         return cls._tmp(*p, **k)
-        
+
     @classmethod
     def tmp_py(cls, *p, **k):
         return cls._tmp(suffix='.py', *p, **k)
@@ -63,7 +63,7 @@ class Pathed(base.Base):
     @classmethod
     def purge(cls, path):
         """Removes this path if it exists, in preparation for tests
-        Careful - all tests should take place in /tmp. 
+        Careful - all tests should take place in /tmp.
         We don't want to accidentally wipe stuff out...
         """
         if os.path.exists(path):

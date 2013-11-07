@@ -68,7 +68,7 @@ class TestVerNum(fixture.Base):
         self.assert_(VerNum(1) >= 1)
         self.assert_(VerNum(2) >= 1)
         self.assertFalse(VerNum(1) >= 2)
-        
+
 
 class TestVersion(fixture.Pathed):
 
@@ -128,11 +128,11 @@ class TestVersion(fixture.Pathed):
 
     def test_selection(self):
         """Verify right sql script is selected"""
-        
+
         # Create empty directory.
         path = self.tmp_repos()
         os.mkdir(path)
-        
+
         # Create files -- files must be present or you'll get an exception later.
         python_file = '001_initial_.py'
         sqlite_upgrade_file = '001_sqlite_upgrade.sql'
@@ -143,13 +143,13 @@ class TestVersion(fixture.Pathed):
 
         ver = Version(1, path, [sqlite_upgrade_file])
         self.assertEqual(os.path.basename(ver.script('sqlite', 'upgrade').path), sqlite_upgrade_file)
-    
+
         ver = Version(1, path, [default_upgrade_file])
         self.assertEqual(os.path.basename(ver.script('default', 'upgrade').path), default_upgrade_file)
-    
+
         ver = Version(1, path, [sqlite_upgrade_file, default_upgrade_file])
         self.assertEqual(os.path.basename(ver.script('sqlite', 'upgrade').path), sqlite_upgrade_file)
-    
+
         ver = Version(1, path, [sqlite_upgrade_file, default_upgrade_file, python_file])
         self.assertEqual(os.path.basename(ver.script('postgres', 'upgrade').path), default_upgrade_file)
 
