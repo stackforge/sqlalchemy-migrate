@@ -115,7 +115,7 @@ class TestAddDropColumn(fixture.DB):
             return col.create()
         def drop_func(col):
             #self.assert_(col.table is None,col.table)
-            #self.table.append_column(col)
+            # self.table.append_column(col)
             return col.drop()
         return self.run_(add_func, drop_func)
 
@@ -646,7 +646,7 @@ class TestColumnChange(fixture.DB):
         self.table.c.atad.alter(name='data')
         self.refresh_table(self.table.name)
         self.assert_('atad' not in self.table.c.keys())
-        self.table.c.data # Should not raise exception
+        self.table.c.data  # Should not raise exception
         self.assertEqual(num_rows(self.table.c.data, content), 1)
 
         # ...as a function, given a new object
@@ -700,7 +700,7 @@ class TestColumnChange(fixture.DB):
         default = 'my_default'
         self.table.c.data.alter(server_default=DefaultClause(default))
         self.refresh_table(self.table.name)
-        #self.assertEqual(self.table.c.data.server_default.arg,default)
+        # self.assertEqual(self.table.c.data.server_default.arg,default)
         # TextClause returned by autoload
         self.assert_(default in str(self.table.c.data.server_default.arg))
         self.engine.execute(self.table.insert(), id=12)

@@ -153,7 +153,7 @@ class ControlledSchema(object):
         if version is None:
             version = 0
         try:
-            version = VerNum(version) # raises valueerror
+            version = VerNum(version)  # raises valueerror
             if version < 0 or version > repository.latest:
                 raise ValueError()
         except ValueError:

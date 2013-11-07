@@ -19,7 +19,7 @@ import sys, os
 # If your extensions are in another directory, add it here. If the directory
 # is relative to the documentation root, use os.path.abspath to make it
 # absolute, like shown here.
-#sys.path.append(os.path.abspath('.'))
+# sys.path.append(os.path.abspath('.'))
 # Allow module docs to build without having sqlalchemy-migrate installed:
 sys.path.append(os.path.dirname(os.path.abspath('.')))
 

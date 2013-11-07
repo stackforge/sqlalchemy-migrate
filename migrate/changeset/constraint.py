@@ -61,7 +61,7 @@ class ConstraintChangeset(object):
         # the spirit of Constraint objects is that they
         # are immutable (just like in a DB.  they're only ADDed
         # or DROPped).
-        #self.columns.clear()
+        # self.columns.clear()
         return self
 
 

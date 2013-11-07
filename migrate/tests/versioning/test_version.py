@@ -106,7 +106,7 @@ class TestVersion(fixture.Pathed):
         open(os.path.join(self.temp_usable_dir, '1'), 'w')
         self.assertRaises(Exception, Collection, self.temp_usable_dir)
 
-    #TODO: def test_collection_unicode(self):
+    # TODO: def test_collection_unicode(self):
     #    pass
 
     def test_create_new_python_version(self):
