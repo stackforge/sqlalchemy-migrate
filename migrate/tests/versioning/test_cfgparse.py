@@ -17,7 +17,7 @@ class TestConfigParser(fixture.Base):
         parser.set('section', 'option', 'value')
         self.assertEqual(parser.get('section', 'option'), 'value')
         self.assertEqual(parser.to_dict()['section']['option'], 'value')
-    
+
     def test_table_config(self):
         """We should be able to specify the table to be used with a repository"""
         default_text = Repository.prepare_config(Template().get_repository(),

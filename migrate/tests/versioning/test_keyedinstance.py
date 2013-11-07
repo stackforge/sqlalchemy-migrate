@@ -19,7 +19,7 @@ class TestKeydInstance(fixture.Base):
                 return str(key)
             def __init__(self, value):
                 self.value=value
-        
+
         a10 = Uniq1('a')
 
         # Different key: different instance

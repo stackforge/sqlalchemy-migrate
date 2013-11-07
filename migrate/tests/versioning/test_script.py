@@ -223,7 +223,7 @@ User = Table('User', meta,
         f = open(path, 'w')
         f.write(contents)
         f.close()
-        
+
 
 class TestSqlScript(fixture.Pathed, fixture.DB):
 

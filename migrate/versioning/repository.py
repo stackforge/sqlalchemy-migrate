@@ -153,7 +153,7 @@ class Repository(pathed.Pathed):
 
     def create_script(self, description, **k):
         """API to :meth:`migrate.versioning.version.Collection.create_new_python_version`"""
-        
+
         k['use_timestamp_numbering'] = self.use_timestamp_numbering
         self.versions.create_new_python_version(description, **k)
 
@@ -229,7 +229,7 @@ class Repository(pathed.Pathed):
     @classmethod
     def create_manage_file(cls, file_, **opts):
         """Create a project management script (manage.py)
-        
+
         :param file_: Destination file to be written
         :param opts: Options that are passed to :func:`migrate.versioning.shell.main`
         """

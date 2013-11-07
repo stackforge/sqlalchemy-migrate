@@ -15,7 +15,7 @@ class SqlScript(base.BaseScript):
     @classmethod
     def create(cls, path, **opts):
         """Create an empty migration script at specified path
-        
+
         :returns: :class:`SqlScript instance <migrate.versioning.script.sql.SqlScript>`"""
         cls.require_notfound(path)
 

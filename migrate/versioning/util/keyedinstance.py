@@ -4,7 +4,7 @@
 class KeyedInstance(object):
     """A class whose instances have a unique identifier of some sort
     No two instances with the same unique ID should exist - if we try to create
-    a second instance, the first should be returned. 
+    a second instance, the first should be returned.
     """
 
     _instances = dict()
@@ -24,7 +24,7 @@ class KeyedInstance(object):
     @classmethod
     def _key(cls, *p, **k):
         """Given a unique identifier, return a dictionary key
-        This should be overridden by child classes, to specify which parameters 
+        This should be overridden by child classes, to specify which parameters
         should determine an object's uniqueness
         """
         raise NotImplementedError()
