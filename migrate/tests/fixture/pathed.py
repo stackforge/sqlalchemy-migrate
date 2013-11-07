@@ -35,7 +35,7 @@ class Pathed(base.Base):
         It should be secure to return a nonexistant temp filename in this 
         directory, unless the user is messing with their own files. 
         """
-        file, ret = tempfile.mkstemp(suffix,prefix,cls._tmpdir)
+        file, ret = tempfile.mkstemp(suffix, prefix, cls._tmpdir)
         os.close(file)
         os.remove(ret)
         return ret

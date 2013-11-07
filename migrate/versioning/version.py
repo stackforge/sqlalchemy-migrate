@@ -25,7 +25,7 @@ class VerNum(object):
         ret = cls._instances[val]
         return ret
 
-    def __init__(self,value):
+    def __init__(self, value):
         self.value = str(int(value))
         if self < 0:
             raise ValueError("Version number cannot be negative")

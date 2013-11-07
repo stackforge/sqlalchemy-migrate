@@ -66,7 +66,7 @@ class PythonScript(base.BaseScript):
             excludeTables=[repository.version_table])
         # TODO: diff can be False (there is no difference?)
         decls, upgradeCommands, downgradeCommands = \
-            genmodel.ModelGenerator(diff,engine).genB2AMigration()
+            genmodel.ModelGenerator(diff, engine).genB2AMigration()
 
         # Store differences into file.
         src = Template(opts.pop('templates_path', None)).get_script(opts.pop('templates_theme', None))

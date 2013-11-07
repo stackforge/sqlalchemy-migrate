@@ -50,7 +50,7 @@ class TestUtil(fixture.Pathed):
             engine = construct_engine(url, echo='True')
             self.assertTrue(engine.echo)
 
-            self.assertEqual(len(w),1)
+            self.assertEqual(len(w), 1)
             self.assertTrue(issubclass(w[-1].category,
                                        MigrateDeprecationWarning))
             self.assertEqual(
@@ -110,7 +110,7 @@ class TestUtil(fixture.Pathed):
             FakeFloat = load_model('test_load_model.FakeFloat')
             self.assert_(isinstance(FakeFloat(), int))
 
-            self.assertEqual(len(w),1)
+            self.assertEqual(len(w), 1)
             self.assertTrue(issubclass(w[-1].category,
                                        MigrateDeprecationWarning))
             self.assertEqual(

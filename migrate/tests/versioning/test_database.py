@@ -8,4 +8,4 @@ class TestConnect(fixture.DB):
     def test_connect(self):
         """Connect to the database successfully"""
         # Connection is done in fixture.DB setup; make sure we can do stuff
-        select(['42'],bind=self.engine).execute()
+        select(['42'], bind=self.engine).execute()

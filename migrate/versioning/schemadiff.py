@@ -70,7 +70,7 @@ class ColDiff(object):
 
     diff = False
 
-    def __init__(self,col_A,col_B):
+    def __init__(self, col_A, col_B):
         self.col_A = col_A
         self.col_B = col_B
 
@@ -84,14 +84,14 @@ class ColDiff(object):
             self.diff = True
             return
 
-        if isinstance(self.type_A,Float) or isinstance(self.type_B,Float):
-            if not (isinstance(self.type_A,Float) and isinstance(self.type_B,Float)):
+        if isinstance(self.type_A, Float) or isinstance(self.type_B, Float):
+            if not (isinstance(self.type_A, Float) and isinstance(self.type_B, Float)):
                 self.diff=True
                 return
 
-        for attr in ('precision','scale','length'):
-            A = getattr(self.type_A,attr,None)
-            B = getattr(self.type_B,attr,None)
+        for attr in ('precision', 'scale', 'length'):
+            A = getattr(self.type_A, attr, None)
+            B = getattr(self.type_B, attr, None)
             if not (A is None or B is None) and A!=B:
                 self.diff=True
                 return
@@ -191,7 +191,7 @@ class SchemaDiff(object):
 
         self.metadataA, self.metadataB = metadataA, metadataB
         self.labelA, self.labelB = labelA, labelB
-        self.label_width = max(len(labelA),len(labelB))
+        self.label_width = max(len(labelA), len(labelB))
         excludeTables = set(excludeTables or [])
 
         A_table_names = set(metadataA.tables.keys())
@@ -246,35 +246,35 @@ class SchemaDiff(object):
         out = []
         column_template ='      %%%is: %%r' % self.label_width
 
-        for names,label in (
-            (self.tables_missing_from_A,self.labelA),
-            (self.tables_missing_from_B,self.labelB),
+        for names, label in (
+            (self.tables_missing_from_A, self.labelA),
+            (self.tables_missing_from_B, self.labelB),
             ):
             if names:
                 out.append(
                     '  tables missing from %s: %s' % (
-                        label,', '.join(sorted(names))
+                        label, ', '.join(sorted(names))
                         )
                     )
 
-        for name,td in sorted(self.tables_different.items()):
+        for name, td in sorted(self.tables_different.items()):
             out.append(
                '  table with differences: %s' % name
                )
-            for names,label in (
-                (td.columns_missing_from_A,self.labelA),
-                (td.columns_missing_from_B,self.labelB),
+            for names, label in (
+                (td.columns_missing_from_A, self.labelA),
+                (td.columns_missing_from_B, self.labelB),
                 ):
                 if names:
                     out.append(
                         '    %s missing these columns: %s' % (
-                            label,', '.join(sorted(names))
+                            label, ', '.join(sorted(names))
                             )
                         )
-            for name,cd in td.columns_different.items():
+            for name, cd in td.columns_different.items():
                 out.append('    column with differences: %s' % name)
-                out.append(column_template % (self.labelA,cd.col_A))
-                out.append(column_template % (self.labelB,cd.col_B))
+                out.append(column_template % (self.labelA, cd.col_A))
+                out.append(column_template % (self.labelB, cd.col_B))
 
         if out:
             out.insert(0, 'Schema diffs:')
