@@ -123,6 +123,7 @@ class ANSIColumnGenerator(AlterTableVisitor, SchemaGenerator):
     def add_foreignkey(self, fk):
         self.connection.execute(AddConstraint(fk))
 
+
 class ANSIColumnDropper(AlterTableVisitor, SchemaDropper):
     """Extends ANSI SQL dropper for column dropping (``ALTER TABLE
     DROP COLUMN``).
@@ -289,11 +290,13 @@ class ANSIConstraintCommon(AlterTableVisitor):
     def visit_migrate_unique_constraint(self, *p, **k):
         self._visit_constraint(*p, **k)
 
+
 class ANSIConstraintGenerator(ANSIConstraintCommon, SchemaGenerator):
     def _visit_constraint(self, constraint):
         constraint.name = self.get_constraint_name(constraint)
         self.append(self.process(AddConstraint(constraint)))
         self.execute()
+
 
 class ANSIConstraintDropper(ANSIConstraintCommon, SchemaDropper):
     def _visit_constraint(self, constraint):

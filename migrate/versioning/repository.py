@@ -17,6 +17,7 @@ from migrate.versioning.config import *
 
 log = logging.getLogger(__name__)
 
+
 class Changeset(dict):
     """A collection of changes to be applied to a database.
 

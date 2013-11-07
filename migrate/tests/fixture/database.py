@@ -19,6 +19,7 @@ from migrate.tests.fixture.pathed import Pathed
 
 log = logging.getLogger(__name__)
 
+
 @Memoize
 def readurls():
     """read URLs from config file return a list"""
@@ -41,6 +42,7 @@ Copy %(filename)s.tmpl to %(filename)s and edit your database URLs.""" % locals(
         ret.append(line)
     fd.close()
     return ret
+
 
 def is_supported(url, supported, not_supported):
     db = url.split(':', 1)[0]

@@ -8,6 +8,7 @@ from migrate.versioning import schemadiff
 
 from migrate.tests import fixture
 
+
 class SchemaDiffBase(fixture.DB):
 
     level = fixture.DB.CONNECT
@@ -43,6 +44,7 @@ class SchemaDiffBase(fixture.DB):
                 self.name2,
                 cd.col_B
                 ), str(diff))
+
 
 class Test_getDiffOfModelAgainstDatabase(SchemaDiffBase):
     name1 = 'model'
@@ -211,6 +213,7 @@ class Test_getDiffOfModelAgainstDatabase(SchemaDiffBase):
         diff = self._run_diff()
         self.assertEqual('No schema diffs', str(diff))
         self.assertFalse(diff)
+
 
 class Test_getDiffOfModelAgainstModel(Test_getDiffOfModelAgainstDatabase):
     name1 = 'metadataA'

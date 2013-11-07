@@ -76,12 +76,14 @@ class InvalidVersionError(Error):
 
 # migrate.changeset
 
+
 class NotSupportedError(Error):
     """Not supported error"""
 
 
 class InvalidConstraintError(Error):
     """Invalid constraint error"""
+
 
 class MigrateDeprecationWarning(DeprecationWarning):
     """Warning for deprecated features in Migrate"""

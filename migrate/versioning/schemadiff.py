@@ -9,6 +9,7 @@ from sqlalchemy.types import Float
 
 log = logging.getLogger(__name__)
 
+
 def getDiffOfModelAgainstDatabase(metadata, engine, excludeTables=None):
     """
     Return differences of model against database.
@@ -99,6 +100,7 @@ class ColDiff(object):
     def __nonzero__(self):
         return self.diff
 
+
 class TableDiff(object):
     """
     Container for differences in one :class:`~sqlalchemy.schema.Table`
@@ -134,6 +136,7 @@ class TableDiff(object):
             self.columns_missing_from_B or
             self.columns_different
             )
+
 
 class SchemaDiff(object):
     """

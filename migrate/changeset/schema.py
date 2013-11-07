@@ -29,6 +29,7 @@ __all__ = [
     'ColumnDelta',
 ]
 
+
 def create_column(column, table=None, *p, **kw):
     """Create a column, given the table.
 

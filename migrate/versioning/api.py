@@ -82,6 +82,7 @@ def help(cmd=None, **opts):
         ret = ret.replace('%prog', sys.argv[0])
     return ret
 
+
 @catch_known_errors
 def create(repository, name, **opts):
     """%prog create REPOSITORY_PATH NAME [--table=TABLE]
@@ -200,6 +201,7 @@ def downgrade(url, repository, version, **opts):
     err = "Cannot downgrade a database of version %s to version %s. "\
         "Try 'upgrade' instead."
     return _migrate(url, repository, version, upgrade=False, err=err, **opts)
+
 
 @with_engine
 def test(url, repository, **opts):
@@ -334,6 +336,7 @@ def update_db_from_model(url, repository, model, **opts):
     engine = opts.pop('engine')
     schema = ControlledSchema(engine, repository)
     schema.update_db_from_model(model)
+
 
 @with_engine
 def _migrate(url, repository, version, upgrade, err, **opts):
