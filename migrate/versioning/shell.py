@@ -201,7 +201,7 @@ def main(argv=None, **kwargs):
     f_args_default = f_args[len(f_args) - num_defaults:]
     required = list(set(f_required) - set(f_args_default))
     if required:
-        parser.error("Not enough arguments for command %s: %s not specified" \
+        parser.error("Not enough arguments for command %s: %s not specified"
             % (command, ', '.join(required)))
 
     # handle command
