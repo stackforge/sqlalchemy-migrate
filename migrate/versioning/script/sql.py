@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import logging
 import shutil
+import sqlparse
 
 from migrate.versioning.script import base
 from migrate.versioning.template import Template
@@ -34,13 +35,9 @@ class SqlScript(base.BaseScript):
         try:
             trans = conn.begin()
             try:
-                # HACK: SQLite doesn't allow multiple statements through
-                # its execute() method, but it provides executescript() instead
-                dbapi = conn.engine.raw_connection()
-                if executemany and getattr(dbapi, 'executescript', None):
-                    dbapi.executescript(text)
-                else:
-                    conn.execute(text)
+                statements = sqlparse.split(text)
+                for statement in statements:
+                    conn.execute(statement)
                 trans.commit()
             except:
                 trans.rollback()

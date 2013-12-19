@@ -3,3 +3,4 @@ pbr>=0.5.21,<1.0
 SQLAlchemy >= 0.6
 decorator
 Tempita >= 0.4
+sqlparse >= 0.1.10
