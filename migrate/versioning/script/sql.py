@@ -37,7 +37,8 @@ class SqlScript(base.BaseScript):
             try:
                 statements = sqlparse.split(text)
                 for statement in statements:
-                    conn.execute(statement)
+                    if statement.strip() != '':
+                        conn.execute(statement)
                 trans.commit()
             except:
                 trans.rollback()
