@@ -7,7 +7,13 @@
 import StringIO
 
 import sqlalchemy as sa
-from sqlalchemy.schema import SchemaVisitor
+# NOTE(sdague): sqla 0.9 changes some namespaces, we might
+# be able to get upstream to put a compat layer in for this, but
+# until then, we can do this ugly import bit
+try:
+    from sqlalchemy.sql.base import SchemaVisitor
+except:
+    from sqlalchemy.schema import SchemaVisitor
 from sqlalchemy.engine.default import DefaultDialect
 from sqlalchemy.sql import ClauseElement
 from sqlalchemy.schema import (ForeignKeyConstraint,
@@ -56,7 +62,7 @@ class AlterTableVisitor(SchemaVisitor):
             # adapt to 0.6 which uses a string-returning
             # object
             self.append(" %s" % ret)
-            
+
     def _to_table(self, param):
         """Returns the table object for the given param object."""
         if isinstance(param, (sa.Column, sa.Index, sa.schema.Constraint)):
@@ -113,7 +119,7 @@ class ANSIColumnGenerator(AlterTableVisitor, SchemaGenerator):
         # SA bounds FK constraints to table, add manually
         for fk in column.foreign_keys:
             self.add_foreignkey(fk.constraint)
-        
+
         # add primary key constraint if needed
         if column.primary_key_name:
             cons = constraint.PrimaryKeyConstraint(column,
@@ -272,10 +278,15 @@ class ANSIConstraintCommon(AlterTableVisitor):
         :param cons: constraint object
         """
         if cons.name is not None:
+            print "Using real name"
             ret = cons.name
         else:
+            print "Autoname called"
             ret = cons.name = cons.autoname()
-        return self.preparer.quote(ret, cons.quote)
+        if not hasattr(ret, 'quote'):
+            setattr(ret, 'quote', cons.quote)
+        else:
+            return self.preparer.quote(ret, cons.quote)
 
     def visit_migrate_primary_key_constraint(self, *p, **k):
         self._visit_constraint(*p, **k)
