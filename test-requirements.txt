@@ -1,26 +1,26 @@
 # Install bounded pep8/pyflakes first, then let flake8 install
 pep8==1.4.5
-pyflakes==0.7.2
+pyflakes>=0.7.2,<0.7.4
 flake8==2.0
-hacking>=0.5.3,<0.6
+hacking>=0.8.0,<0.9
 
 coverage>=3.6
 discover
 feedparser
-fixtures>=0.3.12
-mox==0.5.3
+fixtures>=0.3.14
+mox>=0.5.3
 MySQL-python
 psycopg2
 pylint==0.25.2
 python-subunit
-sphinx>=1.1.2
+sphinx>=1.1.2,<1.2
 sphinxcontrib_issuetracker
-testrepository>=0.0.13
-testtools>=0.9.27
+testrepository>=0.0.17
+testtools>=0.9.32
 
 # NOTE: scripttest 1.0.1 removes base_path argument to ScriptTest
 scripttest==1.0
 # NOTE(rpodolyaka): This version identifier is currently necessary as
 #                   pytz otherwise does not install on pip 1.4 or higher
-pytz>=0a
+pytz>=2010h
 pysqlite
