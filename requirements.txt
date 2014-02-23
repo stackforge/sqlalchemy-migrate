@@ -1,5 +1,8 @@
 pbr>=0.5.21,<1.0
 
-SQLAlchemy>=0.7.8,<=0.7.99
+# never put a cap on this, *ever*, sqla versions are handled via
+# tox, and if SQLA is capped it will only make it so we aren't testing
+# against all the versions we are compatible with.
+SQLAlchemy>=0.7.8
 decorator
 Tempita >= 0.4
