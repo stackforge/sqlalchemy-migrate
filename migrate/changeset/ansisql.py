@@ -19,6 +19,7 @@ from sqlalchemy.schema import (ForeignKeyConstraint,
 from migrate import exceptions
 import sqlalchemy.sql.compiler
 from migrate.changeset import constraint
+from migrate.changeset import util
 
 from sqlalchemy.schema import AddConstraint, DropConstraint
 from sqlalchemy.sql.compiler import DDLCompiler
@@ -56,7 +57,7 @@ class AlterTableVisitor(SchemaVisitor):
             # adapt to 0.6 which uses a string-returning
             # object
             self.append(" %s" % ret)
-            
+
     def _to_table(self, param):
         """Returns the table object for the given param object."""
         if isinstance(param, (sa.Column, sa.Index, sa.schema.Constraint)):
@@ -113,7 +114,7 @@ class ANSIColumnGenerator(AlterTableVisitor, SchemaGenerator):
         # SA bounds FK constraints to table, add manually
         for fk in column.foreign_keys:
             self.add_foreignkey(fk.constraint)
-        
+
         # add primary key constraint if needed
         if column.primary_key_name:
             cons = constraint.PrimaryKeyConstraint(column,
@@ -157,8 +158,8 @@ class ANSISchemaChanger(AlterTableVisitor, SchemaGenerator):
     def visit_table(self, table):
         """Rename a table. Other ops aren't supported."""
         self.start_alter_table(table)
-        self.append("RENAME TO %s" % self.preparer.quote(table.new_name,
-                                                         table.quote))
+        q = util.safe_quote(table)
+        self.append("RENAME TO %s" % self.preparer.quote(table.new_name, q))
         self.execute()
 
     def visit_index(self, index):
@@ -227,7 +228,8 @@ class ANSISchemaChanger(AlterTableVisitor, SchemaGenerator):
     def start_alter_column(self, table, col_name):
         """Starts ALTER COLUMN"""
         self.start_alter_table(table)
-        self.append("ALTER COLUMN %s " % self.preparer.quote(col_name, table.quote))
+        q = util.safe_quote(table)
+        self.append("ALTER COLUMN %s " % self.preparer.quote(col_name, q))
 
     def _visit_column_nullable(self, table, column, delta):
         nullable = delta['nullable']
@@ -250,7 +252,8 @@ class ANSISchemaChanger(AlterTableVisitor, SchemaGenerator):
 
     def _visit_column_name(self, table, column, delta):
         self.start_alter_table(table)
-        col_name = self.preparer.quote(delta.current_name, table.quote)
+        q = util.safe_quote(table)
+        col_name = self.preparer.quote(delta.current_name, q)
         new_name = self.preparer.format_column(delta.result_column)
         self.append('RENAME COLUMN %s TO %s' % (col_name, new_name))
 
