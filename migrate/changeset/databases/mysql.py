@@ -2,6 +2,7 @@
    MySQL database specific implementations of changeset classes.
 """
 
+import sqlalchemy
 from sqlalchemy.databases import mysql as sa_base
 from sqlalchemy import types as sqltypes
 
@@ -34,7 +35,12 @@ class MySQLSchemaChanger(MySQLSchemaGenerator, ansisql.ANSISchemaChanger):
                 first = primary_keys.pop(0)
                 if first.name == delta.current_name:
                     colspec += " AUTO_INCREMENT"
-        old_col_name = self.preparer.quote(delta.current_name, table.quote)
+        sqla_majv,sqla_medv,sqla_minv = sqlalchemy.__version__.split('.')
+        if int(sqla_medv) < 9:
+            q = table.quote
+        else:
+            q = table.name.quote
+        old_col_name = self.preparer.quote(delta.current_name, q)
 
         self.start_alter_table(table)
 
