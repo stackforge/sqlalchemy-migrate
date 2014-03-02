@@ -157,8 +157,14 @@ class ANSISchemaChanger(AlterTableVisitor, SchemaGenerator):
     def visit_table(self, table):
         """Rename a table. Other ops aren't supported."""
         self.start_alter_table(table)
-        self.append("RENAME TO %s" % self.preparer.quote(table.new_name,
-                                                         table.quote))
+        parts = sqlalchemy.__version__.split('.')
+        sqla_majv = parts[0]
+        sqla_medv = parts[1]
+        if int(sqla_majv) == 0 and int(sqla_medv) < 9:
+            q = table.quote
+        else:
+            q = table.name.quote
+        self.append("RENAME TO %s" % self.preparer.quote(table.new_name, q))
         self.execute()
 
     def visit_index(self, index):
