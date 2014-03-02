@@ -275,7 +275,7 @@ class ANSIConstraintCommon(AlterTableVisitor):
             ret = cons.name
         else:
             ret = cons.name = cons.autoname()
-        return self.preparer.quote(ret, cons.quote)
+        return ret
 
     def visit_migrate_primary_key_constraint(self, *p, **k):
         self._visit_constraint(*p, **k)
