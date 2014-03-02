@@ -22,7 +22,6 @@ class Shell(Pathed):
         log.debug('PATH for ScriptTest: %s', migrate_path)
         self.env = TestFileEnvironment(
             base_path=os.path.join(self.temp_usable_dir, 'env'),
-            script_path=[migrate_path],
         )
 
     def run_version(self, repos_path):
