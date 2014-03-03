@@ -334,7 +334,7 @@ class ColumnDelta(DictMixin, sqlalchemy.schema.SchemaItem):
         while len(p):
             if isinstance(p[0], basestring):
                 k.setdefault('name', p.pop(0))
-            elif isinstance(p[0], sqlalchemy.types.AbstractType):
+            elif isinstance(p[0], sqlalchemy.types.TypeEngine):
                 k.setdefault('type', p.pop(0))
             elif callable(p[0]):
                 p[0] = p[0]()
