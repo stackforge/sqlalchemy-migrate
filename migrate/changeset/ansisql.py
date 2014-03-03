@@ -157,8 +157,10 @@ class ANSISchemaChanger(AlterTableVisitor, SchemaGenerator):
     def visit_table(self, table):
         """Rename a table. Other ops aren't supported."""
         self.start_alter_table(table)
-        sqla_majv,sqla_medv,sqla_minv = sqlalchemy.__version__.split('.')
-        if int(sqla_medv) < 9:
+        parts = sqlalchemy.__version__.split('.')
+        sqla_majv = parts[0]
+        sqla_medv = parts[1]
+        if int(sqla_majv) == 0 and int(sqla_medv) < 9:
             q = table.quote
         else:
             q = table.name.quote
@@ -231,7 +233,14 @@ class ANSISchemaChanger(AlterTableVisitor, SchemaGenerator):
     def start_alter_column(self, table, col_name):
         """Starts ALTER COLUMN"""
         self.start_alter_table(table)
-        self.append("ALTER COLUMN %s " % self.preparer.quote(col_name, table.quote))
+        parts = sqlalchemy.__version__.split('.')
+        sqla_majv = parts[0]
+        sqla_medv = parts[1]
+        if int(sqla_medv) < 9:
+            q = table.quote
+        else:
+            q = table.name.quote
+        self.append("ALTER COLUMN %s " % self.preparer.quote(col_name, q))
 
     def _visit_column_nullable(self, table, column, delta):
         nullable = delta['nullable']
@@ -254,7 +263,14 @@ class ANSISchemaChanger(AlterTableVisitor, SchemaGenerator):
 
     def _visit_column_name(self, table, column, delta):
         self.start_alter_table(table)
-        col_name = self.preparer.quote(delta.current_name, table.quote)
+        parts = sqlalchemy.__version__.split('.')
+        sqla_majv = parts[0]
+        sqla_medv = parts[1]
+        if int(sqla_majv) == 0 and int(sqla_medv) < 9:
+            q = table.quote
+        else:
+            q = table.name.quote
+        col_name = self.preparer.quote(delta.current_name, q)
         new_name = self.preparer.format_column(delta.result_column)
         self.append('RENAME COLUMN %s TO %s' % (col_name, new_name))
 
