@@ -8,8 +8,7 @@ from migrate.changeset.databases import (sqlite,
                                          postgres,
                                          mysql,
                                          oracle,
-                                         firebird,
-                                         ibmdb2)
+                                         firebird)
 
 
 # Map SA dialects to the corresponding Migrate extensions
@@ -20,9 +19,18 @@ DIALECTS = {
     "postgresql": postgres.PGDialect,
     "mysql": mysql.MySQLDialect,
     "oracle": oracle.OracleDialect,
-    "firebird": firebird.FBDialect,
-    "ibm_db_sa": ibmdb2.IBMDBDialect
+    "firebird": firebird.FBDialect
 }
+
+
+# NOTE(mriedem): We have to conditionally check for DB2 in case ibm_db_sa
+# isn't available since ibm_db_sa is not packaged in sqlalchemy like the
+# other dialects.
+try:
+    from migrate.changeset.databases import ibmdb2
+    DIALECTS["ibm_db_sa"] = ibmdb2.IBMDBDialect
+except ImportError:
+    pass
 
 
 def get_engine_visitor(engine, name):
