@@ -1,0 +1,10 @@
+Verified+2: Jenkins
+Approved+1: David Ripton <dripton@redhat.com>
+Code-Review+2: David Ripton <dripton@redhat.com>
+Approved+1: Thomas Goirand <thomas@goirand.fr>
+Code-Review+2: Thomas Goirand <thomas@goirand.fr>
+Submitted-by: Jenkins
+Submitted-at: Tue, 04 Mar 2014 15:32:16 +0000
+Reviewed-on: https://review.openstack.org/77403
+Project: stackforge/sqlalchemy-migrate
+Branch: refs/heads/master
