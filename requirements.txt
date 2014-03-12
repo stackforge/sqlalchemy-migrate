@@ -7,3 +7,4 @@ SQLAlchemy>=0.7.8
 decorator
 six>=1.4.1
 Tempita >= 0.4
+sqlparse >= 0.1.10
