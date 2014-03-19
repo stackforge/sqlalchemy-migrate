@@ -12,7 +12,7 @@ class TestConfigParser(fixture.Base):
     def test_to_dict(self):
         """Correctly interpret config results as dictionaries"""
         parser = cfgparse.Parser(dict(default_value=42))
-        self.assert_(len(parser.sections()) == 0)
+        self.assertTrue(len(parser.sections()) == 0)
         parser.add_section('section')
         parser.set('section','option','value')
         self.assertEqual(parser.get('section', 'option'), 'value')

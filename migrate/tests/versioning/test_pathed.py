@@ -9,9 +9,9 @@ class TestPathed(fixture.Base):
         sdirpath='/fgsfds/moot/'
 
         result='/fgsfds'
-        self.assert_(result==Pathed._parent_path(filepath))
-        self.assert_(result==Pathed._parent_path(dirpath))
-        self.assert_(result==Pathed._parent_path(sdirpath))
+        self.assertTrue(result==Pathed._parent_path(filepath))
+        self.assertTrue(result==Pathed._parent_path(dirpath))
+        self.assertTrue(result==Pathed._parent_path(sdirpath))
     
     def test_new(self):
         """Pathed(path) shouldn't create duplicate objects of the same path"""
@@ -20,13 +20,13 @@ class TestPathed(fixture.Base):
             attr=None
         o1=Test(path)
         o2=Test(path)
-        self.assert_(isinstance(o1,Test))
-        self.assert_(o1.path==path)
-        self.assert_(o1 is o2)
+        self.assertTrue(isinstance(o1,Test))
+        self.assertTrue(o1.path==path)
+        self.assertTrue(o1 is o2)
         o1.attr='herring'
-        self.assert_(o2.attr=='herring')
+        self.assertTrue(o2.attr=='herring')
         o2.attr='shrubbery'
-        self.assert_(o1.attr=='shrubbery')
+        self.assertTrue(o1.attr=='shrubbery')
 
     def test_parent(self):
         """Parents should be fetched correctly"""
@@ -45,7 +45,7 @@ class TestPathed(fixture.Base):
         path='/fgsfds/moot.py'
         parent_path='/fgsfds'
         object=Child(path)
-        self.assert_(isinstance(object,Child))
-        self.assert_(isinstance(object.parent,Parent))
-        self.assert_(object.path==path)
-        self.assert_(object.parent.path==parent_path)
+        self.assertTrue(isinstance(object,Child))
+        self.assertTrue(isinstance(object.parent,Parent))
+        self.assertTrue(object.path==path)
+        self.assertTrue(object.parent.path==parent_path)

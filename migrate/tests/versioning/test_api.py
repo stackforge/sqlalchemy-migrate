@@ -15,7 +15,7 @@ class TestAPI(Pathed):
         self.assertTrue(isinstance(api.help('help'), basestring))
         self.assertRaises(UsageError, api.help)
         self.assertRaises(UsageError, api.help, 'foobar')
-        self.assert_(isinstance(api.help('create'), str))
+        self.assertTrue(isinstance(api.help('create'), str))
 
         # test that all commands return some text
         for cmd in api.__all__:

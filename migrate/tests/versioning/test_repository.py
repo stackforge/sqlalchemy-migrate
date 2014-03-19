@@ -22,12 +22,12 @@ class TestRepository(fixture.Pathed):
         repo = Repository.create(path, name)
         config_path = repo.config.path
         manage_path = os.path.join(repo.path, 'manage.py')
-        self.assert_(repo)
+        self.assertTrue(repo)
 
         # Files should actually be created
-        self.assert_(os.path.exists(path))
-        self.assert_(os.path.exists(config_path))
-        self.assert_(os.path.exists(manage_path))
+        self.assertTrue(os.path.exists(path))
+        self.assertTrue(os.path.exists(config_path))
+        self.assertTrue(os.path.exists(manage_path))
 
         # Can't create it again: it already exists
         self.assertRaises(exceptions.PathFoundError, Repository.create, path, name)
@@ -39,9 +39,9 @@ class TestRepository(fixture.Pathed):
         path = self.test_create()
         repos = Repository(path)
 
-        self.assert_(repos)
-        self.assert_(repos.config)
-        self.assert_(repos.config.get('db_settings', 'version_table'))
+        self.assertTrue(repos)
+        self.assertTrue(repos.config)
+        self.assertTrue(repos.config.get('db_settings', 'version_table'))
 
         # version_table's default isn't none
         self.assertNotEquals(repos.config.get('db_settings', 'version_table'), 'None')
@@ -49,7 +49,7 @@ class TestRepository(fixture.Pathed):
     def test_load_notfound(self):
         """Nonexistant repositories shouldn't be loaded"""
         path = self.tmp_repos()
-        self.assert_(not os.path.exists(path))
+        self.assertTrue(not os.path.exists(path))
         self.assertRaises(exceptions.InvalidRepositoryError, Repository, path)
 
     def test_load_invalid(self):
@@ -78,23 +78,23 @@ class TestVersionedRepository(fixture.Pathed):
         self.assertEqual(repos.latest, 0)
         # repos.latest isn't an integer, but a VerNum
         # (so we can't just assume the following tests are correct)
-        self.assert_(repos.latest >= 0)
-        self.assert_(repos.latest < 1)
+        self.assertTrue(repos.latest >= 0)
+        self.assertTrue(repos.latest < 1)
 
         # Create a script and test again
         repos.create_script('')
         self.assertEqual(repos.latest, 1)
-        self.assert_(repos.latest >= 0)
-        self.assert_(repos.latest >= 1)
-        self.assert_(repos.latest < 2)
+        self.assertTrue(repos.latest >= 0)
+        self.assertTrue(repos.latest >= 1)
+        self.assertTrue(repos.latest < 2)
 
         # Create a new script and test again
         repos.create_script('')
         self.assertEqual(repos.latest, 2)
-        self.assert_(repos.latest >= 0)
-        self.assert_(repos.latest >= 1)
-        self.assert_(repos.latest >= 2)
-        self.assert_(repos.latest < 3)
+        self.assertTrue(repos.latest >= 0)
+        self.assertTrue(repos.latest >= 1)
+        self.assertTrue(repos.latest >= 2)
+        self.assertTrue(repos.latest < 3)
 
 
     def test_timestmap_numbering_version(self):
@@ -105,8 +105,8 @@ class TestVersionedRepository(fixture.Pathed):
         self.assertEqual(repos.latest, 0)
         # repos.latest isn't an integer, but a VerNum
         # (so we can't just assume the following tests are correct)
-        self.assert_(repos.latest >= 0)
-        self.assert_(repos.latest < 1)
+        self.assertTrue(repos.latest >= 0)
+        self.assertTrue(repos.latest < 1)
 
         # Create a script and test again
         now = int(datetime.utcnow().strftime('%Y%m%d%H%M%S'))
@@ -134,8 +134,8 @@ class TestVersionedRepository(fixture.Pathed):
         """Repository.version() (no params) returns the latest version"""
         repos = Repository(self.path_repos)
         repos.create_script('')
-        self.assert_(repos.version(repos.latest) is repos.version())
-        self.assert_(repos.version() is not None)
+        self.assertTrue(repos.version(repos.latest) is repos.version())
+        self.assertTrue(repos.version() is not None)
     
     def test_changeset(self):
         """Repositories can create changesets properly"""
@@ -152,9 +152,9 @@ class TestVersionedRepository(fixture.Pathed):
             uniq = list()
             # Changesets are iterable
             for version, change in changeset:
-                self.assert_(isinstance(change, BaseScript))
+                self.assertTrue(isinstance(change, BaseScript))
                 # Changes aren't identical
-                self.assert_(id(change) not in uniq)
+                self.assertTrue(id(change) not in uniq)
                 uniq.append(id(change))
             return changeset
 
@@ -209,8 +209,8 @@ class TestVersionedRepository(fixture.Pathed):
             repos.create_script('')
 
         # since we normally create 3 digit ones, let's see if we blow up
-        self.assert_(os.path.exists('%s/versions/1000.py' % self.path_repos))
-        self.assert_(os.path.exists('%s/versions/1001.py' % self.path_repos))
+        self.assertTrue(os.path.exists('%s/versions/1000.py' % self.path_repos))
+        self.assertTrue(os.path.exists('%s/versions/1001.py' % self.path_repos))
 
         
 # TODO: test manage file

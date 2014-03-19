@@ -15,17 +15,17 @@ class TestTemplate(fixture.Pathed):
     def test_templates(self):
         """We can find the path to all repository templates"""
         path = str(Template())
-        self.assert_(os.path.exists(path))
+        self.assertTrue(os.path.exists(path))
 
     def test_repository(self):
         """We can find the path to the default repository"""
         path = Template().get_repository()
-        self.assert_(os.path.exists(path))
+        self.assertTrue(os.path.exists(path))
 
     def test_script(self):
         """We can find the path to the default migration script"""
         path = Template().get_script()
-        self.assert_(os.path.exists(path))
+        self.assertTrue(os.path.exists(path))
 
     def test_custom_templates_and_themes(self):
         """Users can define their own templates with themes"""

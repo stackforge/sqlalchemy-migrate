@@ -24,15 +24,15 @@ class TestKeydInstance(fixture.Base):
 
         # Different key: different instance
         b10 = Uniq1('b')
-        self.assert_(a10 is not b10)
+        self.assertTrue(a10 is not b10)
 
         # Different class: different instance
         a20 = Uniq2('a')
-        self.assert_(a10 is not a20)
+        self.assertTrue(a10 is not a20)
 
         # Same key/class: same instance
         a11 = Uniq1('a')
-        self.assert_(a10 is a11)
+        self.assertTrue(a10 is a11)
 
         # __init__ is called
         self.assertEqual(a10.value,'a')
@@ -40,6 +40,6 @@ class TestKeydInstance(fixture.Base):
         # clear() causes us to forget all existing instances
         Uniq1.clear()
         a12 = Uniq1('a')
-        self.assert_(a10 is not a12)
+        self.assertTrue(a10 is not a12)
 
         self.assertRaises(NotImplementedError, KeyedInstance._key)

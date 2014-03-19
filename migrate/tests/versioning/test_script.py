@@ -34,7 +34,7 @@ class TestPyScript(fixture.Pathed, fixture.DB):
         path = self.tmp_py()
         # Creating a file that doesn't exist should succeed
         self.cls.create(path)
-        self.assert_(os.path.exists(path))
+        self.assertTrue(os.path.exists(path))
         # Created file should be a valid script (If not, raises an error)
         self.cls.verify(path)
         # Can't create it again: it already exists
