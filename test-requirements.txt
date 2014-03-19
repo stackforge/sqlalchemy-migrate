@@ -8,21 +8,17 @@ coverage>=3.6
 discover
 feedparser
 fixtures>=0.3.14
-ibm_db_sa>=0.3.0
 mock>=1.0
 mox>=0.5.3
-MySQL-python
 psycopg2
-pylint==0.25.2
 python-subunit>=0.0.18
 sphinx>=1.1.2,<1.2
 sphinxcontrib_issuetracker
 testrepository>=0.0.17
 testtools>=0.9.34
 
-# NOTE: scripttest 1.0.1 removes base_path argument to ScriptTest
-scripttest==1.0
+scripttest
 # NOTE(rpodolyaka): This version identifier is currently necessary as
 #                   pytz otherwise does not install on pip 1.4 or higher
+pylint
 pytz>=2010h
-pysqlite

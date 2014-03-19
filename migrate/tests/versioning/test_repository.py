@@ -111,7 +111,6 @@ class TestVersionedRepository(fixture.Pathed):
         # Create a script and test again
         now = int(datetime.utcnow().strftime('%Y%m%d%H%M%S'))
         repos.create_script('')
-        print repos.latest
         self.assertEqual(repos.latest, now)
 
     def test_source(self):
