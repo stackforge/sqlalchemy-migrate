@@ -9,6 +9,7 @@ http://code.google.com/p/sqlautocode/
 import sys
 import logging
 
+import six
 import sqlalchemy
 
 import migrate
@@ -68,7 +69,10 @@ class ModelGenerator(object):
 
         # crs: not sure if this is good idea, but it gets rid of extra
         # u''
-        name = col.name.encode('utf8')
+        if six.PY3:
+            name = col.name
+        else:
+            name = col.name.encode('utf8')
 
         type_ = col.type
         for cls in col.type.__class__.__mro__:
@@ -192,7 +196,7 @@ class ModelGenerator(object):
             downgradeCommands.append(
                 "post_meta.tables[%(table)r].drop()" % {'table': tn})
 
-        for (tn, td) in self.diff.tables_different.iteritems():
+        for (tn, td) in six.iteritems(self.diff.tables_different):
             if td.columns_missing_from_A or td.columns_different:
                 pre_table = self.diff.metadataB.tables[tn]
                 decls.extend(self._getTableDefn(

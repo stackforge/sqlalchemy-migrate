@@ -3,6 +3,9 @@
 
 import os
 import logging
+import sys
+
+import six
 from decorator import decorator
 
 from sqlalchemy import create_engine, Table, MetaData
@@ -23,7 +26,7 @@ log = logging.getLogger(__name__)
 def readurls():
     """read URLs from config file return a list"""
     # TODO: remove tmpfile since sqlite can store db in memory
-    filename = 'test_db.cfg'
+    filename = 'test_db.cfg' if six.PY2 else "test_db_py3.cfg"
     ret = list()
     tmpfile = Pathed.tmp()
     fullpath = os.path.join(os.curdir, filename)
@@ -46,12 +49,12 @@ def is_supported(url, supported, not_supported):
     db = url.split(':', 1)[0]
 
     if supported is not None:
-        if isinstance(supported, basestring):
+        if isinstance(supported, six.string_types):
             return supported == db
         else:
             return db in supported
     elif not_supported is not None:
-        if isinstance(not_supported, basestring):
+        if isinstance(not_supported, six.string_types):
             return not_supported != db
         else:
             return not (db in not_supported)
@@ -96,7 +99,7 @@ def usedb(supported=None, not_supported=None):
                 finally:
                     try:
                         self._teardown()
-                    except Exception,e:
+                    except Exception as e:
                         teardown_exception=e
                     else:
                         teardown_exception=None
@@ -106,14 +109,14 @@ def usedb(supported=None, not_supported=None):
                         'setup: %r\n'
                         'teardown: %r\n'
                         )%(setup_exception,teardown_exception))
-            except Exception,e:
+            except Exception:
                 failed_for.append(url)
-                fail = True
+                fail = sys.exc_info()
         for url in failed_for:
             log.error('Failed for %s', url)
         if fail:
             # cause the failure :-)
-            raise
+            six.reraise(*fail)
     return dec
 
 

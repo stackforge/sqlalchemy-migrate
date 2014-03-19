@@ -4,6 +4,8 @@
 import os
 import shutil
 
+import six
+
 from migrate import exceptions
 from migrate.versioning.schema import *
 from migrate.versioning import script, schemadiff
@@ -163,10 +165,10 @@ class TestControlledSchema(fixture.Pathed, fixture.DB):
     def test_create_model(self):
         """Test workflow to generate create_model"""
         model = ControlledSchema.create_model(self.engine, self.repos, declarative=False)
-        self.assertTrue(isinstance(model, basestring))
+        self.assertTrue(isinstance(model, six.string_types))
 
         model = ControlledSchema.create_model(self.engine, self.repos.path, declarative=True)
-        self.assertTrue(isinstance(model, basestring))
+        self.assertTrue(isinstance(model, six.string_types))
 
     @fixture.usedb()
     def test_compare_model_to_db(self):

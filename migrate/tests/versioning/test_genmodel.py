@@ -2,6 +2,7 @@
 
 import os
 
+import six
 import sqlalchemy
 from sqlalchemy import *
 
@@ -43,13 +44,12 @@ class TestSchemaDiff(fixture.DB):
     # so the schema diffs on the columns don't work with this test.
     @fixture.usedb(not_supported='ibm_db_sa')
     def test_functional(self):
-
         def assertDiff(isDiff, tablesMissingInDatabase, tablesMissingInModel, tablesWithDiff):
             diff = schemadiff.getDiffOfModelAgainstDatabase(self.meta, self.engine, excludeTables=['migrate_version'])
             self.assertEqual(
                 (diff.tables_missing_from_B,
                  diff.tables_missing_from_A,
-                 diff.tables_different.keys(),
+                 list(diff.tables_different.keys()),
                  bool(diff)),
                 (tablesMissingInDatabase,
                  tablesMissingInModel,
@@ -97,10 +97,11 @@ class TestSchemaDiff(fixture.DB):
         diff = schemadiff.getDiffOfModelAgainstDatabase(MetaData(), self.engine, excludeTables=['migrate_version'])
         src = genmodel.ModelGenerator(diff,self.engine).genBDefinition()
 
-        exec src in locals()
+        namespace = {}
+        six.exec_(src, namespace)
 
         c1 = Table('tmp_schemadiff', self.meta, autoload=True).c
-        c2 = tmp_schemadiff.c
+        c2 = namespace['tmp_schemadiff'].c
         self.compare_columns_equal(c1, c2, ['type'])
         # TODO: get rid of ignoring type
 
@@ -139,19 +140,19 @@ class TestSchemaDiff(fixture.DB):
         decls, upgradeCommands, downgradeCommands = genmodel.ModelGenerator(diff,self.engine).genB2AMigration(indent='')
 
         # decls have changed since genBDefinition
-        exec decls in locals()
+        six.exec_(decls, namespace)
         # migration commands expect a namespace containing migrate_engine
-        migrate_engine = self.engine
+        namespace['migrate_engine'] = self.engine
         # run the migration up and down
-        exec upgradeCommands in locals()
+        six.exec_(upgradeCommands, namespace)
         assertDiff(False, [], [], [])
 
-        exec decls in locals()
-        exec downgradeCommands in locals()
+        six.exec_(decls, namespace)
+        six.exec_(downgradeCommands, namespace)
         assertDiff(True, [], [], [self.table_name])
 
-        exec decls in locals()
-        exec upgradeCommands in locals()
+        six.exec_(decls, namespace)
+        six.exec_(upgradeCommands, namespace)
         assertDiff(False, [], [], [])
 
         if not self.engine.name == 'oracle':

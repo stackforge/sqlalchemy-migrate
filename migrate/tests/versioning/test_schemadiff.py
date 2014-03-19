@@ -27,9 +27,9 @@ class SchemaDiffBase(fixture.DB):
         # print diff
         self.assertTrue(diff)
         self.assertEqual(1,len(diff.tables_different))
-        td = diff.tables_different.values()[0]
+        td = list(diff.tables_different.values())[0]
         self.assertEqual(1,len(td.columns_different))
-        cd = td.columns_different.values()[0]
+        cd = list(td.columns_different.values())[0]
         label_width = max(len(self.name1), len(self.name2))
         self.assertEqual(('Schema diffs:\n'
              '  table with differences: xtable\n'

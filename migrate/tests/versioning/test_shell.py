@@ -5,7 +5,8 @@ import os
 import sys
 import tempfile
 
-from cStringIO import StringIO
+import six
+from six.moves import cStringIO
 from sqlalchemy import MetaData, Table
 
 from migrate.exceptions import *
@@ -29,7 +30,7 @@ class TestShellCommands(Shell):
         # we can only test that we get some output
         for cmd in api.__all__:
             result = self.env.run('migrate help %s' % cmd)
-            self.assertTrue(isinstance(result.stdout, basestring))
+            self.assertTrue(isinstance(result.stdout, six.string_types))
             self.assertTrue(result.stdout)
             self.assertFalse(result.stderr)
 
@@ -61,11 +62,11 @@ class TestShellCommands(Shell):
     def _check_error(self,args,code,expected,**kw):
         original = sys.stderr
         try:
-            actual = StringIO()
+            actual = cStringIO()
             sys.stderr = actual
             try:
                 shell.main(args,**kw)
-            except SystemExit, e:
+            except SystemExit as e:
                 self.assertEqual(code,e.args[0])
             else:
                 self.fail('No exception raised')
@@ -502,7 +503,7 @@ class TestShellDatabase(Shell, DB):
 
         result = self.env.run('migrate create_model %s %s' % (self.url, repos_path))
         temp_dict = dict()
-        exec result.stdout in temp_dict
+        six.exec_(result.stdout, temp_dict)
 
         # TODO: breaks on SA06 and SA05 - in need of total refactor - use different approach
 
