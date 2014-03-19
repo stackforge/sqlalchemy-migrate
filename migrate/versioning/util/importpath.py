@@ -1,6 +1,8 @@
 import os
 import sys
 
+from six.moves import reload_module as reload
+
 def import_path(fullpath):
     """ Import a file with full path specification. Allows one to
         import from anywhere, something __import__ does not do.

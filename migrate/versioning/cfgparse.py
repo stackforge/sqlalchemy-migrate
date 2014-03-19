@@ -2,7 +2,7 @@
    Configuration parser module.
 """
 
-from ConfigParser import ConfigParser
+from six.moves.configparser import ConfigParser
 
 from migrate.versioning.config import *
 from migrate.versioning import pathed

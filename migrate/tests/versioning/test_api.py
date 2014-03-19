@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import six
+
 from migrate.exceptions import *
 from migrate.versioning import api
 
@@ -12,7 +14,7 @@ from migrate.tests import fixture
 class TestAPI(Pathed):
 
     def test_help(self):
-        self.assertTrue(isinstance(api.help('help'), basestring))
+        self.assertTrue(isinstance(api.help('help'), six.string_types))
         self.assertRaises(UsageError, api.help)
         self.assertRaises(UsageError, api.help, 'foobar')
         self.assertTrue(isinstance(api.help('create'), str))
@@ -48,7 +50,7 @@ class TestAPI(Pathed):
         repo = self.tmp_repos()
         api.create(repo, 'temp')
         api.version_control('sqlite:///', repo)
-        api.version_control('sqlite:///', unicode(repo))
+        api.version_control('sqlite:///', six.text_type(repo))
 
     def test_source(self):
         repo = self.tmp_repos()
