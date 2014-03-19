@@ -3,7 +3,10 @@
 
    .. _`SQLite`: http://www.sqlite.org/
 """
-from UserDict import DictMixin
+try:  # Python 3
+    from collections import MutableMapping as DictMixin
+except ImportError:  # Python 2
+    from UserDict import DictMixin
 from copy import copy
 
 from sqlalchemy.databases import sqlite as sa_base

@@ -99,6 +99,9 @@ class ColDiff(object):
     def __nonzero__(self):
         return self.diff
 
+    __bool__ = __nonzero__
+
+
 class TableDiff(object):
     """
     Container for differences in one :class:`~sqlalchemy.schema.Table`
@@ -134,6 +137,8 @@ class TableDiff(object):
             self.columns_missing_from_B or
             self.columns_different
             )
+
+    __bool__ = __nonzero__
 
 class SchemaDiff(object):
     """

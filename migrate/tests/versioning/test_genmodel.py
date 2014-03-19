@@ -2,6 +2,7 @@
 
 import os
 
+import six
 import sqlalchemy
 from sqlalchemy import *
 
@@ -43,13 +44,12 @@ class TestSchemaDiff(fixture.DB):
     # so the schema diffs on the columns don't work with this test.
     @fixture.usedb(not_supported='ibm_db_sa')
     def test_functional(self):
-
         def assertDiff(isDiff, tablesMissingInDatabase, tablesMissingInModel, tablesWithDiff):
             diff = schemadiff.getDiffOfModelAgainstDatabase(self.meta, self.engine, excludeTables=['migrate_version'])
             self.assertEqual(
                 (diff.tables_missing_from_B,
                  diff.tables_missing_from_A,
-                 diff.tables_different.keys(),
+                 list(diff.tables_different.keys()),
                  bool(diff)),
                 (tablesMissingInDatabase,
                  tablesMissingInModel,

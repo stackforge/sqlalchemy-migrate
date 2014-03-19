@@ -3,6 +3,7 @@
 
 import os
 import logging
+import six
 from decorator import decorator
 
 from sqlalchemy import create_engine, Table, MetaData
@@ -46,12 +47,12 @@ def is_supported(url, supported, not_supported):
     db = url.split(':', 1)[0]
 
     if supported is not None:
-        if isinstance(supported, basestring):
+        if isinstance(supported, six.string_types):
             return supported == db
         else:
             return db in supported
     elif not_supported is not None:
-        if isinstance(not_supported, basestring):
+        if isinstance(not_supported, six.string_types):
             return not_supported != db
         else:
             return not (db in not_supported)
@@ -96,7 +97,7 @@ def usedb(supported=None, not_supported=None):
                 finally:
                     try:
                         self._teardown()
-                    except Exception,e:
+                    except Exception as e:
                         teardown_exception=e
                     else:
                         teardown_exception=None
@@ -106,14 +107,14 @@ def usedb(supported=None, not_supported=None):
                         'setup: %r\n'
                         'teardown: %r\n'
                         )%(setup_exception,teardown_exception))
-            except Exception,e:
+            except Exception as e:
                 failed_for.append(url)
-                fail = True
+                fail = e
         for url in failed_for:
             log.error('Failed for %s', url)
         if fail:
             # cause the failure :-)
-            raise
+            raise fail
     return dec
 
 

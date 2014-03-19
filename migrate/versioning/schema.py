@@ -4,6 +4,7 @@
 import sys
 import logging
 
+import six
 from sqlalchemy import (Table, Column, MetaData, String, Text, Integer,
     create_engine)
 from sqlalchemy.sql import and_
@@ -24,7 +25,7 @@ class ControlledSchema(object):
     """A database under version control"""
 
     def __init__(self, engine, repository):
-        if isinstance(repository, basestring):
+        if isinstance(repository, six.string_types):
             repository = Repository(repository)
         self.engine = engine
         self.repository = repository
@@ -49,7 +50,8 @@ class ControlledSchema(object):
             data = list(result)[0]
         except:
             cls, exc, tb = sys.exc_info()
-            raise exceptions.DatabaseNotControlledError, exc.__str__(), tb
+            six.reraise(exceptions.DatabaseNotControlledError,
+                        exceptions.DatabaseNotControlledError(str(exc)), tb)
 
         self.version = data['version']
         return data
@@ -133,7 +135,7 @@ class ControlledSchema(object):
         """
         # Confirm that the version # is valid: positive, integer,
         # exists in repos
-        if isinstance(repository, basestring):
+        if isinstance(repository, six.string_types):
             repository = Repository(repository)
         version = cls._validate_version(repository, version)
         table = cls._create_table_version(engine, repository, version)
@@ -198,7 +200,7 @@ class ControlledSchema(object):
         """
         Compare the current model against the current database.
         """
-        if isinstance(repository, basestring):
+        if isinstance(repository, six.string_types):
             repository = Repository(repository)
         model = load_model(model)
 
@@ -211,7 +213,7 @@ class ControlledSchema(object):
         """
         Dump the current database as a Python model.
         """
-        if isinstance(repository, basestring):
+        if isinstance(repository, six.string_types):
             repository = Repository(repository)
 
         diff = schemadiff.getDiffOfModelAgainstDatabase(
