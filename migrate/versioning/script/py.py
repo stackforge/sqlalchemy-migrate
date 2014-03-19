@@ -5,7 +5,8 @@ import shutil
 import warnings
 import logging
 import inspect
-from StringIO import StringIO
+import six
+from six.moves import StringIO
 
 import migrate
 from migrate.versioning import genmodel, schemadiff
@@ -51,7 +52,7 @@ class PythonScript(base.BaseScript):
         :rtype: string
         """
 
-        if isinstance(repository, basestring):
+        if isinstance(repository, six.string_types):
             # oh dear, an import cycle!
             from migrate.versioning.repository import Repository
             repository = Repository(repository)
@@ -96,7 +97,7 @@ class PythonScript(base.BaseScript):
         module = import_path(path)
         try:
             assert callable(module.upgrade)
-        except Exception, e:
+        except Exception as e:
             raise InvalidScriptError(path + ': %s' % str(e))
         return module
 
@@ -127,9 +128,9 @@ class PythonScript(base.BaseScript):
         :type engine: string
         :type step: int
         """
-        if step > 0:
+        if step == "upgrade" or step > 0:
             op = 'upgrade'
-        elif step < 0:
+        elif step == "downgrade" or step < 0:
             op = 'downgrade'
         else:
             raise ScriptError("%d is not a valid step" % step)

@@ -1,4 +1,5 @@
 import os
+from six.moves import reload_module as reload
 import sys
 
 def import_path(fullpath):

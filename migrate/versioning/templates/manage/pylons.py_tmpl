@@ -17,9 +17,10 @@ else:
     conf_path = 'development.ini'
 
 {{py:
+import six
 _vars = locals().copy()
 del _vars['__template_name__']
-defaults = ", ".join(["%s='%s'" % var for var in _vars.iteritems()])
+defaults = ", ".join(["%s='%s'" % var for var in six.iteritems(_vars)])
 }}
 
 conf_dict = ConfigLoader(conf_path).parser._sections['app:main']

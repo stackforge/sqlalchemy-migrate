@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import six
 import sys
 import shutil
 
@@ -51,7 +52,22 @@ class TestPyScript(fixture.Pathed, fixture.DB):
         self.assertRaises(exceptions.ScriptError, pyscript._func, 'foobar')
 
         # clean pyc file
-        os.remove(script_path + 'c')
+        if six.PY3:
+            # In Python 3, the ".pyc" files are in __pycache__. The name will
+            # be a bit different: it might end with cpython33.pyc for instance.
+            # Let's look for the right file in the __pycache__ directory and
+            # delete it.
+            dirname = os.path.dirname(script_path)
+            basename = os.path.basename(script_path)[:-3]
+            for file_ in os.listdir(os.path.join(dirname, "__pycache__")):
+                if basename in file_:
+                    os.remove(os.path.join(dirname, "__pycache__", file_))
+                    break
+            else:
+                raise OSError("Could not delete the .pyc file for %s" %
+                              script_path)
+        else:
+            os.remove(script_path + 'c')
 
         # test deprecated upgrade/downgrade with no arguments
         contents = open(script_path, 'r').read()
@@ -94,7 +110,7 @@ class TestPyScript(fixture.Pathed, fixture.DB):
         path = self.tmp_py()
         # Create empty file
         f = open(path, 'w')
-        f.write("def zergling():\n\tprint 'rush'")
+        f.write("def zergling():\n\tprint('rush')")  # For the Swarm!
         f.close()
         self.assertRaises(exceptions.InvalidScriptError, self.cls.verify_module, path)
         # script isn't verified on creation, but on module reference

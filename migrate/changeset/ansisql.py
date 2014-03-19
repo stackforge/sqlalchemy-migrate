@@ -4,7 +4,7 @@
    At the moment, this isn't so much based off of ANSI as much as
    things that just happen to work with multiple databases.
 """
-import StringIO
+from six.moves import StringIO
 
 import sqlalchemy as sa
 from sqlalchemy.schema import SchemaVisitor
@@ -47,7 +47,7 @@ class AlterTableVisitor(SchemaVisitor):
 
     def __init__(self, dialect, connection, **kw):
         self.connection = connection
-        self.buffer = StringIO.StringIO()
+        self.buffer = StringIO()
         self.preparer = dialect.identifier_preparer
         self.dialect = dialect
 
