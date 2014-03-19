@@ -12,7 +12,7 @@ def main(imports=None):
         defaultTest=None
     return testtools.TestProgram(defaultTest=defaultTest)
 
-from base import Base
-from migrate.tests.fixture.pathed import Pathed
-from shell import Shell
-from database import DB,usedb
+from .base import Base
+from .pathed import Pathed
+from .shell import Shell
+from .database import DB,usedb

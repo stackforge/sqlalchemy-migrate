@@ -1,10 +1,14 @@
 """
    Schema module providing common schema operations.
 """
+import abc
+try:  # Python 3
+    from collections import MutableMapping as DictMixin
+except ImportError:  # Python 2
+    from UserDict import DictMixin
 import warnings
 
-from UserDict import DictMixin
-
+import six
 import sqlalchemy
 
 from sqlalchemy.schema import ForeignKeyConstraint
@@ -163,7 +167,38 @@ def _to_index(index, table=None, engine=None):
     return ret
 
 
-class ColumnDelta(DictMixin, sqlalchemy.schema.SchemaItem):
+
+# Python3: if we just use:
+#
+#     class ColumnDelta(DictMixin, sqlalchemy.schema.SchemaItem):
+#         ...
+#
+# We get the following error:
+# TypeError: metaclass conflict: the metaclass of a derived class must be a
+# (non-strict) subclass of the metaclasses of all its bases.
+#
+# The complete inheritance/metaclass relationship list of ColumnDelta can be
+# summarized by this following dot file:
+#
+# digraph test123 {
+#     ColumnDelta -> MutableMapping;
+#     MutableMapping -> Mapping;
+#     Mapping -> {Sized Iterable Container};
+#     {Sized Iterable Container} -> ABCMeta[style=dashed];
+#
+#     ColumnDelta -> SchemaItem;
+#     SchemaItem -> {SchemaEventTarget Visitable};
+#     SchemaEventTarget -> object;
+#     Visitable -> {VisitableType object} [style=dashed];
+#     VisitableType -> type;
+# }
+#
+# We need to use a metaclass that inherits from all the metaclasses of
+# DictMixin and sqlalchemy.schema.SchemaItem. Let's call it "MyMeta".
+class MyMeta(sqlalchemy.sql.visitors.VisitableType, abc.ABCMeta, object):
+    pass
+
+class ColumnDelta(six.with_metaclass(MyMeta, DictMixin, sqlalchemy.schema.SchemaItem)):
     """Extracts the differences between two columns/column-parameters
 
         May receive parameters arranged in several different ways:
@@ -229,7 +264,7 @@ class ColumnDelta(DictMixin, sqlalchemy.schema.SchemaItem):
                 diffs = self.compare_1_column(*p, **kw)
         else:
             # Zero columns specified
-            if not len(p) or not isinstance(p[0], basestring):
+            if not len(p) or not isinstance(p[0], six.string_types):
                 raise ValueError("First argument must be column name")
             diffs = self.compare_parameters(*p, **kw)
 
@@ -252,6 +287,12 @@ class ColumnDelta(DictMixin, sqlalchemy.schema.SchemaItem):
         setattr(self.result_column, key, value)
 
     def __delitem__(self, key):
+        raise NotImplementedError
+
+    def __len__(self):
+        raise NotImplementedError
+
+    def __iter__(self):
         raise NotImplementedError
 
     def keys(self):
@@ -332,7 +373,7 @@ class ColumnDelta(DictMixin, sqlalchemy.schema.SchemaItem):
         """Extracts data from p and modifies diffs"""
         p = list(p)
         while len(p):
-            if isinstance(p[0], basestring):
+            if isinstance(p[0], six.string_types):
                 k.setdefault('name', p.pop(0))
             elif isinstance(p[0], sqlalchemy.types.TypeEngine):
                 k.setdefault('type', p.pop(0))
@@ -370,7 +411,7 @@ class ColumnDelta(DictMixin, sqlalchemy.schema.SchemaItem):
         return getattr(self, '_table', None)
 
     def _set_table(self, table):
-        if isinstance(table, basestring):
+        if isinstance(table, six.string_types):
             if self.alter_metadata:
                 if not self.meta:
                     raise ValueError("metadata must be specified for table"
@@ -587,7 +628,7 @@ populated with defaults
             if isinstance(cons,(ForeignKeyConstraint,
                                 UniqueConstraint)):
                 for col_name in cons.columns:
-                    if not isinstance(col_name,basestring):
+                    if not isinstance(col_name,six.string_types):
                         col_name = col_name.name
                     if self.name==col_name:
                         to_drop.add(cons)
@@ -622,7 +663,7 @@ populated with defaults
         if (getattr(self, name[:-5]) and not obj):
             raise InvalidConstraintError("Column.create() accepts index_name,"
             " primary_key_name and unique_name to generate constraints")
-        if not isinstance(obj, basestring) and obj is not None:
+        if not isinstance(obj, six.string_types) and obj is not None:
             raise InvalidConstraintError(
             "%s argument for column must be constraint name" % name)
 

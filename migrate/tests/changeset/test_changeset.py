@@ -11,6 +11,7 @@ from migrate.changeset import constraint
 from migrate.changeset.schema import ColumnDelta
 from migrate.tests import fixture
 from migrate.tests.fixture.warnings import catch_warnings
+import six
 
 class TestAddDropColumn(fixture.DB):
     """Test add/drop column through all possible interfaces
@@ -400,7 +401,7 @@ class TestAddDropColumn(fixture.DB):
             if isinstance(cons,ForeignKeyConstraint):
                 col_names = []
                 for col_name in cons.columns:
-                    if not isinstance(col_name,basestring):
+                    if not isinstance(col_name,six.string_types):
                         col_name = col_name.name
                     col_names.append(col_name)
                 result.append(col_names)
@@ -612,7 +613,7 @@ class TestColumnChange(fixture.DB):
             self.table.drop()
         try:
             self.table.create()
-        except sqlalchemy.exc.SQLError, e:
+        except sqlalchemy.exc.SQLError:
             # SQLite: database schema has changed
             if not self.url.startswith('sqlite://'):
                 raise
@@ -621,7 +622,7 @@ class TestColumnChange(fixture.DB):
         if self.table.exists():
             try:
                 self.table.drop(self.engine)
-            except sqlalchemy.exc.SQLError,e:
+            except sqlalchemy.exc.SQLError:
                 # SQLite: database schema has changed
                 if not self.url.startswith('sqlite://'):
                     raise
@@ -843,7 +844,7 @@ class TestColumnDelta(fixture.DB):
 
     def verify(self, expected, original, *p, **k):
         self.delta = ColumnDelta(original, *p, **k)
-        result = self.delta.keys()
+        result = list(self.delta.keys())
         result.sort()
         self.assertEqual(expected, result)
         return self.delta

@@ -108,7 +108,7 @@ class TestUtil(fixture.Pathed):
 
             # deprecated spelling
             FakeFloat = load_model('test_load_model.FakeFloat')
-            self.assert_(isinstance(FakeFloat(), int))
+            self.assertTrue(isinstance(FakeFloat(), int))
 
             self.assertEqual(len(w),1)
             self.assertTrue(issubclass(w[-1].category,

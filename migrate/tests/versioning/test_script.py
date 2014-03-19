@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import imp
 import os
 import sys
 import shutil
 
+import six
 from migrate import exceptions
 from migrate.versioning import version, repository
 from migrate.versioning.script import *
@@ -51,7 +53,10 @@ class TestPyScript(fixture.Pathed, fixture.DB):
         self.assertRaises(exceptions.ScriptError, pyscript._func, 'foobar')
 
         # clean pyc file
-        os.remove(script_path + 'c')
+        if six.PY3:
+            os.remove(imp.cache_from_source(script_path))
+        else:
+            os.remove(script_path + 'c')
 
         # test deprecated upgrade/downgrade with no arguments
         contents = open(script_path, 'r').read()
@@ -94,7 +99,7 @@ class TestPyScript(fixture.Pathed, fixture.DB):
         path = self.tmp_py()
         # Create empty file
         f = open(path, 'w')
-        f.write("def zergling():\n\tprint 'rush'")
+        f.write("def zergling():\n\tprint('rush')")
         f.close()
         self.assertRaises(exceptions.InvalidScriptError, self.cls.verify_module, path)
         # script isn't verified on creation, but on module reference

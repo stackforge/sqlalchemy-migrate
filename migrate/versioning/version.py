@@ -9,6 +9,7 @@ import logging
 from migrate import exceptions
 from migrate.versioning import pathed, script
 from datetime import datetime
+import six
 
 
 log = logging.getLogger(__name__)
@@ -64,6 +65,10 @@ class VerNum(object):
     def __int__(self):
         return int(self.value)
 
+    if six.PY3:
+        def __hash__(self):
+            return hash(self.value)
+
 
 class Collection(pathed.Pathed):
     """A collection of versioning scripts in a repository"""
@@ -102,7 +107,7 @@ class Collection(pathed.Pathed):
     @property
     def latest(self):
         """:returns: Latest version in Collection"""
-        return max([VerNum(0)] + self.versions.keys())
+        return max([VerNum(0)] + list(self.versions.keys()))
 
     def _next_ver_num(self, use_timestamp_numbering):
         if use_timestamp_numbering == True:

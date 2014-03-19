@@ -12,6 +12,7 @@ from migrate import exceptions
 from migrate.versioning import api
 from migrate.versioning.config import *
 from migrate.versioning.util import asbool
+import six
 
 
 alias = dict(
@@ -23,7 +24,7 @@ alias = dict(
 
 def alias_setup():
     global alias
-    for key, val in alias.iteritems():
+    for key, val in six.iteritems(alias):
         setattr(api, key, val)
 alias_setup()
 
@@ -135,7 +136,7 @@ def main(argv=None, **kwargs):
             override_kwargs[opt] = value
 
     # override kwargs with options if user is overwriting
-    for key, value in options.__dict__.iteritems():
+    for key, value in six.iteritems(options.__dict__):
         if value is not None:
             override_kwargs[key] = value
 
@@ -143,7 +144,7 @@ def main(argv=None, **kwargs):
     f_required = list(f_args)
     candidates = dict(kwargs)
     candidates.update(override_kwargs)
-    for key, value in candidates.iteritems():
+    for key, value in six.iteritems(candidates):
         if key in f_args:
             f_required.remove(key)
 
@@ -160,7 +161,7 @@ def main(argv=None, **kwargs):
     kwargs.update(override_kwargs)
 
     # configure options
-    for key, value in options.__dict__.iteritems():
+    for key, value in six.iteritems(options.__dict__):
         kwargs.setdefault(key, value)
 
     # configure logging
@@ -198,6 +199,7 @@ def main(argv=None, **kwargs):
         num_defaults = 0
     f_args_default = f_args[len(f_args) - num_defaults:]
     required = list(set(f_required) - set(f_args_default))
+    required.sort()
     if required:
         parser.error("Not enough arguments for command %s: %s not specified" \
             % (command, ', '.join(required)))
@@ -207,7 +209,7 @@ def main(argv=None, **kwargs):
         ret = command_func(**kwargs)
         if ret is not None:
             log.info(ret)
-    except (exceptions.UsageError, exceptions.KnownError), e:
+    except (exceptions.UsageError, exceptions.KnownError) as e:
         parser.error(e.args[0])
 
 if __name__ == "__main__":

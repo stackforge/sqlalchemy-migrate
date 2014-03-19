@@ -7,6 +7,7 @@ import logging
 from decorator import decorator
 from pkg_resources import EntryPoint
 
+import six
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.pool import StaticPool
@@ -26,7 +27,7 @@ def load_model(dotted_name):
     .. versionchanged:: 0.5.4
 
     """
-    if isinstance(dotted_name, basestring):
+    if isinstance(dotted_name, six.string_types):
         if ':' not in dotted_name:
             # backwards compatibility
             warnings.warn('model should be in form of module.model:User '
@@ -39,7 +40,7 @@ def load_model(dotted_name):
 
 def asbool(obj):
     """Do everything to use object as bool"""
-    if isinstance(obj, basestring):
+    if isinstance(obj, six.string_types):
         obj = obj.strip().lower()
         if obj in ['true', 'yes', 'on', 'y', 't', '1']:
             return True
@@ -87,7 +88,7 @@ def catch_known_errors(f, *a, **kw):
 
     try:
         return f(*a, **kw)
-    except exceptions.PathFoundError, e:
+    except exceptions.PathFoundError as e:
         raise exceptions.KnownError("The path %s already exists" % e.args[0])
 
 def construct_engine(engine, **opts):
@@ -112,7 +113,7 @@ def construct_engine(engine, **opts):
     """
     if isinstance(engine, Engine):
         return engine
-    elif not isinstance(engine, basestring):
+    elif not isinstance(engine, six.string_types):
         raise ValueError("you need to pass either an existing engine or a database uri")
 
     # get options for create_engine
@@ -130,7 +131,7 @@ def construct_engine(engine, **opts):
         kwargs['echo'] = echo
 
     # parse keyword arguments
-    for key, value in opts.iteritems():
+    for key, value in six.iteritems(opts):
         if key.startswith('engine_arg_'):
             kwargs[key[11:]] = guess_obj_type(value)
 
@@ -174,6 +175,6 @@ class Memoize:
         self.memo = {}
 
     def __call__(self, *args):
-        if not self.memo.has_key(args):
+        if args not in self.memo:
             self.memo[args] = self.fn(*args)
         return self.memo[args]
