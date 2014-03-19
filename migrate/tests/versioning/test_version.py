@@ -23,7 +23,7 @@ class TestVerNum(fixture.Base):
         """Two version with the same number should be equal"""
         a = VerNum(1)
         b = VerNum(1)
-        self.assert_(a is b)
+        self.assertTrue(a is b)
 
         self.assertEqual(VerNum(VerNum(2)), VerNum(2))
 
@@ -31,11 +31,11 @@ class TestVerNum(fixture.Base):
         self.assertEqual(VerNum(1) + VerNum(1), VerNum(2))
         self.assertEqual(VerNum(1) + 1, 2)
         self.assertEqual(VerNum(1) + 1, '2')
-        self.assert_(isinstance(VerNum(1) + 1, VerNum))
+        self.assertTrue(isinstance(VerNum(1) + 1, VerNum))
 
     def test_sub(self):
         self.assertEqual(VerNum(1) - 1, 0)
-        self.assert_(isinstance(VerNum(1) - 1, VerNum))
+        self.assertTrue(isinstance(VerNum(1) - 1, VerNum))
         self.assertRaises(ValueError, lambda: VerNum(0) - 1)
 
     def test_eq(self):
@@ -46,27 +46,27 @@ class TestVerNum(fixture.Base):
         self.assertNotEqual(VerNum(1), 2)
 
     def test_ne(self):
-        self.assert_(VerNum(1) != 2)
+        self.assertTrue(VerNum(1) != 2)
         self.assertFalse(VerNum(1) != 1)
 
     def test_lt(self):
         self.assertFalse(VerNum(1) < 1)
-        self.assert_(VerNum(1) < 2)
+        self.assertTrue(VerNum(1) < 2)
         self.assertFalse(VerNum(2) < 1)
 
     def test_le(self):
-        self.assert_(VerNum(1) <= 1)
-        self.assert_(VerNum(1) <= 2)
+        self.assertTrue(VerNum(1) <= 1)
+        self.assertTrue(VerNum(1) <= 2)
         self.assertFalse(VerNum(2) <= 1)
 
     def test_gt(self):
         self.assertFalse(VerNum(1) > 1)
         self.assertFalse(VerNum(1) > 2)
-        self.assert_(VerNum(2) > 1)
+        self.assertTrue(VerNum(2) > 1)
 
     def test_ge(self):
-        self.assert_(VerNum(1) >= 1)
-        self.assert_(VerNum(2) >= 1)
+        self.assertTrue(VerNum(1) >= 1)
+        self.assertTrue(VerNum(2) >= 1)
         self.assertFalse(VerNum(1) >= 2)
 
 
@@ -114,7 +114,7 @@ class TestVersion(fixture.Pathed):
         coll.create_new_python_version("'")
 
         ver = coll.version()
-        self.assert_(ver.script().source())
+        self.assertTrue(ver.script().source())
 
     def test_create_new_sql_version(self):
         coll = Collection(self.temp_usable_dir)

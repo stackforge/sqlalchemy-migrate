@@ -74,7 +74,7 @@ class TestAddDropColumn(fixture.DB):
         create_column_func(col)
         assert_numcols(2)
         # data column exists
-        self.assert_(self.table.c.data.type.length, 40)
+        self.assertTrue(self.table.c.data.type.length, 40)
 
         col2 = self.table.c.data
         drop_column_func(col2)
@@ -109,11 +109,11 @@ class TestAddDropColumn(fixture.DB):
         ie. no table parameter passed to function
         """
         def add_func(col):
-            self.assert_(col.table is None, col.table)
+            self.assertTrue(col.table is None, col.table)
             self.table.append_column(col)
             return col.create()
         def drop_func(col):
-            #self.assert_(col.table is None,col.table)
+            #self.assertTrue(col.table is None,col.table)
             #self.table.append_column(col)
             return col.drop()
         return self.run_(add_func, drop_func)
@@ -642,14 +642,14 @@ class TestColumnChange(fixture.DB):
         self.refresh_table()
         alter_column(self.table.c.data2, name='atad')
         self.refresh_table(self.table.name)
-        self.assert_('data' not in self.table.c.keys())
-        self.assert_('atad' in self.table.c.keys())
+        self.assertTrue('data' not in self.table.c.keys())
+        self.assertTrue('atad' in self.table.c.keys())
         self.assertEqual(num_rows(self.table.c.atad, content), 1)
 
         # ...as a method, given a new name
         self.table.c.atad.alter(name='data')
         self.refresh_table(self.table.name)
-        self.assert_('atad' not in self.table.c.keys())
+        self.assertTrue('atad' not in self.table.c.keys())
         self.table.c.data # Should not raise exception
         self.assertEqual(num_rows(self.table.c.data, content), 1)
 
@@ -658,7 +658,7 @@ class TestColumnChange(fixture.DB):
                      name = 'atad', type=String(40),
                      server_default=self.table.c.data.server_default)
         self.refresh_table(self.table.name)
-        self.assert_('data' not in self.table.c.keys())
+        self.assertTrue('data' not in self.table.c.keys())
         self.table.c.atad   # Should not raise exception
         self.assertEqual(num_rows(self.table.c.atad, content), 1)
 
@@ -668,7 +668,7 @@ class TestColumnChange(fixture.DB):
             server_default=self.table.c.atad.server_default
             )
         self.refresh_table(self.table.name)
-        self.assert_('atad' not in self.table.c.keys())
+        self.assertTrue('atad' not in self.table.c.keys())
         self.table.c.data   # Should not raise exception
         self.assertEqual(num_rows(self.table.c.data,content), 1)
 
@@ -679,18 +679,18 @@ class TestColumnChange(fixture.DB):
         # Just the new type
         self.table.c.data.alter(type=String(43))
         self.refresh_table(self.table.name)
-        self.assert_(isinstance(self.table.c.data.type, String))
+        self.assertTrue(isinstance(self.table.c.data.type, String))
         self.assertEqual(self.table.c.data.type.length, 43)
 
         # Different type
-        self.assert_(isinstance(self.table.c.id.type, Integer))
+        self.assertTrue(isinstance(self.table.c.id.type, Integer))
         self.assertEqual(self.table.c.id.nullable, False)
 
         if not self.engine.name == 'firebird':
             self.table.c.id.alter(type=String(20))
             self.assertEqual(self.table.c.id.nullable, False)
             self.refresh_table(self.table.name)
-            self.assert_(isinstance(self.table.c.id.type, String))
+            self.assertTrue(isinstance(self.table.c.id.type, String))
 
     @fixture.usedb()
     def test_default(self):
@@ -706,7 +706,7 @@ class TestColumnChange(fixture.DB):
         self.refresh_table(self.table.name)
         #self.assertEqual(self.table.c.data.server_default.arg,default)
         # TextClause returned by autoload
-        self.assert_(default in str(self.table.c.data.server_default.arg))
+        self.assertTrue(default in str(self.table.c.data.server_default.arg))
         self.engine.execute(self.table.insert(), id=12)
         row = self._select_row()
         self.assertEqual(row['data'], default)
@@ -715,7 +715,7 @@ class TestColumnChange(fixture.DB):
         default = 'your_default'
         self.table.c.data.alter(type=String(40), server_default=DefaultClause(default))
         self.refresh_table(self.table.name)
-        self.assert_(default in str(self.table.c.data.server_default.arg))
+        self.assertTrue(default in str(self.table.c.data.server_default.arg))
 
         # Drop/remove default
         self.table.c.data.alter(server_default=None)
@@ -723,10 +723,10 @@ class TestColumnChange(fixture.DB):
 
         self.refresh_table(self.table.name)
         # server_default isn't necessarily None for Oracle
-        #self.assert_(self.table.c.data.server_default is None,self.table.c.data.server_default)
+        #self.assertTrue(self.table.c.data.server_default is None,self.table.c.data.server_default)
         self.engine.execute(self.table.insert(), id=11)
         row = self.table.select(self.table.c.id == 11).execution_options(autocommit=True).execute().fetchone()
-        self.assert_(row['data'] is None, row['data'])
+        self.assertTrue(row['data'] is None, row['data'])
 
     @fixture.usedb(not_supported='firebird')
     def test_null(self):
@@ -769,7 +769,7 @@ class TestColumnChange(fixture.DB):
         """Test if alter constructs return delta"""
 
         delta = self.table.c.data.alter(type=String(100))
-        self.assert_('type' in delta)
+        self.assertTrue('type' in delta)
 
     @fixture.usedb()
     def test_alter_all(self):
@@ -886,12 +886,12 @@ class TestColumnDelta(fixture.DB):
 
         col = self.mkcol(server_default='foobar')
         self.verify(['type'], col, self.mkcol('id', Text, DefaultClause('foobar')), alter_metadata=True)
-        self.assert_(isinstance(col.type, Text))
+        self.assertTrue(isinstance(col.type, Text))
 
         col = self.mkcol()
         self.verify(['name', 'server_default', 'type'], col, self.mkcol('beep', Text, DefaultClause('foobar')),
                     alter_metadata=True)
-        self.assert_(isinstance(col.type, Text))
+        self.assertTrue(isinstance(col.type, Text))
         self.assertEqual(col.name, 'beep')
         self.assertEqual(col.server_default.arg, 'foobar')
 
@@ -908,7 +908,7 @@ class TestColumnDelta(fixture.DB):
         self.meta.clear()
         delta = self.verify(['type'], 'ids', table=self.table.name, type=String(80), metadata=self.meta,
                             alter_metadata=True)
-        self.assert_(self.table.name in self.meta)
+        self.assertTrue(self.table.name in self.meta)
         self.assertEqual(delta.result_column.type.length, 80)
         self.assertEqual(self.meta.tables.get(self.table.name).c.ids.type.length, 80)
 
@@ -942,7 +942,7 @@ class TestColumnDelta(fixture.DB):
 
         col_orig = self.mkcol(primary_key=True)
         self.verify(['name', 'type'], col_orig, name='id12', type=Text, alter_metadata=True)
-        self.assert_(isinstance(col_orig.type, Text))
+        self.assertTrue(isinstance(col_orig.type, Text))
         self.assertEqual(col_orig.name, 'id12')
 
         # test server default
@@ -956,7 +956,7 @@ class TestColumnDelta(fixture.DB):
         # no change
         col_orig = self.mkcol(server_default=DefaultClause('foobar'))
         delta = self.verify(['type'], col_orig, DefaultClause('foobar'), type=PickleType)
-        self.assert_(isinstance(delta.result_column.type, PickleType))
+        self.assertTrue(isinstance(delta.result_column.type, PickleType))
 
         # TODO: test server on update
         # TODO: test bind metadata

@@ -117,7 +117,7 @@ class TestControlledSchema(fixture.Pathed, fixture.DB):
             # Can't have custom errors with assertRaises...
             try:
                 ControlledSchema.create(self.engine, self.repos, version)
-                self.assert_(False, repr(version))
+                self.assertTrue(False, repr(version))
             except exceptions.InvalidVersionError:
                 pass
 

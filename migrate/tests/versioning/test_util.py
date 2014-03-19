@@ -20,7 +20,7 @@ class TestUtil(fixture.Pathed):
         url = 'sqlite://'
 
         engine = construct_engine(url)
-        self.assert_(engine.name == 'sqlite')
+        self.assertTrue(engine.name == 'sqlite')
 
         # keyword arg
         engine = construct_engine(url, engine_arg_encoding='utf-8')
@@ -108,7 +108,7 @@ class TestUtil(fixture.Pathed):
 
             # deprecated spelling
             FakeFloat = load_model('test_load_model.FakeFloat')
-            self.assert_(isinstance(FakeFloat(), int))
+            self.assertTrue(isinstance(FakeFloat(), int))
 
             self.assertEqual(len(w),1)
             self.assertTrue(issubclass(w[-1].category,
@@ -122,10 +122,10 @@ class TestUtil(fixture.Pathed):
             cw.__exit__()
 
         FakeFloat = load_model('test_load_model:FakeFloat')
-        self.assert_(isinstance(FakeFloat(), int))
+        self.assertTrue(isinstance(FakeFloat(), int))
 
         FakeFloat = load_model(FakeFloat)
-        self.assert_(isinstance(FakeFloat(), int))
+        self.assertTrue(isinstance(FakeFloat(), int))
 
     def test_guess_obj_type(self):
         """guess object type from string"""
