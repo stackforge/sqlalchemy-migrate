@@ -3,8 +3,6 @@
 """
 import warnings
 
-from UserDict import DictMixin
-
 import sqlalchemy
 
 from sqlalchemy.schema import ForeignKeyConstraint
@@ -163,7 +161,7 @@ def _to_index(index, table=None, engine=None):
     return ret
 
 
-class ColumnDelta(DictMixin, sqlalchemy.schema.SchemaItem):
+class ColumnDelta(sqlalchemy.schema.SchemaItem):
     """Extracts the differences between two columns/column-parameters
 
         May receive parameters arranged in several different ways:

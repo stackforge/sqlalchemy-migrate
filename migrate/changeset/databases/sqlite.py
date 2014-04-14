@@ -3,7 +3,6 @@
 
    .. _`SQLite`: http://www.sqlite.org/
 """
-from UserDict import DictMixin
 from copy import copy
 
 from sqlalchemy.databases import sqlite as sa_base
@@ -44,7 +43,7 @@ class SQLiteHelper(SQLiteCommon):
         self.execute()
 
     def visit_column(self, delta):
-        if isinstance(delta, DictMixin):
+        if hasattr(delta, 'result_column'):
             column = delta.result_column
             table = self._to_table(delta.table)
         else:
