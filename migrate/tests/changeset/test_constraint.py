@@ -274,7 +274,7 @@ class TestAutoname(CommonTestConstraint):
         self.table.insert(values={'id': 2, 'fkey': 2}).execute()
         self.table.insert(values={'id': 1, 'fkey': 3}).execute()
 
-    @fixture.usedb(not_supported=['oracle', 'sqlite'])
+    @fixture.usedb(not_supported=['oracle'])
     def test_autoname_unique(self):
         """UniqueConstraints can guess their name if None is given"""
         cons = UniqueConstraint(self.table.c.fkey)
