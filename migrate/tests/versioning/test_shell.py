@@ -101,7 +101,7 @@ class TestShellCommands(Shell):
 
         # The default table should not be None
         repos_ = Repository(repos)
-        self.assertNotEquals(repos_.config.get('db_settings', 'version_table'), 'None')
+        self.assertNotEqual(repos_.config.get('db_settings', 'version_table'), 'None')
 
         # Can't create it again: it already exists
         result = self.env.run('migrate create %s repository_name' % repos,
