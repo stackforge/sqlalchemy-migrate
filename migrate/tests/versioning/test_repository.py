@@ -44,7 +44,7 @@ class TestRepository(fixture.Pathed):
         self.assertTrue(repos.config.get('db_settings', 'version_table'))
 
         # version_table's default isn't none
-        self.assertNotEquals(repos.config.get('db_settings', 'version_table'), 'None')
+        self.assertNotEqual(repos.config.get('db_settings', 'version_table'), 'None')
 
     def test_load_notfound(self):
         """Nonexistant repositories shouldn't be loaded"""
