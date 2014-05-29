@@ -24,4 +24,4 @@ class TestConfigParser(fixture.Base):
             'repository_name', {})
         specified_text = Repository.prepare_config(Template().get_repository(),
             'repository_name', {'version_table': '_other_table'})
-        self.assertNotEquals(default_text, specified_text)
+        self.assertNotEqual(default_text, specified_text)
