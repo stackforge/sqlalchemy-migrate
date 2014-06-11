@@ -9,8 +9,9 @@ import warnings
 
 import sqlalchemy
 from sqlalchemy import __version__ as _sa_version
+from migrate.exceptions import MigrateDeprecationWarning
 
-warnings.simplefilter('always', DeprecationWarning)
+warnings.simplefilter('always', MigrateDeprecationWarning)
 
 _sa_version = tuple(int(re.match("\d+", x).group(0)) for x in _sa_version.split("."))
 SQLA_07 = _sa_version >= (0, 7)
