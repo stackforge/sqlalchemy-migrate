@@ -1,0 +1,10 @@
+Verified+2: Jenkins
+Code-Review+2: Joe Gordon <joe.gordon0@gmail.com>
+Code-Review+2: Boris Pavlovic <boris@pavlovic.me>
+Workflow+1: Boris Pavlovic <boris@pavlovic.me>
+Code-Review+1: Matt Riedemann <mriedem@us.ibm.com>
+Submitted-by: Jenkins
+Submitted-at: Tue, 22 Jul 2014 21:48:39 +0000
+Reviewed-on: https://review.openstack.org/76893
+Project: stackforge/sqlalchemy-migrate
+Branch: refs/heads/master
