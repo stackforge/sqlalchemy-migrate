@@ -42,7 +42,8 @@ class SqlScript(base.BaseScript):
                 else:
                     conn.execute(text)
                 trans.commit()
-            except:
+            except Exception as e:
+                log.error("SQL script %s failed: %s", self.path, e)
                 trans.rollback()
                 raise
         finally:
