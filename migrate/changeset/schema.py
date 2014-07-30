@@ -34,6 +34,7 @@ __all__ = [
     'ColumnDelta',
 ]
 
+
 def create_column(column, table=None, *p, **kw):
     """Create a column, given the table.
 
@@ -127,13 +128,13 @@ def alter_column(*p, **k):
             "Passing a Column object to alter_column is deprecated."
             " Just pass in keyword parameters instead.",
             MigrateDeprecationWarning
-            )
+        )
     engine = k['engine']
 
     # enough tests seem to break when metadata is always altered
     # that this crutch has to be left in until they can be sorted
     # out
-    k['alter_metadata']=True
+    k['alter_metadata'] = True
 
     delta = ColumnDelta(*p, **k)
 
@@ -165,7 +166,6 @@ def _to_index(index, table=None, engine=None):
     ret = sqlalchemy.Index(index)
     ret.table = table
     return ret
-
 
 
 # Python3: if we just use:
@@ -239,7 +239,7 @@ class ColumnDelta(six.with_metaclass(MyMeta, DictMixin, sqlalchemy.schema.Schema
 
     # Column attributes that can be altered
     diff_keys = ('name', 'type', 'primary_key', 'nullable',
-        'server_onupdate', 'server_default', 'autoincrement')
+                 'server_onupdate', 'server_default', 'autoincrement')
     diffs = dict()
     __visit_name__ = 'column'
 
@@ -275,16 +275,16 @@ class ColumnDelta(six.with_metaclass(MyMeta, DictMixin, sqlalchemy.schema.Schema
         return '<ColumnDelta altermetadata=%r, %s>' % (
             self.alter_metadata,
             super(ColumnDelta, self).__repr__()
-            )
+        )
 
     def __getitem__(self, key):
         if key not in self.keys():
-            raise KeyError("No such diff key, available: %s" % self.diffs )
+            raise KeyError("No such diff key, available: %s" % self.diffs)
         return getattr(self.result_column, key)
 
     def __setitem__(self, key, value):
         if key not in self.keys():
-            raise KeyError("No such diff key, available: %s" % self.diffs )
+            raise KeyError("No such diff key, available: %s" % self.diffs)
         setattr(self.result_column, key, value)
 
     def __delitem__(self, key):
@@ -366,8 +366,8 @@ class ColumnDelta(six.with_metaclass(MyMeta, DictMixin, sqlalchemy.schema.Schema
 
         # String length is a special case
         if ret and isinstance(new_type, sqlalchemy.types.String):
-            ret = (getattr(old_type, 'length', None) == \
-                       getattr(new_type, 'length', None))
+            ret = (getattr(old_type, 'length', None) ==
+                   getattr(new_type, 'length', None))
         return ret
 
     def _extract_parameters(self, p, k, column):
@@ -404,7 +404,7 @@ class ColumnDelta(six.with_metaclass(MyMeta, DictMixin, sqlalchemy.schema.Schema
                 toinit.append(column.server_default)
             else:
                 toinit.append(sqlalchemy.DefaultClause(column.server_onupdate,
-                                            for_update=True))
+                                                       for_update=True))
         if toinit:
             column._init_items(*toinit)
 
@@ -415,15 +415,17 @@ class ColumnDelta(six.with_metaclass(MyMeta, DictMixin, sqlalchemy.schema.Schema
         if isinstance(table, six.string_types):
             if self.alter_metadata:
                 if not self.meta:
-                    raise ValueError("metadata must be specified for table"
-                        " reflection when using alter_metadata")
+                    raise ValueError(
+                        "metadata must be specified for table "
+                        "reflection when using alter_metadata")
                 meta = self.meta
                 if self.engine:
                     meta.bind = self.engine
             else:
                 if not self.engine and not self.meta:
-                    raise ValueError("engine or metadata must be specified"
-                        " to reflect tables")
+                    raise ValueError(
+                        "engine or metadata must be specified to reflect "
+                        "tables")
                 if not self.engine:
                     self.engine = self.meta.bind
                 meta = sqlalchemy.MetaData(bind=self.engine)
@@ -432,6 +434,7 @@ class ColumnDelta(six.with_metaclass(MyMeta, DictMixin, sqlalchemy.schema.Schema
             self._table = table
             if not self.alter_metadata:
                 self._table.meta = sqlalchemy.MetaData(bind=self._table.bind)
+
     def _get_result_column(self):
         return getattr(self, '_result_column', None)
 
@@ -595,13 +598,13 @@ populated with defaults
         return self
 
     def add_to_table(self, table):
-        if table is not None  and self.table is None:
+        if table is not None and self.table is None:
             if SQLA_07:
                 table.append_column(self)
             else:
                 self._set_parent(table)
 
-    def _col_name_in_constraint(self,cons,name):
+    def _col_name_in_constraint(self, cons, name):
         return False
 
     def remove_from_table(self, table, unset_table=True):
@@ -613,7 +616,7 @@ populated with defaults
         for index in table.indexes:
             columns = []
             for col in index.columns:
-                if col.name!=self.name:
+                if col.name != self.name:
                     columns.append(col)
             if columns:
                 index.columns = columns
@@ -626,12 +629,12 @@ populated with defaults
         to_drop = set()
         for cons in table.constraints:
             # TODO: deal with other types of constraint
-            if isinstance(cons,(ForeignKeyConstraint,
-                                UniqueConstraint)):
+            if isinstance(cons, (ForeignKeyConstraint,
+                                 UniqueConstraint)):
                 for col_name in cons.columns:
-                    if not isinstance(col_name,six.string_types):
+                    if not isinstance(col_name, six.string_types):
                         col_name = col_name.name
-                    if self.name==col_name:
+                    if self.name == col_name:
                         to_drop.add(cons)
         table.constraints = table.constraints - to_drop
 
@@ -645,7 +648,8 @@ populated with defaults
     def copy_fixed(self, **kw):
         """Create a copy of this ``Column``, with all attributes."""
         q = util.safe_quote(self)
-        return sqlalchemy.Column(self.name, self.type, self.default,
+        return sqlalchemy.Column(
+            self.name, self.type, self.default,
             key=self.key,
             primary_key=self.primary_key,
             nullable=self.nullable,
@@ -662,11 +666,12 @@ populated with defaults
         """Check if constraints names are correct"""
         obj = getattr(self, name)
         if (getattr(self, name[:-5]) and not obj):
-            raise InvalidConstraintError("Column.create() accepts index_name,"
-            " primary_key_name and unique_name to generate constraints")
+            raise InvalidConstraintError(
+                "Column.create() accepts index_name, primary_key_name "
+                "and unique_name to generate constraints")
         if not isinstance(obj, six.string_types) and obj is not None:
             raise InvalidConstraintError(
-            "%s argument for column must be constraint name" % name)
+                "%s argument for column must be constraint name" % name)
 
 
 class ChangesetIndex(object):

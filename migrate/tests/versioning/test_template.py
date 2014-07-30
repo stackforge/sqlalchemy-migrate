@@ -43,7 +43,8 @@ class TestTemplate(fixture.Pathed):
 
         # make new templates dir
         shutil.copytree(migrate.versioning.templates.__path__[0], new_templates_dir)
-        shutil.copytree(os.path.join(new_templates_dir, 'repository/default'),
+        shutil.copytree(
+            os.path.join(new_templates_dir, 'repository/default'),
             os.path.join(new_templates_dir, 'repository/custom'))
 
         # edit templates

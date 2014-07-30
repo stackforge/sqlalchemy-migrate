@@ -22,14 +22,18 @@ class Collection(pathed.Pathed):
 class RepositoryCollection(Collection):
     _mask = '%s'
 
+
 class ScriptCollection(Collection):
     _mask = '%s.py_tmpl'
+
 
 class ManageCollection(Collection):
     _mask = '%s.py_tmpl'
 
+
 class SQLScriptCollection(Collection):
     _mask = '%s.py_tmpl'
+
 
 class Template(pathed.Pathed):
     """Finds the paths/packages of various Migrate templates.

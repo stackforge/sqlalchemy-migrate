@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
 import logging
+import os
 import sys
 
-import six
 from decorator import decorator
+import six
 
 from sqlalchemy import create_engine, Table, MetaData
 from sqlalchemy import exc as sa_exc
@@ -22,6 +22,7 @@ from migrate.tests.fixture.pathed import Pathed
 
 log = logging.getLogger(__name__)
 
+
 @Memoize
 def readurls():
     """read URLs from config file return a list"""
@@ -34,8 +35,9 @@ def readurls():
     try:
         fd = open(fullpath)
     except IOError:
+        args = {'filename': filename}
         raise IOError("""You must specify the databases to use for testing!
-Copy %(filename)s.tmpl to %(filename)s and edit your database URLs.""" % locals())
+Copy %(filename)s.tmpl to %(filename)s and edit your database URLs.""" % args)
 
     for line in fd:
         if line.startswith('#'):
@@ -44,6 +46,7 @@ Copy %(filename)s.tmpl to %(filename)s and edit your database URLs.""" % locals(
         ret.append(line)
     fd.close()
     return ret
+
 
 def is_supported(url, supported, not_supported):
     db = url.split(':', 1)[0]
@@ -100,15 +103,15 @@ def usedb(supported=None, not_supported=None):
                     try:
                         self._teardown()
                     except Exception as e:
-                        teardown_exception=e
+                        teardown_exception = e
                     else:
-                        teardown_exception=None
+                        teardown_exception = None
                 if setup_exception or teardown_exception:
                     raise RuntimeError((
                         'Exception during _setup/_teardown:\n'
                         'setup: %r\n'
                         'teardown: %r\n'
-                        )%(setup_exception,teardown_exception))
+                    ) % (setup_exception, teardown_exception))
             except Exception:
                 failed_for.append(url)
                 fail = sys.exc_info()
@@ -149,7 +152,7 @@ class DB(Base):
         #self.engine = create_engine(url, echo=True, poolclass=StaticPool)
         self.engine = create_engine(url, echo=True)
         # silence the logger added by SA, nose adds its own!
-        logging.getLogger('sqlalchemy').handlers=[]
+        logging.getLogger('sqlalchemy').handlers = []
         self.meta = MetaData(bind=self.engine)
         if self.level < self.CONNECT:
             return
@@ -163,12 +166,12 @@ class DB(Base):
             self.txn.rollback()
         if hasattr(self, 'session'):
             self.session.close()
-        #if hasattr(self,'conn'):
+        #if hasattr(self, 'conn'):
         #    self.conn.close()
         self.engine.dispose()
 
     def _supported(self, url):
-        db = url.split(':',1)[0]
+        db = url.split(':', 1)[0]
         func = getattr(self, self._TestCase__testMethodName)
         if hasattr(func, 'supported'):
             return db in func.supported

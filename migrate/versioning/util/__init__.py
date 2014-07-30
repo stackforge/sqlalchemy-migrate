@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 """.. currentmodule:: migrate.versioning.util"""
 
-import warnings
-import logging
 from decorator import decorator
+import logging
 from pkg_resources import EntryPoint
+import warnings
 
 import six
 from sqlalchemy import create_engine
@@ -13,11 +13,12 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.pool import StaticPool
 
 from migrate import exceptions
-from migrate.versioning.util.keyedinstance import KeyedInstance
 from migrate.versioning.util.importpath import import_path
+from migrate.versioning.util.keyedinstance import KeyedInstance
 
 
 log = logging.getLogger(__name__)
+
 
 def load_model(dotted_name):
     """Import module and use module-level variable".
@@ -30,13 +31,15 @@ def load_model(dotted_name):
     if isinstance(dotted_name, six.string_types):
         if ':' not in dotted_name:
             # backwards compatibility
-            warnings.warn('model should be in form of module.model:User '
+            warnings.warn(
+                'model should be in form of module.model:User '
                 'and not module.model.User', exceptions.MigrateDeprecationWarning)
             dotted_name = ':'.join(dotted_name.rsplit('.', 1))
         return EntryPoint.parse('x=%s' % dotted_name).load(False)
     else:
         # Assume it's already loaded.
         return dotted_name
+
 
 def asbool(obj):
     """Do everything to use object as bool"""
@@ -52,6 +55,7 @@ def asbool(obj):
         return bool(obj)
     else:
         raise ValueError("String is not true/false: %r" % obj)
+
 
 def guess_obj_type(obj):
     """Do everything to guess object type from string
@@ -79,6 +83,7 @@ def guess_obj_type(obj):
     else:
         return obj
 
+
 @decorator
 def catch_known_errors(f, *a, **kw):
     """Decorator that catches known api errors
@@ -90,6 +95,7 @@ def catch_known_errors(f, *a, **kw):
         return f(*a, **kw)
     except exceptions.PathFoundError as e:
         raise exceptions.KnownError("The path %s already exists" % e.args[0])
+
 
 def construct_engine(engine, **opts):
     """.. versionadded:: 0.5.4
@@ -125,7 +131,8 @@ def construct_engine(engine, **opts):
     # DEPRECATED: handle echo the old way
     echo = asbool(opts.get('echo', False))
     if echo:
-        warnings.warn('echo=True parameter is deprecated, pass '
+        warnings.warn(
+            'echo=True parameter is deprecated, pass '
             'engine_arg_echo=True or engine_dict={"echo": True}',
             exceptions.MigrateDeprecationWarning)
         kwargs['echo'] = echo
@@ -139,6 +146,7 @@ def construct_engine(engine, **opts):
     # TODO: return create_engine(engine, poolclass=StaticPool, **kwargs)
     # seems like 0.5.x branch does not work with engine.dispose and staticpool
     return create_engine(engine, **kwargs)
+
 
 @decorator
 def with_engine(f, *a, **kw):

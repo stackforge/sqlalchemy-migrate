@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from datetime import datetime
 import os
 import shutil
 
@@ -9,7 +10,6 @@ from migrate.versioning.repository import *
 from migrate.versioning.script import *
 
 from migrate.tests import fixture
-from datetime import datetime
 
 
 class TestRepository(fixture.Pathed):
@@ -44,7 +44,7 @@ class TestRepository(fixture.Pathed):
         self.assertTrue(repos.config.get('db_settings', 'version_table'))
 
         # version_table's default isn't none
-        self.assertNotEquals(repos.config.get('db_settings', 'version_table'), 'None')
+        self.assertNotEqual(repos.config.get('db_settings', 'version_table'), 'None')
 
     def test_load_notfound(self):
         """Nonexistant repositories shouldn't be loaded"""
@@ -96,7 +96,6 @@ class TestVersionedRepository(fixture.Pathed):
         self.assertTrue(repos.latest >= 2)
         self.assertTrue(repos.latest < 3)
 
-
     def test_timestmap_numbering_version(self):
         repos = Repository(self.path_repos)
         repos.config.set('db_settings', 'use_timestamp_numbering', 'True')
@@ -125,7 +124,9 @@ class TestVersionedRepository(fixture.Pathed):
         source = repo.version(1).script().source()
         self.assertTrue(source.find('def upgrade') >= 0)
 
-        import pprint; pprint.pprint(repo.version(2).sql)
+        import pprint
+        pprint.pprint(repo.version(2).sql)
+
         source = repo.version(2).script('postgres', 'upgrade').source()
         self.assertEqual(source.strip(), '')
 
@@ -159,7 +160,7 @@ class TestVersionedRepository(fixture.Pathed):
 
         # Upgrade to a specified version...
         cs = check_changeset((0, 10), 10)
-        self.assertEqual(cs.keys().pop(0),0 ) # 0 -> 1: index is starting version
+        self.assertEqual(cs.keys().pop(0), 0) # 0 -> 1: index is starting version
         self.assertEqual(cs.keys().pop(), 9) # 9 -> 10: index is starting version
         self.assertEqual(cs.start, 0) # starting version
         self.assertEqual(cs.end, 10) # ending version
@@ -193,7 +194,7 @@ class TestVersionedRepository(fixture.Pathed):
         self.assertRaises(Exception, repos.changeset, 'postgres', -1)
 
         # Downgrade
-        cs = check_changeset((10, 0),10)
+        cs = check_changeset((10, 0), 10)
         self.assertEqual(cs.keys().pop(0), 10) # 10 -> 9
         self.assertEqual(cs.keys().pop(), 1)    # 1 -> 0
         self.assertEqual(cs.start, 10)

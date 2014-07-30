@@ -5,6 +5,7 @@ from sqlalchemy import schema
 
 from migrate.exceptions import *
 
+
 class ConstraintChangeset(object):
     """Base class for Constraint classes."""
 
@@ -84,7 +85,6 @@ class PrimaryKeyConstraint(ConstraintChangeset, schema.PrimaryKeyConstraint):
         if table is not None:
             self._set_parent(table)
 
-
     def autoname(self):
         """Mimic the database's automatic constraint names"""
         return "%s_pkey" % self.table.name
@@ -158,8 +158,9 @@ class CheckConstraint(ConstraintChangeset, schema.CheckConstraint):
     def __init__(self, sqltext, *args, **kwargs):
         cols = kwargs.pop('columns', [])
         if not cols and not kwargs.get('name', False):
-            raise InvalidConstraintError('You must either set "name"'
-                'parameter or "columns" to autogenarate it.')
+            raise InvalidConstraintError(
+                'You must either set "name" parameter or "columns" to '
+                'autogenarate it.')
         colnames, table = self._normalize_columns(cols)
         table = kwargs.pop('table', table)
         schema.CheckConstraint.__init__(self, sqltext, *args, **kwargs)

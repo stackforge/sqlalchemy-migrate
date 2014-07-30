@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
 class KeyedInstance(object):
     """A class whose instances have a unique identifier of some sort
     No two instances with the same unique ID should exist - if we try to create

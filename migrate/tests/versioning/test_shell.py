@@ -52,28 +52,28 @@ class TestShellCommands(Shell):
         from runpy import run_module
         try:
             original = sys.argv
-            sys.argv=['X','--help']
+            sys.argv = ['X', '--help']
 
             run_module('migrate.versioning.shell', run_name='__main__')
 
         finally:
             sys.argv = original
 
-    def _check_error(self,args,code,expected,**kw):
+    def _check_error(self, args, code, expected, **kw):
         original = sys.stderr
         try:
             actual = cStringIO()
             sys.stderr = actual
             try:
-                shell.main(args,**kw)
+                shell.main(args, **kw)
             except SystemExit as e:
-                self.assertEqual(code,e.args[0])
+                self.assertEqual(code, e.args[0])
             else:
                 self.fail('No exception raised')
         finally:
             sys.stderr = original
         actual = actual.getvalue()
-        self.assertTrue(expected in actual,'%r not in:\n"""\n%s\n"""'%(expected,actual))
+        self.assertTrue(expected in actual, '%r not in:\n"""\n%s\n"""' % (expected, actual))
 
     def test_main(self):
         """Test main() function"""
@@ -84,10 +84,10 @@ class TestShellCommands(Shell):
         shell.main(['version', '--', '--repository=%s' % repos])
         shell.main(['version', '-d', '--repository=%s' % repos, '--version=2'])
 
-        self._check_error(['foobar'],2,'error: Invalid command foobar')
-        self._check_error(['create', 'f', 'o', 'o'],2,'error: Too many arguments for command create: o')
-        self._check_error(['create'],2,'error: Not enough arguments for command create: name, repository not specified')
-        self._check_error(['create', 'repo_name'],2,'already exists', repository=repos)
+        self._check_error(['foobar'], 2, 'error: Invalid command foobar')
+        self._check_error(['create', 'f', 'o', 'o'], 2, 'error: Too many arguments for command create: o')
+        self._check_error(['create'], 2, 'error: Not enough arguments for command create: name, repository not specified')
+        self._check_error(['create', 'repo_name'], 2, 'already exists', repository=repos)
 
     def test_create(self):
         """Repositories are created successfully"""
@@ -101,10 +101,11 @@ class TestShellCommands(Shell):
 
         # The default table should not be None
         repos_ = Repository(repos)
-        self.assertNotEquals(repos_.config.get('db_settings', 'version_table'), 'None')
+        self.assertNotEqual(repos_.config.get('db_settings', 'version_table'), 'None')
 
         # Can't create it again: it already exists
-        result = self.env.run('migrate create %s repository_name' % repos,
+        result = self.env.run(
+            'migrate create %s repository_name' % repos,
             expect_error=True)
         self.assertEqual(result.returncode, 2)
 
@@ -189,7 +190,8 @@ class TestShellRepository(Shell):
         self.assertEqual(result.stdout.strip(), source.strip())
 
         # We can also send the source to a file... test that too
-        result = self.env.run('migrate source 1 %s --repository=%s' %
+        result = self.env.run(
+            'migrate source 1 %s --repository=%s' %
             (filename, self.path_repos))
         self.assertTrue(os.path.exists(filename))
         fd = open(filename)
@@ -207,41 +209,43 @@ class TestShellDatabase(Shell, DB):
     @usedb()
     def test_version_control(self):
         """Ensure we can set version control on a database"""
-        path_repos = repos = self.tmp_repos()
-        url = self.url
+        repos = self.tmp_repos()
+        args = {'url': self.url, 'repos': repos}
         result = self.env.run('migrate create %s repository_name' % repos)
 
-        result = self.env.run('migrate drop_version_control %(url)s %(repos)s'\
-            % locals(), expect_error=True)
+        result = self.env.run(
+            'migrate drop_version_control %(url)s %(repos)s'
+            % args, expect_error=True)
         self.assertEqual(result.returncode, 1)
-        result = self.env.run('migrate version_control %(url)s %(repos)s' % locals())
+        result = self.env.run('migrate version_control %(url)s %(repos)s' % args)
 
         # Clean up
-        result = self.env.run('migrate drop_version_control %(url)s %(repos)s' % locals())
+        result = self.env.run('migrate drop_version_control %(url)s %(repos)s' % args)
         # Attempting to drop vc from a database without it should fail
-        result = self.env.run('migrate drop_version_control %(url)s %(repos)s'\
-            % locals(), expect_error=True)
+        result = self.env.run(
+            'migrate drop_version_control %(url)s %(repos)s'
+            % args, expect_error=True)
         self.assertEqual(result.returncode, 1)
 
     @usedb()
     def test_wrapped_kwargs(self):
         """Commands with default arguments set by manage.py"""
-        path_repos = repos = self.tmp_repos()
-        url = self.url
+        repos = self.tmp_repos()
+        args = {'url': self.url, 'repos': repos}
         result = self.env.run('migrate create --name=repository_name %s' % repos)
-        result = self.env.run('migrate drop_version_control %(url)s %(repos)s' % locals(), expect_error=True)
+        result = self.env.run('migrate drop_version_control %(url)s %(repos)s' % args, expect_error=True)
         self.assertEqual(result.returncode, 1)
-        result = self.env.run('migrate version_control %(url)s %(repos)s' % locals())
+        result = self.env.run('migrate version_control %(url)s %(repos)s' % args)
 
-        result = self.env.run('migrate drop_version_control %(url)s %(repos)s' % locals())
+        result = self.env.run('migrate drop_version_control %(url)s %(repos)s' % args)
 
     @usedb()
     def test_version_control_specified(self):
         """Ensure we can set version control to a particular version"""
         path_repos = self.tmp_repos()
-        url = self.url
+        args = {'url': self.url, 'path_repos': path_repos}
         result = self.env.run('migrate create --name=repository_name %s' % path_repos)
-        result = self.env.run('migrate drop_version_control %(url)s %(path_repos)s' % locals(), expect_error=True)
+        result = self.env.run('migrate drop_version_control %(url)s %(path_repos)s' % args, expect_error=True)
         self.assertEqual(result.returncode, 1)
 
         # Fill the repository
@@ -255,22 +259,23 @@ class TestShellDatabase(Shell, DB):
         self.assertEqual(result.stdout.strip(), str(version))
 
         # Apply versioning to DB
-        result = self.env.run('migrate version_control %(url)s %(path_repos)s %(version)s' % locals())
+        args['version'] = version
+        result = self.env.run('migrate version_control %(url)s %(path_repos)s %(version)s' % args)
 
         # Test db version number (should start at 2)
-        result = self.env.run('migrate db_version %(url)s %(path_repos)s' % locals())
+        result = self.env.run('migrate db_version %(url)s %(path_repos)s' % args)
         self.assertEqual(result.stdout.strip(), str(version))
 
         # Clean up
-        result = self.env.run('migrate drop_version_control %(url)s %(path_repos)s' % locals())
+        result = self.env.run('migrate drop_version_control %(url)s %(path_repos)s' % args)
 
     @usedb()
     def test_upgrade(self):
         """Can upgrade a versioned database"""
         # Create a repository
-        repos_name = 'repos_name'
         repos_path = self.tmp()
-        result = self.env.run('migrate create %(repos_path)s %(repos_name)s' % locals())
+        args = {'repos_path': repos_path, 'repos_name': 'repos_name'}
+        result = self.env.run('migrate create %(repos_path)s %(repos_name)s' % args)
         self.assertEqual(self.run_version(repos_path), 0)
 
         # Version the DB
@@ -398,7 +403,7 @@ class TestShellDatabase(Shell, DB):
 
         # Error script should fail
         script_path = self.tmp_py()
-        script_text='''
+        script_text = '''
         from sqlalchemy import *
         from migrate import *
 
@@ -472,29 +477,34 @@ class TestShellDatabase(Shell, DB):
         self.assertEqual(self.run_db_version(self.url, repos_path), 0)
 
         # Setup helper script.
-        result = self.env.run('migrate manage %s --repository=%s --url=%s --model=%s'\
+        result = self.env.run(
+            'migrate manage %s --repository=%s --url=%s --model=%s'
             % (script_path, repos_path, self.url, model_module))
         self.assertTrue(os.path.exists(script_path))
 
         # Model is defined but database is empty.
-        result = self.env.run('migrate compare_model_to_db %s %s --model=%s' \
+        result = self.env.run(
+            'migrate compare_model_to_db %s %s --model=%s'
             % (self.url, repos_path, model_module))
         self.assertTrue("tables missing from database: tmp_account_rundiffs" in result.stdout)
 
         # Test Deprecation
-        result = self.env.run('migrate compare_model_to_db %s %s --model=%s' \
+        result = self.env.run(
+            'migrate compare_model_to_db %s %s --model=%s'
             % (self.url, repos_path, model_module.replace(":", ".")), expect_error=True)
         self.assertEqual(result.returncode, 0)
         self.assertTrue("DeprecationWarning" in result.stderr)
         self.assertTrue("tables missing from database: tmp_account_rundiffs" in result.stdout)
 
         # Update db to latest model.
-        result = self.env.run('migrate update_db_from_model %s %s %s'\
+        result = self.env.run(
+            'migrate update_db_from_model %s %s %s'
             % (self.url, repos_path, model_module))
         self.assertEqual(self.run_version(repos_path), 0)
         self.assertEqual(self.run_db_version(self.url, repos_path), 0)  # version did not get bumped yet because new version not yet created
 
-        result = self.env.run('migrate compare_model_to_db %s %s %s'\
+        result = self.env.run(
+            'migrate compare_model_to_db %s %s %s'
             % (self.url, repos_path, model_module))
         self.assertTrue("No schema diffs" in result.stdout)
 
@@ -518,7 +528,7 @@ class TestShellDatabase(Shell, DB):
         #result = self.env.run('migrate make_update_script_for_model', expect_error=True)
         #self.assertTrue('Not enough arguments' in result.stderr)
 
-        #result_script = self.env.run('migrate make_update_script_for_model %s %s %s %s'\
+        #result_script = self.env.run('migrate make_update_script_for_model %s %s %s %s'
             #% (self.url, repos_path, old_model_module, model_module))
         #self.assertEqualIgnoreWhitespace(result_script.stdout,
         #'''from sqlalchemy import *
@@ -549,7 +559,7 @@ class TestShellDatabase(Shell, DB):
         #upgrade_script_path = '%s/versions/001_Desc.py' % repos_path
         #open(upgrade_script_path, 'w').write(result_script.stdout)
 
-        #result = self.env.run('migrate compare_model_to_db %s %s %s'\
+        #result = self.env.run('migrate compare_model_to_db %s %s %s'
             #% (self.url, repos_path, model_module))
         #self.assertTrue("No schema diffs" in result.stdout)
 
