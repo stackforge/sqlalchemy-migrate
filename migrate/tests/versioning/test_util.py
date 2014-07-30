@@ -13,6 +13,7 @@ from migrate.versioning import api
 
 import warnings
 
+
 class TestUtil(fixture.Pathed):
 
     def test_construct_engine(self):
@@ -36,7 +37,8 @@ class TestUtil(fixture.Pathed):
         self.assertEqual(engine, engine_orig)
 
         # test precedance
-        engine = construct_engine(url, engine_dict={'encoding': 'iso-8859-1'},
+        engine = construct_engine(
+            url, engine_dict={'encoding': 'iso-8859-1'},
             engine_arg_encoding='utf-8')
         self.assertEqual(engine.dialect.encoding, 'utf-8')
 
@@ -50,7 +52,7 @@ class TestUtil(fixture.Pathed):
             engine = construct_engine(url, echo='True')
             self.assertTrue(engine.echo)
 
-            self.assertEqual(len(w),1)
+            self.assertEqual(len(w), 1)
             self.assertTrue(issubclass(w[-1].category,
                                        MigrateDeprecationWarning))
             self.assertEqual(
@@ -90,7 +92,6 @@ class TestUtil(fixture.Pathed):
         self.assertRaises(ValueError, asbool, 'test')
         self.assertRaises(ValueError, asbool, object)
 
-
     def test_load_model(self):
         """load model from dotted name"""
         model_path = os.path.join(self.temp_usable_dir, 'test_load_model.py')
@@ -110,7 +111,7 @@ class TestUtil(fixture.Pathed):
             FakeFloat = load_model('test_load_model.FakeFloat')
             self.assertTrue(isinstance(FakeFloat(), int))
 
-            self.assertEqual(len(w),1)
+            self.assertEqual(len(w), 1)
             self.assertTrue(issubclass(w[-1].category,
                                        MigrateDeprecationWarning))
             self.assertEqual(

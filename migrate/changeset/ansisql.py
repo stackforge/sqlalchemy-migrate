@@ -6,8 +6,8 @@
 """
 
 import sqlalchemy as sa
-from sqlalchemy.schema import SchemaVisitor
 from sqlalchemy.engine.default import DefaultDialect
+from sqlalchemy.schema import SchemaVisitor
 from sqlalchemy.sql import ClauseElement
 from sqlalchemy.schema import (ForeignKeyConstraint,
                                PrimaryKeyConstraint,
@@ -15,11 +15,11 @@ from sqlalchemy.schema import (ForeignKeyConstraint,
                                UniqueConstraint,
                                Index)
 
-from migrate import exceptions
-import sqlalchemy.sql.compiler
 from migrate.changeset import constraint
 from migrate.changeset import util
+from migrate import exceptions
 from six.moves import StringIO
+import sqlalchemy.sql.compiler
 
 from sqlalchemy.schema import AddConstraint, DropConstraint
 from sqlalchemy.sql.compiler import DDLCompiler
@@ -107,7 +107,7 @@ class ANSIColumnGenerator(AlterTableVisitor, SchemaGenerator):
 
         # add indexes and unique constraints
         if column.index_name:
-            Index(column.index_name,column).create()
+            Index(column.index_name, column).create()
         elif column.unique_name:
             constraint.UniqueConstraint(column,
                                         name=column.unique_name).create()
@@ -124,6 +124,7 @@ class ANSIColumnGenerator(AlterTableVisitor, SchemaGenerator):
 
     def add_foreignkey(self, fk):
         self.connection.execute(AddConstraint(fk))
+
 
 class ANSIColumnDropper(AlterTableVisitor, SchemaDropper):
     """Extends ANSI SQL dropper for column dropping (``ALTER TABLE
@@ -168,21 +169,21 @@ class ANSISchemaChanger(AlterTableVisitor, SchemaGenerator):
         if hasattr(self, '_validate_identifier'):
             # SA <= 0.6.3
             self.append("ALTER INDEX %s RENAME TO %s" % (
-                    self.preparer.quote(
-                        self._validate_identifier(
-                            index.name, True), index.quote),
-                    self.preparer.quote(
-                        self._validate_identifier(
-                            index.new_name, True), index.quote)))
+                self.preparer.quote(
+                    self._validate_identifier(
+                        index.name, True), index.quote),
+                self.preparer.quote(
+                    self._validate_identifier(
+                        index.new_name, True), index.quote)))
         elif hasattr(self, '_index_identifier'):
             # SA >= 0.6.5, < 0.8
             self.append("ALTER INDEX %s RENAME TO %s" % (
-                    self.preparer.quote(
-                        self._index_identifier(
-                            index.name), index.quote),
-                    self.preparer.quote(
-                        self._index_identifier(
-                            index.new_name), index.quote)))
+                self.preparer.quote(
+                    self._index_identifier(
+                        index.name), index.quote),
+                self.preparer.quote(
+                    self._index_identifier(
+                        index.new_name), index.quote)))
         else:
             # SA >= 0.8
             class NewName(object):
@@ -197,8 +198,8 @@ class ANSISchemaChanger(AlterTableVisitor, SchemaGenerator):
                     return getattr(self._obj, attr)
 
             self.append("ALTER INDEX %s RENAME TO %s" % (
-                    self._prepared_index_name(index),
-                    self._prepared_index_name(NewName(index))))
+                self._prepared_index_name(index),
+                self._prepared_index_name(NewName(index))))
 
         self.execute()
 
@@ -293,11 +294,13 @@ class ANSIConstraintCommon(AlterTableVisitor):
     def visit_migrate_unique_constraint(self, *p, **k):
         self._visit_constraint(*p, **k)
 
+
 class ANSIConstraintGenerator(ANSIConstraintCommon, SchemaGenerator):
     def _visit_constraint(self, constraint):
         constraint.name = self.get_constraint_name(constraint)
         self.append(self.process(AddConstraint(constraint)))
         self.execute()
+
 
 class ANSIConstraintDropper(ANSIConstraintCommon, SchemaDropper):
     def _visit_constraint(self, constraint):

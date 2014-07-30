@@ -1,10 +1,10 @@
 """
    SQLAlchemy migrate repository management.
 """
+import logging
 import os
 import shutil
 import string
-import logging
 
 from pkg_resources import resource_filename
 from tempita import Template as TempitaTemplate
@@ -16,6 +16,7 @@ from migrate.versioning.config import *
 
 
 log = logging.getLogger(__name__)
+
 
 class Changeset(dict):
     """A collection of changes to be applied to a database.
@@ -78,7 +79,7 @@ class Repository(pathed.Pathed):
         super(Repository, self).__init__(path)
         self.config = cfgparse.Config(os.path.join(self.path, self._config))
         self.versions = version.Collection(os.path.join(self.path,
-                                                      self._versions))
+                                                        self._versions))
         log.debug('Repository %s loaded successfully' % path)
         log.debug('Config: %r' % self.config.to_dict())
 
@@ -146,8 +147,8 @@ class Repository(pathed.Pathed):
 
         # Create a management script
         manager = os.path.join(path, 'manage.py')
-        Repository.create_manage_file(manager, templates_theme=theme,
-            templates_path=t_path, **opts)
+        Repository.create_manage_file(
+            manager, templates_theme=theme, templates_path=t_path, **opts)
 
         return cls(path)
 
