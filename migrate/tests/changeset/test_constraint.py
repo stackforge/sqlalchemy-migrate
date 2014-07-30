@@ -31,7 +31,8 @@ class CommonTestConstraint(fixture.DB):
         self._connect(self.url)
         self.meta = MetaData(self.engine)
         self.tablename = 'mytable'
-        self.table = Table(self.tablename, self.meta,
+        self.table = Table(
+            self.tablename, self.meta,
             Column(u'id', Integer, nullable=False),
             Column(u'fkey', Integer, nullable=False),
             mysql_engine='InnoDB')
@@ -41,8 +42,9 @@ class CommonTestConstraint(fixture.DB):
 
         # make sure we start at zero
         self.assertEqual(len(self.table.primary_key), 0)
-        self.assertTrue(isinstance(self.table.primary_key,
-            schema.PrimaryKeyConstraint), self.table.primary_key.__class__)
+        self.assertTrue(
+            isinstance(self.table.primary_key, schema.PrimaryKeyConstraint),
+            self.table.primary_key.__class__)
 
 
 class TestConstraint(CommonTestConstraint):

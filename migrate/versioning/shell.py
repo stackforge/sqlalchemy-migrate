@@ -3,10 +3,11 @@
 
 """The migrate command-line tool."""
 
-import sys
 import inspect
 import logging
-from optparse import OptionParser, BadOptionError
+from optparse import BadOptionError
+from optparse import OptionParser
+import sys
 
 from migrate import exceptions
 from migrate.versioning import api
@@ -21,6 +22,7 @@ alias = dict(
     dbv=api.db_version,
     v=api.version,
 )
+
 
 def alias_setup():
     global alias
@@ -56,6 +58,7 @@ class PassiveOptionParser(OptionParser):
                 largs.append(arg)
                 del rargs[0]
 
+
 def main(argv=None, **kwargs):
     """Shell interface to :mod:`migrate.versioning.api`.
 
@@ -82,10 +85,10 @@ def main(argv=None, **kwargs):
 
     parser = PassiveOptionParser(usage=usage)
     parser.add_option("-d", "--debug",
-                     action="store_true",
-                     dest="debug",
-                     default=False,
-                     help="Shortcut to turn on DEBUG mode for logging")
+                      action="store_true",
+                      dest="debug",
+                      default=False,
+                      help="Shortcut to turn on DEBUG mode for logging")
     parser.add_option("-q", "--disable_logging",
                       action="store_true",
                       dest="disable_logging",
@@ -201,7 +204,8 @@ def main(argv=None, **kwargs):
     required = list(set(f_required) - set(f_args_default))
     required.sort()
     if required:
-        parser.error("Not enough arguments for command %s: %s not specified" \
+        parser.error(
+            "Not enough arguments for command %s: %s not specified"
             % (command, ', '.join(required)))
 
     # handle command

@@ -4,9 +4,9 @@
    that it can work in any version.
 """
 
+import logging
 import os
 import sys
-import logging
 
 log = logging.getLogger(__name__)
 
@@ -34,8 +34,8 @@ def move_file(src, tgt):
     log.info('Moving file %s to %s' % (src, tgt))
     if os.path.exists(tgt):
         raise Exception(
-            'Cannot move file %s because target %s already exists' % \
-                (src, tgt))
+            'Cannot move file %s because target %s already exists' %
+            (src, tgt))
     os.rename(src, tgt)
 
 
