@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import logging
 import os
 import re
 import shutil
-import logging
 
 from migrate import exceptions
 from migrate.versioning import pathed, script
@@ -13,6 +13,7 @@ import six
 
 
 log = logging.getLogger(__name__)
+
 
 class VerNum(object):
     """A version number that behaves like a string and int at the same time"""
@@ -26,7 +27,7 @@ class VerNum(object):
         ret = cls._instances[val]
         return ret
 
-    def __init__(self,value):
+    def __init__(self, value):
         self.value = str(int(value))
         if self < 0:
             raise ValueError("Version number cannot be negative")
@@ -85,7 +86,8 @@ class Collection(pathed.Pathed):
         files = os.listdir(path)
         if '1' in files:
             # deprecation
-            raise Exception('It looks like you have a repository in the old '
+            raise Exception(
+                'It looks like you have a repository in the old '
                 'format (with directories for each version). '
                 'Please convert repository before proceeding.')
 
@@ -110,7 +112,7 @@ class Collection(pathed.Pathed):
         return max([VerNum(0)] + list(self.versions.keys()))
 
     def _next_ver_num(self, use_timestamp_numbering):
-        if use_timestamp_numbering == True:
+        if use_timestamp_numbering:
             return VerNum(int(datetime.utcnow().strftime('%Y%m%d%H%M%S')))
         else:
             return self.latest + 1
@@ -222,7 +224,7 @@ class Version(object):
             parts = basename.split('_')
             if len(parts) < 3:
                 raise exceptions.ScriptError(
-                    "Invalid SQL script name %s " % basename + \
+                    "Invalid SQL script name %s " % basename +
                     "(needs to be ###_description_database_operation.sql)")
             version = parts[0]
             op = parts[-1]
@@ -239,7 +241,7 @@ class Version(object):
                 dbms = parts[-2]
         else:
             raise exceptions.ScriptError(
-                "Invalid SQL script name %s " % basename + \
+                "Invalid SQL script name %s " % basename +
                 "(needs to be ###_description_database_operation.sql)")
 
         # File the script into a dictionary
@@ -247,7 +249,8 @@ class Version(object):
 
     def _add_script_py(self, path):
         if self.python is not None:
-            raise exceptions.ScriptError('You can only have one Python script '
+            raise exceptions.ScriptError(
+                'You can only have one Python script '
                 'per version, but you have: %s and %s' % (self.python, path))
         self.python = script.PythonScript(path)
 
@@ -256,6 +259,7 @@ class Extensions:
     """A namespace for file extensions"""
     py = 'py'
     sql = 'sql'
+
 
 def str_to_filename(s):
     """Replaces spaces, (double and single) quotes

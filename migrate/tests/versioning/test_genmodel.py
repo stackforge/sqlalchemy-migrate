@@ -23,8 +23,9 @@ class TestSchemaDiff(fixture.DB):
         self.meta.drop_all()  # in case junk tables are lying around in the test database
         self.meta = MetaData(self.engine)
         self.meta.reflect()  # needed if we just deleted some tables
-        self.table = Table(self.table_name, self.meta,
-            Column('id',Integer(), primary_key=True),
+        self.table = Table(
+            self.table_name, self.meta,
+            Column('id', Integer(), primary_key=True),
             Column('name', UnicodeText()),
             Column('data', UnicodeText()),
         )
@@ -38,7 +39,7 @@ class TestSchemaDiff(fixture.DB):
 
     def _applyLatestModel(self):
         diff = schemadiff.getDiffOfModelAgainstDatabase(self.meta, self.engine, excludeTables=['migrate_version'])
-        genmodel.ModelGenerator(diff,self.engine).runB2A()
+        genmodel.ModelGenerator(diff, self.engine).runB2A()
 
     # NOTE(mriedem): DB2 handles UnicodeText as LONG VARGRAPHIC
     # so the schema diffs on the columns don't work with this test.
@@ -54,15 +55,14 @@ class TestSchemaDiff(fixture.DB):
                 (tablesMissingInDatabase,
                  tablesMissingInModel,
                  tablesWithDiff,
-                 isDiff)
-                )
+                 isDiff))
 
         # Model is defined but database is empty.
         assertDiff(True, [self.table_name], [], [])
 
         # Check Python upgrade and downgrade of database from updated model.
         diff = schemadiff.getDiffOfModelAgainstDatabase(self.meta, self.engine, excludeTables=['migrate_version'])
-        decls, upgradeCommands, downgradeCommands = genmodel.ModelGenerator(diff,self.engine).genB2AMigration()
+        decls, upgradeCommands, downgradeCommands = genmodel.ModelGenerator(diff, self.engine).genB2AMigration()
 
         # Feature test for a recent SQLa feature;
         # expect different output in that case.
@@ -95,7 +95,7 @@ class TestSchemaDiff(fixture.DB):
 
         # Check Python code gen from database.
         diff = schemadiff.getDiffOfModelAgainstDatabase(MetaData(), self.engine, excludeTables=['migrate_version'])
-        src = genmodel.ModelGenerator(diff,self.engine).genBDefinition()
+        src = genmodel.ModelGenerator(diff, self.engine).genBDefinition()
 
         namespace = {}
         six.exec_(src, namespace)
@@ -113,11 +113,12 @@ class TestSchemaDiff(fixture.DB):
         # Modify table in model (by removing it and adding it back to model)
         # Drop column data, add columns data2 and data3.
         self.meta.remove(self.table)
-        self.table = Table(self.table_name,self.meta,
-            Column('id',Integer(),primary_key=True),
-            Column('name',UnicodeText(length=None)),
-            Column('data2',Integer(),nullable=True),
-            Column('data3',Integer(),nullable=True),
+        self.table = Table(
+            self.table_name, self.meta,
+            Column('id', Integer(), primary_key=True),
+            Column('name', UnicodeText(length=None)),
+            Column('data2', Integer(), nullable=True),
+            Column('data3', Integer(), nullable=True),
         )
         assertDiff(True, [], [], [self.table_name])
 
@@ -127,17 +128,18 @@ class TestSchemaDiff(fixture.DB):
 
         # Drop column data3, add data4
         self.meta.remove(self.table)
-        self.table = Table(self.table_name,self.meta,
-            Column('id',Integer(),primary_key=True),
-            Column('name',UnicodeText(length=None)),
-            Column('data2',Integer(),nullable=True),
-            Column('data4',Float(),nullable=True),
+        self.table = Table(
+            self.table_name, self.meta,
+            Column('id', Integer(), primary_key=True),
+            Column('name', UnicodeText(length=None)),
+            Column('data2', Integer(), nullable=True),
+            Column('data4', Float(), nullable=True),
         )
         assertDiff(True, [], [], [self.table_name])
 
         diff = schemadiff.getDiffOfModelAgainstDatabase(
             self.meta, self.engine, excludeTables=['migrate_version'])
-        decls, upgradeCommands, downgradeCommands = genmodel.ModelGenerator(diff,self.engine).genB2AMigration(indent='')
+        decls, upgradeCommands, downgradeCommands = genmodel.ModelGenerator(diff, self.engine).genB2AMigration(indent='')
 
         # decls have changed since genBDefinition
         six.exec_(decls, namespace)
@@ -157,7 +159,7 @@ class TestSchemaDiff(fixture.DB):
 
         if not self.engine.name == 'oracle':
             # Make sure data is still present.
-            result = self.engine.execute(self.table.select(self.table.c.id==dataId))
+            result = self.engine.execute(self.table.select(self.table.c.id == dataId))
             rows = result.fetchall()
             self.assertEqual(len(rows), 1)
             self.assertEqual(rows[0].name, 'mydata')
@@ -168,10 +170,11 @@ class TestSchemaDiff(fixture.DB):
 
         # Change column type in model.
         self.meta.remove(self.table)
-        self.table = Table(self.table_name,self.meta,
-            Column('id',Integer(),primary_key=True),
-            Column('name',UnicodeText(length=None)),
-            Column('data2',String(255),nullable=True),
+        self.table = Table(
+            self.table_name, self.meta,
+            Column('id', Integer(), primary_key=True),
+            Column('name', UnicodeText(length=None)),
+            Column('data2', String(255), nullable=True),
         )
 
         # XXX test type diff
@@ -185,7 +188,7 @@ class TestSchemaDiff(fixture.DB):
 
         if not self.engine.name == 'oracle':
             # Make sure data is still present.
-            result = self.engine.execute(self.table.select(self.table.c.id==dataId2))
+            result = self.engine.execute(self.table.select(self.table.c.id == dataId2))
             rows = result.fetchall()
             self.assertEqual(len(rows), 1)
             self.assertEqual(rows[0].name, 'mydata2')
@@ -198,10 +201,11 @@ class TestSchemaDiff(fixture.DB):
         if not self.engine.name == 'firebird':
             # Change column nullable in model.
             self.meta.remove(self.table)
-            self.table = Table(self.table_name,self.meta,
-                Column('id',Integer(),primary_key=True),
-                Column('name',UnicodeText(length=None)),
-                Column('data2',String(255),nullable=False),
+            self.table = Table(
+                self.table_name, self.meta,
+                Column('id', Integer(), primary_key=True),
+                Column('name', UnicodeText(length=None)),
+                Column('data2', String(255), nullable=False),
             )
             assertDiff(True, [], [], [self.table_name])  # TODO test nullable diff
 
