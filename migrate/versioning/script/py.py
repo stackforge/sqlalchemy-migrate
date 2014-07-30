@@ -1,18 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import inspect
+import logging
 import shutil
 import warnings
-import logging
-import inspect
 
 import migrate
-from migrate.versioning import genmodel, schemadiff
-from migrate.versioning.config import operations
-from migrate.versioning.template import Template
-from migrate.versioning.script import base
-from migrate.versioning.util import import_path, load_model, with_engine
 from migrate.exceptions import MigrateDeprecationWarning, InvalidScriptError, ScriptError
+from migrate.versioning.config import operations
+from migrate.versioning import genmodel, schemadiff
+from migrate.versioning.script import base
+from migrate.versioning.template import Template
+from migrate.versioning.util import import_path, load_model, with_engine
 import six
 from six.moves import StringIO
 
@@ -67,7 +67,7 @@ class PythonScript(base.BaseScript):
             excludeTables=[repository.version_table])
         # TODO: diff can be False (there is no difference?)
         decls, upgradeCommands, downgradeCommands = \
-            genmodel.ModelGenerator(diff,engine).genB2AMigration()
+            genmodel.ModelGenerator(diff, engine).genB2AMigration()
 
         # Store differences into file.
         src = Template(opts.pop('templates_path', None)).get_script(opts.pop('templates_theme', None))
@@ -142,7 +142,8 @@ class PythonScript(base.BaseScript):
 
         # check for old way of using engine
         if not inspect.getargspec(script_func)[0]:
-            raise TypeError("upgrade/downgrade functions must accept engine"
+            raise TypeError(
+                "upgrade/downgrade functions must accept engine"
                 " parameter (since version 0.5.4)")
 
         script_func(engine)

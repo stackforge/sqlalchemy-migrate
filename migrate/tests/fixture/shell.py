@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import logging
 import os
 import sys
-import logging
 
 from scripttest import TestFileEnvironment
 
@@ -11,6 +11,7 @@ from migrate.tests.fixture.pathed import *
 
 
 log = logging.getLogger(__name__)
+
 
 class Shell(Pathed):
     """Base class for command line tests"""

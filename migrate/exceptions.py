@@ -71,10 +71,8 @@ class InvalidScriptError(ScriptError):
     """Invalid script error."""
 
 
-class InvalidVersionError(Error):
-    """Invalid version error."""
-
 # migrate.changeset
+
 
 class NotSupportedError(Error):
     """Not supported error"""
@@ -82,6 +80,7 @@ class NotSupportedError(Error):
 
 class InvalidConstraintError(Error):
     """Invalid constraint error"""
+
 
 class MigrateDeprecationWarning(DeprecationWarning):
     """Warning for deprecated features in Migrate"""

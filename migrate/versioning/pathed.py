@@ -2,9 +2,9 @@
    A path/directory class.
 """
 
+import logging
 import os
 import shutil
-import logging
 
 from migrate import exceptions
 from migrate.versioning.config import *
@@ -12,6 +12,7 @@ from migrate.versioning.util import KeyedInstance
 
 
 log = logging.getLogger(__name__)
+
 
 class Pathed(KeyedInstance):
     """
