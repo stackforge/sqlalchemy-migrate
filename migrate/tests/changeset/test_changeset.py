@@ -13,6 +13,7 @@ from migrate.tests import fixture
 from migrate.tests.fixture.warnings import catch_warnings
 import six
 
+
 class TestAddDropColumn(fixture.DB):
     """Test add/drop column through all possible interfaces
     also test for constraints
@@ -25,7 +26,8 @@ class TestAddDropColumn(fixture.DB):
     def _setup(self, url):
         super(TestAddDropColumn, self)._setup(url)
         self.meta = MetaData()
-        self.table = Table(self.table_name, self.meta,
+        self.table = Table(
+            self.table_name, self.meta,
             Column('id', Integer, unique=True),
         )
         self.table_idx = Table(
@@ -50,7 +52,7 @@ class TestAddDropColumn(fixture.DB):
         if self.engine.has_table(self.table_idx.name):
             self.table_idx.drop()
         self.meta.clear()
-        super(TestAddDropColumn,self)._teardown()
+        super(TestAddDropColumn, self)._teardown()
 
     def run_(self, create_column_func, drop_column_func, *col_p, **col_k):
         col_name = 'data'
@@ -86,8 +88,10 @@ class TestAddDropColumn(fixture.DB):
         """Add/drop columns not yet defined in the table"""
         def add_func(col):
             return create_column(col, self.table)
+
         def drop_func(col):
             return drop_column(col, self.table)
+
         return self.run_(add_func, drop_func)
 
     @fixture.usedb()
@@ -95,13 +99,16 @@ class TestAddDropColumn(fixture.DB):
         """Add/drop columns already defined in the table"""
         def add_func(col):
             self.meta.clear()
-            self.table = Table(self.table_name, self.meta,
+            self.table = Table(
+                self.table_name, self.meta,
                 Column('id', Integer, primary_key=True),
                 col,
             )
             return create_column(col)
+
         def drop_func(col):
             return drop_column(col)
+
         return self.run_(add_func, drop_func)
 
     @fixture.usedb()
@@ -113,10 +120,12 @@ class TestAddDropColumn(fixture.DB):
             self.assertTrue(col.table is None, col.table)
             self.table.append_column(col)
             return col.create()
+
         def drop_func(col):
-            #self.assertTrue(col.table is None,col.table)
+            #self.assertTrue(col.table is None, col.table)
             #self.table.append_column(col)
             return col.drop()
+
         return self.run_(add_func, drop_func)
 
     @fixture.usedb()
@@ -124,8 +133,10 @@ class TestAddDropColumn(fixture.DB):
         """Add/drop columns via column methods; columns not bound to a table"""
         def add_func(col):
             return col.create(self.table)
+
         def drop_func(col):
             return col.drop(self.table)
+
         return self.run_(add_func, drop_func)
 
     @fixture.usedb()
@@ -133,8 +144,10 @@ class TestAddDropColumn(fixture.DB):
         """Add/drop columns via table methods; by column object"""
         def add_func(col):
             return self.table.create_column(col)
+
         def drop_func(col):
             return self.table.drop_column(col)
+
         return self.run_(add_func, drop_func)
 
     @fixture.usedb()
@@ -144,9 +157,11 @@ class TestAddDropColumn(fixture.DB):
             # must be bound to table
             self.table.append_column(col)
             return self.table.create_column(col.name)
+
         def drop_func(col):
             # Not necessarily bound to table
             return self.table.drop_column(col.name)
+
         return self.run_(add_func, drop_func)
 
     @fixture.usedb()
@@ -155,8 +170,10 @@ class TestAddDropColumn(fixture.DB):
         def add_func(col):
             self.table.append_column(col)
             return create_column(col.name, self.table)
+
         def drop_func(col):
             return drop_column(col.name, self.table)
+
         return self.run_(add_func, drop_func)
 
     @fixture.usedb()
@@ -164,19 +181,22 @@ class TestAddDropColumn(fixture.DB):
         """Drop column by name"""
         def add_func(col):
             return self.table.create_column(col)
+
         def drop_func(col):
             if SQLA_07:
                 self.table._columns.remove(col)
             else:
                 self.table.c.remove(col)
             return self.table.drop_column(col.name)
+
         self.run_(add_func, drop_func)
 
     @fixture.usedb()
     def test_fk(self):
         """Can create columns with foreign keys"""
         # create FK's target
-        reftable = Table('tmp_ref', self.meta,
+        reftable = Table(
+            'tmp_ref', self.meta,
             Column('id', Integer, primary_key=True),
         )
         if self.engine.has_table(reftable.name):
@@ -198,10 +218,10 @@ class TestAddDropColumn(fixture.DB):
 
         if SQLA_07:
             self.assertEqual(reftable.c.id.name,
-                list(col.foreign_keys)[0].column.name)
+                             list(col.foreign_keys)[0].column.name)
         else:
             self.assertEqual(reftable.c.id.name,
-                col.foreign_keys[0].column.name)
+                             col.foreign_keys[0].column.name)
 
         if self.engine.name == 'mysql':
             constraint.ForeignKeyConstraint([self.table.c.data],
@@ -216,7 +236,8 @@ class TestAddDropColumn(fixture.DB):
     def test_pk(self):
         """Can create columns with primary key"""
         col = Column('data', Integer, nullable=False)
-        self.assertRaises(exceptions.InvalidConstraintError,
+        self.assertRaises(
+            exceptions.InvalidConstraintError,
             col.create, self.table, primary_key_name=True)
         col.create(self.table, primary_key_name='data_pkey')
 
@@ -254,7 +275,8 @@ class TestAddDropColumn(fixture.DB):
 
     @fixture.usedb()
     def test_unique_constraint(self):
-        self.assertRaises(exceptions.InvalidConstraintError,
+        self.assertRaises(
+            exceptions.InvalidConstraintError,
             Column('data', Integer, unique=True).create, self.table)
 
         col = Column('data', Integer)
@@ -283,7 +305,7 @@ class TestAddDropColumn(fixture.DB):
         reflected = Table(self.table_idx.name, MetaData(), autoload=True,
                           autoload_with=self.engine)
         index = next(iter(reflected.indexes))
-        self.assertEquals(['a'], [c.name for c in index.columns])
+        self.assertEqual(['a'], [c.name for c in index.columns])
 
     @fixture.usedb()
     def test_drop_all_columns_of_composite_index(self):
@@ -292,17 +314,16 @@ class TestAddDropColumn(fixture.DB):
 
         reflected = Table(self.table_idx.name, MetaData(), autoload=True,
                           autoload_with=self.engine)
-        self.assertEquals(0, len(reflected.indexes))
+        self.assertEqual(0, len(reflected.indexes))
 
-    def _check_index(self,expected):
+    def _check_index(self, expected):
         if 'mysql' in self.engine.name or 'postgres' in self.engine.name:
             for index in tuple(
                 Table(self.table.name, MetaData(),
-                      autoload=True, autoload_with=self.engine).indexes
-                ):
-                if index.name=='ix_data':
+                      autoload=True, autoload_with=self.engine).indexes):
+                if index.name == 'ix_data':
                     break
-            self.assertEqual(expected,index.unique)
+            self.assertEqual(expected, index.unique)
 
     @fixture.usedb()
     def test_index(self):
@@ -374,7 +395,7 @@ class TestAddDropColumn(fixture.DB):
             Column('id', Integer, primary_key=True),
             Column('d1', String(10), index=True),
             Column('d2', String(10), index=True),
-            )
+        )
         self.table.create()
 
         # paranoid check
@@ -382,7 +403,7 @@ class TestAddDropColumn(fixture.DB):
         self.assertEqual(
             sorted([i.name for i in self.table.indexes]),
             [u'ix_tmp_adddropcol_d1', u'ix_tmp_adddropcol_d2']
-            )
+        )
 
         # delete one
         self.table.c.d2.drop()
@@ -392,16 +413,16 @@ class TestAddDropColumn(fixture.DB):
         self.assertEqual(
             sorted([i.name for i in self.table.indexes]),
             [u'ix_tmp_adddropcol_d1']
-            )
+        )
 
     def _actual_foreign_keys(self):
         from sqlalchemy.schema import ForeignKeyConstraint
         result = []
         for cons in self.table.constraints:
-            if isinstance(cons,ForeignKeyConstraint):
+            if isinstance(cons, ForeignKeyConstraint):
                 col_names = []
                 for col_name in cons.columns:
-                    if not isinstance(col_name,six.string_types):
+                    if not isinstance(col_name, six.string_types):
                         col_name = col_name.name
                     col_names.append(col_name)
                 result.append(col_names)
@@ -414,7 +435,8 @@ class TestAddDropColumn(fixture.DB):
         self.meta.clear()
 
         # create FK's target
-        reftable = Table('tmp_ref', self.meta,
+        reftable = Table(
+            'tmp_ref', self.meta,
             Column('id', Integer, primary_key=True),
         )
         if self.engine.has_table(reftable.name):
@@ -427,11 +449,11 @@ class TestAddDropColumn(fixture.DB):
             Column('id', Integer, primary_key=True),
             Column('r1', Integer, ForeignKey('tmp_ref.id', name='test_fk1')),
             Column('r2', Integer, ForeignKey('tmp_ref.id', name='test_fk2')),
-            )
+        )
         self.table.create()
 
         # paranoid check
-        self.assertEqual([['r1'],['r2']],
+        self.assertEqual([['r1'], ['r2']],
                          self._actual_foreign_keys())
 
         # delete one
@@ -458,11 +480,12 @@ class TestAddDropColumn(fixture.DB):
         # to work.
 
         # create FK's target
-        reftable = Table('tmp_ref', self.meta,
+        reftable = Table(
+            'tmp_ref', self.meta,
             Column('id', Integer, primary_key=True),
             Column('jd', Integer, nullable=False),
-            UniqueConstraint('id','jd')
-            )
+            UniqueConstraint('id', 'jd')
+        )
         if self.engine.has_table(reftable.name):
             reftable.drop()
         reftable.create()
@@ -473,14 +496,14 @@ class TestAddDropColumn(fixture.DB):
             Column('id', Integer, primary_key=True),
             Column('r1', Integer, nullable=False),
             Column('r2', Integer, nullable=False),
-            ForeignKeyConstraint(['r1','r2'],
-                                 [reftable.c.id,reftable.c.jd],
+            ForeignKeyConstraint(['r1', 'r2'],
+                                 [reftable.c.id, reftable.c.jd],
                                  name='test_fk')
-            )
+        )
         self.table.create()
 
         # paranoid check
-        self.assertEqual([['r1','r2']],
+        self.assertEqual([['r1', 'r2']],
                          self._actual_foreign_keys())
 
         # delete one
@@ -496,6 +519,7 @@ class TestAddDropColumn(fixture.DB):
         # and insist that the constraint is deleted first, separately?
         self.assertEqual([],
                          self._actual_foreign_keys())
+
 
 class TestRename(fixture.DB):
     """Tests for table and index rename methods"""
@@ -538,7 +562,7 @@ class TestRename(fixture.DB):
             """
             if not skip_object_check:
                 # Table object check
-                self.assertEqual(self.table.name,expected)
+                self.assertEqual(self.table.name, expected)
                 newname = self.table.name
             else:
                 # we know the object's name isn't consistent: just assign it
@@ -580,7 +604,7 @@ class TestRename(fixture.DB):
             # Index renames
             if self.url.startswith('sqlite') or self.url.startswith('mysql'):
                 self.assertRaises(exceptions.NotSupportedError,
-                    self.index.rename, index_name2)
+                                  self.index.rename, index_name2)
             else:
                 assert_index_name(index_name1)
                 rename_index(self.index, index_name2, engine=self.engine)
@@ -604,7 +628,8 @@ class TestColumnChange(fixture.DB):
     def _setup(self, url):
         super(TestColumnChange, self)._setup(url)
         self.meta = MetaData(self.engine)
-        self.table = Table(self.table_name, self.meta,
+        self.table = Table(
+            self.table_name, self.meta,
             Column('id', Integer, primary_key=True),
             Column('data', String(40), server_default=DefaultClause("tluafed"),
                    nullable=True),
@@ -656,7 +681,7 @@ class TestColumnChange(fixture.DB):
 
         # ...as a function, given a new object
         alter_column(self.table.c.data,
-                     name = 'atad', type=String(40),
+                     name='atad', type=String(40),
                      server_default=self.table.c.data.server_default)
         self.refresh_table(self.table.name)
         self.assertTrue('data' not in self.table.c.keys())
@@ -665,13 +690,13 @@ class TestColumnChange(fixture.DB):
 
         # ...as a method, given a new object
         self.table.c.atad.alter(
-            name='data',type=String(40),
+            name='data', type=String(40),
             server_default=self.table.c.atad.server_default
-            )
+        )
         self.refresh_table(self.table.name)
         self.assertTrue('atad' not in self.table.c.keys())
         self.table.c.data   # Should not raise exception
-        self.assertEqual(num_rows(self.table.c.data,content), 1)
+        self.assertEqual(num_rows(self.table.c.data, content), 1)
 
     @fixture.usedb()
     def test_type(self):
@@ -705,7 +730,7 @@ class TestColumnChange(fixture.DB):
         default = 'my_default'
         self.table.c.data.alter(server_default=DefaultClause(default))
         self.refresh_table(self.table.name)
-        #self.assertEqual(self.table.c.data.server_default.arg,default)
+        #self.assertEqual(self.table.c.data.server_default.arg, default)
         # TextClause returned by autoload
         self.assertTrue(default in str(self.table.c.data.server_default.arg))
         self.engine.execute(self.table.insert(), id=12)
@@ -724,7 +749,7 @@ class TestColumnChange(fixture.DB):
 
         self.refresh_table(self.table.name)
         # server_default isn't necessarily None for Oracle
-        #self.assertTrue(self.table.c.data.server_default is None,self.table.c.data.server_default)
+        #self.assertTrue(self.table.c.data.server_default is None, self.table.c.data.server_default)
         self.engine.execute(self.table.insert(), id=11)
         row = self.table.select(self.table.c.id == 11).execution_options(autocommit=True).execute().fetchone()
         self.assertTrue(row['data'] is None, row['data'])
@@ -755,7 +780,7 @@ class TestColumnChange(fixture.DB):
             warnings.simplefilter("always")
             self.table.c.data.alter(Column('data', String(100)))
 
-            self.assertEqual(len(w),1)
+            self.assertEqual(len(w), 1)
             self.assertTrue(issubclass(w[-1].category,
                                        MigrateDeprecationWarning))
             self.assertEqual(
@@ -786,9 +811,9 @@ class TestColumnChange(fixture.DB):
         self.assertTrue(self.table.c.data.type.length, 40)
 
         kw = dict(nullable=False,
-                 server_default='foobar',
-                 name='data_new',
-                 type=String(50))
+                  server_default='foobar',
+                  name='data_new',
+                  type=String(50))
         if self.engine.name == 'firebird':
             del kw['nullable']
         self.table.c.data.alter(**kw)
@@ -825,7 +850,8 @@ class TestColumnDelta(fixture.DB):
     def _setup(self, url):
         super(TestColumnDelta, self)._setup(url)
         self.meta = MetaData()
-        self.table = Table(self.table_name, self.meta,
+        self.table = Table(
+            self.table_name, self.meta,
             Column('ids', String(10)),
         )
         self.meta.bind = self.engine
@@ -837,7 +863,7 @@ class TestColumnDelta(fixture.DB):
         if self.engine.has_table(self.table.name):
             self.table.drop()
         self.meta.clear()
-        super(TestColumnDelta,self)._teardown()
+        super(TestColumnDelta, self)._teardown()
 
     def mkcol(self, name='id', type=String, *p, **k):
         return Column(name, type, *p, **k)

@@ -13,8 +13,8 @@ import re
 from sqlalchemy.databases import sqlite as sa_base
 from sqlalchemy.schema import UniqueConstraint
 
-from migrate import exceptions
 from migrate.changeset import ansisql
+from migrate import exceptions
 
 
 SQLiteSchemaGenerator = sa_base.SQLiteDDLCompiler
@@ -23,8 +23,9 @@ SQLiteSchemaGenerator = sa_base.SQLiteDDLCompiler
 class SQLiteCommon(object):
 
     def _not_supported(self, op):
-        raise exceptions.NotSupportedError("SQLite does not support "
-            "%s; see http://www.sqlite.org/lang_altertable.html" % op)
+        raise exceptions.NotSupportedError(
+            "SQLite does not support %s; see "
+            "http://www.sqlite.org/lang_altertable.html" % op)
 
 
 class SQLiteHelper(SQLiteCommon):
@@ -95,7 +96,8 @@ class SQLiteHelper(SQLiteCommon):
         else:
             column = delta
             table = self._to_table(column.table)
-        self.recreate_table(table,column,delta)
+        self.recreate_table(table, column, delta)
+
 
 class SQLiteColumnGenerator(SQLiteSchemaGenerator,
                             ansisql.ANSIColumnGenerator,
@@ -108,16 +110,17 @@ class SQLiteColumnGenerator(SQLiteSchemaGenerator,
 
     def _modify_table(self, table, column, delta):
         columns = ' ,'.join(map(
-                self.preparer.format_column,
-                [c for c in table.columns if c.name!=column.name]))
+            self.preparer.format_column,
+            [c for c in table.columns if c.name != column.name]))
         return ('INSERT INTO %%(table_name)s (%(cols)s) '
-                'SELECT %(cols)s from migration_tmp')%{'cols':columns}
+                'SELECT %(cols)s from migration_tmp') % {'cols': columns}
 
-    def visit_column(self,column):
+    def visit_column(self, column):
         if column.foreign_keys:
-            SQLiteHelper.visit_column(self,column)
+            SQLiteHelper.visit_column(self, column)
         else:
-            super(SQLiteColumnGenerator,self).visit_column(column)
+            super(SQLiteColumnGenerator, self).visit_column(column)
+
 
 class SQLiteColumnDropper(SQLiteHelper, ansisql.ANSIColumnDropper):
     """SQLite ColumnDropper"""
@@ -128,11 +131,11 @@ class SQLiteColumnDropper(SQLiteHelper, ansisql.ANSIColumnDropper):
         return 'INSERT INTO %(table_name)s SELECT ' + columns + \
             ' from migration_tmp'
 
-    def visit_column(self,column):
+    def visit_column(self, column):
         # For SQLite, we *have* to remove the column here so the table
         # is re-created properly.
-        column.remove_from_table(column.table,unset_table=False)
-        super(SQLiteColumnDropper,self).visit_column(column)
+        column.remove_from_table(column.table, unset_table=False)
+        super(SQLiteColumnDropper, self).visit_column(column)
 
 
 class SQLiteSchemaChanger(SQLiteHelper, ansisql.ANSISchemaChanger):
