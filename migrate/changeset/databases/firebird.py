@@ -1,13 +1,14 @@
 """
    Firebird database specific implementations of changeset classes.
 """
+from migrate.changeset import ansisql
+from migrate import exceptions
 from sqlalchemy.databases import firebird as sa_base
 from sqlalchemy.schema import PrimaryKeyConstraint
-from migrate import exceptions
-from migrate.changeset import ansisql
 
 
 FBSchemaGenerator = sa_base.FBDDLCompiler
+
 
 class FBColumnGenerator(FBSchemaGenerator, ansisql.ANSIColumnGenerator):
     """Firebird column generator implementation."""
@@ -33,7 +34,7 @@ class FBColumnDropper(ansisql.ANSIColumnDropper):
                 # TODO: recreate index if it references more than this column
 
         for cons in column.table.constraints:
-            if isinstance(cons,PrimaryKeyConstraint):
+            if isinstance(cons, PrimaryKeyConstraint):
                 # will be deleted only when the column its on
                 # is deleted!
                 continue
