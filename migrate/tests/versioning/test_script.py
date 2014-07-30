@@ -269,5 +269,5 @@ class TestSqlScript(fixture.Pathed, fixture.DB):
 
         # run the change
         sqls = SqlScript(src)
-        sqls.run(self.engine, executemany=False)
+        sqls.run(self.engine)
         tmp_sql_table.metadata.drop_all(self.engine, checkfirst=True)
