@@ -4,8 +4,8 @@
 import sqlalchemy as sa
 from sqlalchemy.databases import oracle as sa_base
 
-from migrate import exceptions
 from migrate.changeset import ansisql
+from migrate import exceptions
 
 
 OracleSchemaGenerator = sa_base.OracleDDLCompiler
@@ -50,13 +50,13 @@ class OracleSchemaChanger(OracleSchemaGenerator, ansisql.ANSISchemaChanger):
         # Oracle cannot drop a default once created, but it can set it
         # to null.  We'll do that if default=None
         # http://forums.oracle.com/forums/message.jspa?messageID=1273234#1273234
-        dropdefault_hack = (column.server_default is None \
-                                and 'server_default' in delta.keys())
+        dropdefault_hack = (
+            column.server_default is None and 'server_default' in delta.keys())
         # Oracle apparently doesn't like it when we say "not null" if
         # the column's already not null. Fudge it, so we don't need a
         # new function
-        notnull_hack = ((not column.nullable) \
-                            and ('nullable' not in delta.keys()))
+        notnull_hack = (
+            (not column.nullable) and ('nullable' not in delta.keys()))
         # We need to specify NULL if we're removing a NOT NULL
         # constraint
         null_hack = (column.nullable and ('nullable' in delta.keys()))
@@ -65,8 +65,7 @@ class OracleSchemaChanger(OracleSchemaGenerator, ansisql.ANSISchemaChanger):
             column.server_default = sa.PassiveDefault(sa.sql.null())
         if notnull_hack:
             column.nullable = True
-        colspec = self.get_column_specification(column,
-            override_nullable=null_hack)
+        colspec = self.get_column_specification(column, override_nullable=null_hack)
         if null_hack:
             colspec += ' NULL'
         if notnull_hack:
