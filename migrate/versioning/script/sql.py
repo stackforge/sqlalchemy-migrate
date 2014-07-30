@@ -9,6 +9,7 @@ from migrate.versioning.template import Template
 
 log = logging.getLogger(__name__)
 
+
 class SqlScript(base.BaseScript):
     """A file containing plain SQL statements."""
 

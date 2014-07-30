@@ -4,6 +4,7 @@
 import re
 import testtools
 
+
 class Base(testtools.TestCase):
 
     def assertEqualIgnoreWhitespace(self, v1, v2):
@@ -18,9 +19,9 @@ class Base(testtools.TestCase):
 
         self.assertEqual(line1, line2, "%s != %s" % (v1, v2))
 
-    def ignoreErrors(self, func, *p,**k):
+    def ignoreErrors(self, func, *p, **k):
         """Call a function, ignoring any exceptions"""
         try:
-            func(*p,**k)
+            func(*p, **k)
         except:
             pass
