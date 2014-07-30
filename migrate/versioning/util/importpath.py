@@ -3,6 +3,7 @@ import sys
 
 from six.moves import reload_module as reload
 
+
 def import_path(fullpath):
     """ Import a file with full path specification. Allows one to
         import from anywhere, something __import__ does not do.
@@ -15,4 +16,3 @@ def import_path(fullpath):
     reload(module) # Might be out of date during tests
     del sys.path[-1]
     return module
-

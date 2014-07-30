@@ -51,7 +51,8 @@ class TestControlledSchema(fixture.Pathed, fixture.DB):
         dbcontrol = ControlledSchema.create(self.engine, self.repos)
 
         # Trying to create another DB this way fails: table exists
-        self.assertRaises(exceptions.DatabaseAlreadyControlledError,
+        self.assertRaises(
+            exceptions.DatabaseAlreadyControlledError,
             ControlledSchema.create, self.engine, self.repos)
 
         # We can load a controlled DB this way, too
@@ -74,7 +75,8 @@ class TestControlledSchema(fixture.Pathed, fixture.DB):
         self.assertRaises(exceptions.DatabaseNotControlledError, dbcontrol.drop)
 
         # No table defined should raise error
-        self.assertRaises(exceptions.DatabaseNotControlledError,
+        self.assertRaises(
+            exceptions.DatabaseNotControlledError,
             ControlledSchema, self.engine, self.repos)
 
     @fixture.usedb()
@@ -98,7 +100,7 @@ class TestControlledSchema(fixture.Pathed, fixture.DB):
         self.assertEqual(self.repos.latest, version)
 
         # Test with some mid-range value
-        dbcontrol = ControlledSchema.create(self.engine,self.repos, 5)
+        dbcontrol = ControlledSchema.create(self.engine, self.repos, 5)
         self.assertEqual(dbcontrol.version, 5)
         dbcontrol.drop()
 
@@ -110,7 +112,7 @@ class TestControlledSchema(fixture.Pathed, fixture.DB):
     @fixture.usedb()
     def test_version_control_invalid(self):
         """Try to establish version control with an invalid version"""
-        versions = ('Thirteen', '-1', -1, '' , 13)
+        versions = ('Thirteen', '-1', -1, '', 13)
         # A fresh repository doesn't go up to version 13 yet
         for version in versions:
             #self.assertRaises(ControlledSchema.InvalidVersionError,
