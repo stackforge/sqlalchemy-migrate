@@ -6,9 +6,9 @@ import six
 from migrate.exceptions import *
 from migrate.versioning import api
 
-from migrate.tests.fixture.pathed import *
-from migrate.tests.fixture import models
 from migrate.tests import fixture
+from migrate.tests.fixture import models
+from migrate.tests.fixture.pathed import *
 
 
 class TestAPI(Pathed):

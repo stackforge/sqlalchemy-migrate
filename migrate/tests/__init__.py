@@ -1,10 +1,10 @@
 # make this package available during imports as long as we support <python2.5
-import sys
 import os
+import sys
+from unittest import TestCase
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 
-from unittest import TestCase
 import migrate
 import six
 
