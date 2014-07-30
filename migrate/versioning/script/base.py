@@ -9,6 +9,7 @@ from migrate.versioning import pathed
 
 log = logging.getLogger(__name__)
 
+
 class BaseScript(pathed.Pathed):
     """Base class for other types of scripts.
     All scripts have the following properties:
