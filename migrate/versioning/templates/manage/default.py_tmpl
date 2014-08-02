@@ -5,6 +5,7 @@ from migrate.versioning.shell import main
 import six
 _vars = locals().copy()
 del _vars['__template_name__']
+del _vars['six']
 _vars.pop('repository_name', None)
 defaults = ", ".join(["%s='%s'" % var for var in six.iteritems(_vars)])
 }}
