@@ -6,4 +6,5 @@ pbr>=0.5.21,<1.0
 SQLAlchemy>=0.7.8
 decorator
 six>=1.4.1
+sqlparse
 Tempita >= 0.4
