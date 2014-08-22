@@ -25,14 +25,12 @@ class TestControlledSchema(fixture.Pathed, fixture.DB):
         self.repos = Repository.create(self.path_repos, 'repo_name')
 
     def _setup(self, url):
-        self.setUp()
         super(TestControlledSchema, self)._setup(url)
         self.cleanup()
 
     def _teardown(self):
         super(TestControlledSchema, self)._teardown()
         self.cleanup()
-        self.tearDown()
 
     def cleanup(self):
         # drop existing version table if necessary
