@@ -271,3 +271,25 @@ class TestSqlScript(fixture.Pathed, fixture.DB):
         sqls = SqlScript(src)
         sqls.run(self.engine)
         tmp_sql_table.metadata.drop_all(self.engine, checkfirst=True)
+
+    @fixture.usedb()
+    def test_transaction_management_statements(self):
+        """
+        Test that we can successfully execute SQL scripts with transaction
+        management statements.
+        """
+        for script_pattern in (
+            "BEGIN TRANSACTION; %s; COMMIT;",
+            "BEGIN; %s; END TRANSACTION;",
+        ):
+
+            test_statement = ("CREATE TABLE TEST1 (field1 int); "
+                              "DROP TABLE TEST1")
+            script = script_pattern % test_statement
+            src = self.tmp()
+
+            with open(src, 'wt') as f:
+                f.write(script)
+
+            sqls = SqlScript(src)
+            sqls.run(self.engine)
