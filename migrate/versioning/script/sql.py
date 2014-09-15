@@ -40,9 +40,20 @@ class SqlScript(base.BaseScript):
                 # not all drivers reliably handle multistatement queries or
                 # commands passed to .execute(), so split them and execute one
                 # by one
+
+                # ignore COMMIT statements that are redundant in SQL
+                # script context and result in operational error being
+                # returned
+                ignore_list = ('^\s*COMMIT\s*;?$',)
+
                 for statement in sqlparse.split(text):
                     if statement:
-                        conn.execute(statement)
+                        for ignore_elt in ignore_list:
+                            if re.match(ignore_elt, statement) in ignore_list:
+                                log.warning('"%s" found in SQL script; ignoring' % statement)
+                                break
+                        else:
+                            conn.execute(statement)
                 trans.commit()
             except Exception as e:
                 log.error("SQL script %s failed: %s", self.path, e)
