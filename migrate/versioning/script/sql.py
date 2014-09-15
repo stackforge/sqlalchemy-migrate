@@ -40,9 +40,13 @@ class SqlScript(base.BaseScript):
                 # not all drivers reliably handle multistatement queries or
                 # commands passed to .execute(), so split them and execute one
                 # by one
+                ignore_list = ('COMMIT;',)
                 for statement in sqlparse.split(text):
                     if statement:
-                        conn.execute(statement)
+                        if statement in ignore_list:
+                            log.warning('"%s" found in SQL script; ignoring' % statement)
+                        else:
+                            conn.execute(statement)
                 trans.commit()
             except Exception as e:
                 log.error("SQL script %s failed: %s", self.path, e)
