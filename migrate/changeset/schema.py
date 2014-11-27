@@ -572,7 +572,7 @@ populated with defaults
 
         # TODO: reuse existing connection
         if self.populate_default and self.default is not None:
-            stmt = table.update().values({self: engine._execute_default(self.default)})
+            stmt = self.table.update().values({self: engine._execute_default(self.default)})
             engine.execute(stmt)
 
         return self
