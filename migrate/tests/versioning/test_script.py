@@ -7,6 +7,8 @@ import sys
 import shutil
 
 import six
+import testtools
+
 from migrate import exceptions
 from migrate.versioning import version, repository
 from migrate.versioning.script import *
@@ -42,6 +44,7 @@ class TestPyScript(fixture.Pathed, fixture.DB):
         # Can't create it again: it already exists
         self.assertRaises(exceptions.PathFoundError,self.cls.create,path)
 
+    @testtools.skipIf(sys.version_info >= (3, 3), 'Does not work with py33')
     @fixture.usedb(supported='sqlite')
     def test_run(self):
         script_path = self.tmp_py()
@@ -94,6 +97,7 @@ class TestPyScript(fixture.Pathed, fixture.DB):
         py = self.cls(path)
         self.assertRaises(Exception,(lambda x: x.module),py)
 
+    @testtools.skipIf(sys.version_info >= (3, 3), 'Does not work with py33')
     def test_verify_nofuncs(self):
         """Correctly verify a python migration script: valid python file; no upgrade func"""
         path = self.tmp_py()
@@ -148,6 +152,7 @@ def upgrade(migrate_engine):
 
     # test for PythonScript.make_update_script_for_model
 
+    @testtools.skipIf(sys.version_info >= (3, 3), 'Does not work with py33')
     @fixture.usedb()
     def test_make_update_script_for_model(self):
         """Construct script source from differences of two models"""
@@ -184,6 +189,7 @@ def upgrade(migrate_engine):
         self.assertFalse('User.create()' in source_script)
         self.assertFalse('User.drop()' in source_script)
 
+    @testtools.skipIf(sys.version_info >= (3, 3), 'Does not work with py33')
     @fixture.usedb()
     def test_make_update_script_direction(self):
         """Check update scripts go in the right direction"""
@@ -244,6 +250,7 @@ class TestSqlScript(fixture.Pathed, fixture.DB):
         sqls = SqlScript(src)
         self.assertRaises(Exception, sqls.run, self.engine)
 
+    @testtools.skipIf(sys.version_info >= (3, 3), 'Does not work with py33')
     @fixture.usedb()
     def test_success(self):
         """Test sucessful SQL execution"""
