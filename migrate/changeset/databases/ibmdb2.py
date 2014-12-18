@@ -9,13 +9,11 @@ from sqlalchemy.schema import (AddConstraint,
                                CreateIndex,
                                DropConstraint)
 from sqlalchemy.schema import (Index,
-                               PrimaryKeyConstraint,
                                UniqueConstraint)
 
 from migrate.changeset import ansisql
 from migrate.changeset import constraint
 from migrate.changeset import util
-from migrate import exceptions
 
 
 LOG = logging.getLogger(__name__)
@@ -55,7 +53,7 @@ class IBMDBColumnGenerator(IBMDBSchemaGenerator,
             self.traverse_single(column.default)
         self.execute()
 
-        #ALTER TABLE STATEMENTS
+        # ALTER TABLE STATEMENTS
         if not nullable:
             self.start_alter_table(column)
             self.append("ALTER COLUMN %s SET NOT NULL" %
@@ -96,7 +94,6 @@ class IBMDBColumnDropper(ansisql.ANSIColumnDropper):
         :param column: the column object
         :type column: :class:`sqlalchemy.Column`
         """
-        #table = self.start_alter_table(column)
         super(IBMDBColumnDropper, self).visit_column(column)
         self.append("CALL SYSPROC.ADMIN_CMD('REORG TABLE %s')" %
                     self.preparer.format_table(column.table))
@@ -128,7 +125,7 @@ class IBMDBSchemaChanger(IBMDBSchemaGenerator, ansisql.ANSISchemaChanger):
         self.execute()
 
     def _run_subvisit(self, delta, func, start_alter=True):
-        """Runs visit method based on what needs to be changed on column"""
+        """Runs visit method based on what needs to be changed on column."""
         table = delta.table
         q = util.safe_quote(table)
         if start_alter:
@@ -138,6 +135,7 @@ class IBMDBSchemaChanger(IBMDBSchemaGenerator, ansisql.ANSISchemaChanger):
                    delta)
         self.execute()
         self._reorg_table(self.preparer.format_table(delta.table))
+        return ret
 
     def _reorg_table(self, delta):
         self.append("CALL SYSPROC.ADMIN_CMD('REORG TABLE %s')" % delta)
