@@ -3,8 +3,6 @@
 import logging
 import shutil
 
-import sqlparse
-
 from migrate.versioning.script import base
 from migrate.versioning.template import Template
 
@@ -26,7 +24,7 @@ class SqlScript(base.BaseScript):
         return cls(path)
 
     # TODO: why is step parameter even here?
-    def run(self, engine, step=None):
+    def run(self, engine, step=None, executemany=True):
         """Runs SQL script through raw dbapi execute call"""
         text = self.source()
         # Don't rely on SA's autocommit here
@@ -36,13 +34,13 @@ class SqlScript(base.BaseScript):
         try:
             trans = conn.begin()
             try:
-                # NOTE(ihrachys): script may contain multiple statements, and
-                # not all drivers reliably handle multistatement queries or
-                # commands passed to .execute(), so split them and execute one
-                # by one
-                for statement in sqlparse.split(text):
-                    if statement:
-                        conn.execute(statement)
+                # HACK: SQLite doesn't allow multiple statements through
+                # its execute() method, but it provides executescript() instead
+                dbapi = conn.engine.raw_connection()
+                if executemany and getattr(dbapi, 'executescript', None):
+                    dbapi.executescript(text)
+                else:
+                    conn.execute(text)
                 trans.commit()
             except Exception as e:
                 log.error("SQL script %s failed: %s", self.path, e)
