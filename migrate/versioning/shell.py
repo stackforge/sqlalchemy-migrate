@@ -7,6 +7,7 @@ import sys
 import inspect
 import logging
 from optparse import OptionParser, BadOptionError
+import warnings
 
 from migrate import exceptions
 from migrate.versioning import api
@@ -65,6 +66,9 @@ def main(argv=None, **kwargs):
     :param disable_logging: Let migrate configure logging
     :type disable_logging: bool
     """
+
+    warnings.simplefilter('always', DeprecationWarning)
+
     if argv is not None:
         argv = argv
     else:
