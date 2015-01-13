@@ -54,6 +54,7 @@ class SqlScript(base.BaseScript):
                 # not all drivers reliably handle multistatement queries or
                 # commands passed to .execute(), so split them and execute one
                 # by one
+                text = sqlparse.format(text, strip_comments=True, strip_whitespace=True)
                 for statement in sqlparse.split(text):
                     if statement:
                         if re.match(ignored_regex, statement):

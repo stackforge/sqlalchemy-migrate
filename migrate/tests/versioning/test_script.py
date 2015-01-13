@@ -281,6 +281,8 @@ class TestSqlScript(fixture.Pathed, fixture.DB):
         for script_pattern in (
             "BEGIN TRANSACTION; %s; COMMIT;",
             "BEGIN; %s; END TRANSACTION;",
+            "/* comment */BEGIN TRANSACTION; %s; /* comment */COMMIT;",
+            "/* comment */ BEGIN TRANSACTION; %s; /* comment */ COMMIT;",
         ):
 
             test_statement = ("CREATE TABLE TEST1 (field1 int); "
