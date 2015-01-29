@@ -19,32 +19,25 @@ class TestControlledSchema(fixture.Pathed, fixture.DB):
     # Transactions break postgres in this test; we'll clean up after ourselves
     level = fixture.DB.CONNECT
 
-    def setUp(self):
-        super(TestControlledSchema, self).setUp()
-        self.path_repos = self.temp_usable_dir + '/repo/'
-        self.repos = Repository.create(self.path_repos, 'repo_name')
 
     def _setup(self, url):
-        self.setUp()
+        self.path_repos = self.temp_usable_dir + '/repo/'
+        self.repos = Repository.create(self.path_repos, 'repo_name')
         super(TestControlledSchema, self)._setup(url)
         self.cleanup()
 
     def _teardown(self):
         super(TestControlledSchema, self)._teardown()
         self.cleanup()
-        self.tearDown()
+        self.pathed_teardown()
 
     def cleanup(self):
         # drop existing version table if necessary
         try:
             ControlledSchema(self.engine, self.repos).drop()
-        except:
-            # No table to drop; that's fine, be silent
+        except exceptions.DatabaseNotControlledError:
+            # schema is not versioned; skip
             pass
-
-    def tearDown(self):
-        self.cleanup()
-        super(TestControlledSchema, self).tearDown()
 
     @fixture.usedb()
     def test_version_control(self):
