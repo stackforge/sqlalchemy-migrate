@@ -16,6 +16,7 @@ sphinx>=1.1.2,<1.2
 sphinxcontrib_issuetracker
 testrepository>=0.0.17
 testtools>=0.9.34,<0.9.36
+tempest-lib>=0.1.0
 
 scripttest
 # NOTE(rpodolyaka): This version identifier is currently necessary as
