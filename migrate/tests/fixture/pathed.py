@@ -16,11 +16,17 @@ class Pathed(base.Base):
 
     def setUp(self):
         super(Pathed, self).setUp()
+        self.pathed_setup()
+
+    def tearDown(self):
+        self.pathed_teardown()
+        super(Pathed, self).tearDown()
+
+    def pathed_setup(self):
         self.temp_usable_dir = tempfile.mkdtemp()
         sys.path.append(self.temp_usable_dir)
 
-    def tearDown(self):
-        super(Pathed, self).tearDown()
+    def pathed_teardown(self):
         try:
             sys.path.remove(self.temp_usable_dir)
         except:
