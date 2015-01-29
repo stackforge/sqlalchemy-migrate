@@ -83,6 +83,9 @@ def usedb(supported=None, not_supported=None):
         fail = False
         for url in my_urls:
             try:
+                setup_exception = None
+                teardown_exception = None
+
                 log.debug("Running test with engine %s", url)
                 try:
                     self._setup(url)
@@ -92,17 +95,13 @@ def usedb(supported=None, not_supported=None):
                 except Exception as e:
                     setup_exception = e
                 else:
-                    setup_exception = None
-
-                try:
-                    f(self, *a, **kw)
-                finally:
                     try:
-                        self._teardown()
-                    except Exception as e:
-                        teardown_exception=e
-                    else:
-                        teardown_exception=None
+                        f(self, *a, **kw)
+                    finally:
+                        try:
+                            self._teardown()
+                        except Exception as e:
+                            teardown_exception = e
                 if setup_exception or teardown_exception:
                     raise RuntimeError((
                         'Exception during _setup/_teardown:\n'
