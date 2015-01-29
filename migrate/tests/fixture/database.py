@@ -90,9 +90,7 @@ def usedb(supported=None, not_supported=None):
                     log.info('Backend %s is not available, skip it', url)
                     continue
                 except Exception as e:
-                    setup_exception = e
-                else:
-                    setup_exception = None
+                    raise RuntimeError('Exception during _setup(): %r\n' % e)
 
                 try:
                     f(self, *a, **kw)
@@ -100,15 +98,7 @@ def usedb(supported=None, not_supported=None):
                     try:
                         self._teardown()
                     except Exception as e:
-                        teardown_exception=e
-                    else:
-                        teardown_exception=None
-                if setup_exception or teardown_exception:
-                    raise RuntimeError((
-                        'Exception during _setup/_teardown:\n'
-                        'setup: %r\n'
-                        'teardown: %r\n'
-                        )%(setup_exception,teardown_exception))
+                        raise RuntimeError('Exception during _teardown(): %r\n' %e)
             except Exception:
                 failed_for.append(url)
                 fail = sys.exc_info()
