@@ -117,7 +117,8 @@ class Repository(pathed.Pathed):
         options.setdefault('required_dbs', [])
         options.setdefault('use_timestamp_numbering', False)
 
-        tmpl = open(os.path.join(tmpl_dir, cls._config)).read()
+        with open(os.path.join(tmpl_dir, cls._config)) as fd:
+            tmpl = fd.read()
         ret = TempitaTemplate(tmpl).substitute(options)
 
         # cleanup
@@ -236,7 +237,8 @@ class Repository(pathed.Pathed):
         mng_file = Template(opts.pop('templates_path', None))\
             .get_manage(theme=opts.pop('templates_theme', None))
 
-        tmpl = open(mng_file).read()
-        fd = open(file_, 'w')
-        fd.write(TempitaTemplate(tmpl).substitute(opts))
-        fd.close()
+        with open(mng_file) as fd:
+            tmpl = fd.read()
+
+        with open(file_, 'w') as fd:
+            fd.write(TempitaTemplate(tmpl).substitute(opts))
