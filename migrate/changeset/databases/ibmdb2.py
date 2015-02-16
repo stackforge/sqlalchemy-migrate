@@ -118,10 +118,28 @@ class IBMDBSchemaChanger(IBMDBSchemaGenerator, ansisql.ANSISchemaChanger):
         self.append("RENAME TABLE %s " % self.preparer.format_table(table))
 
     def visit_index(self, index):
-        old_name = self.preparer.quote(self._index_identifier(index.name),
-                                       index.quote)
-        new_name = self.preparer.quote(self._index_identifier(index.new_name),
-                                       index.quote)
+        if hasattr(self, '_index_identifier'):
+            # SA >= 0.6.5, < 0.8
+            old_name = self.preparer.quote(
+                self._index_identifier(index.name), index.quote)
+            new_name = self.preparer.quote(
+                self._index_identifier(index.new_name), index.quote)
+        else:
+            # SA >= 0.8
+            class NewName(object):
+                """Map obj.name -> obj.new_name"""
+                def __init__(self, index):
+                    self.name = index.new_name
+                    self._obj = index
+
+                def __getattr__(self, attr):
+                    if attr == 'name':
+                        return getattr(self, attr)
+                    return getattr(self._obj, attr)
+
+            old_name = self._prepared_index_name(index)
+            new_name = self._prepared_index_name(NewName(index))
+
         self.append("RENAME INDEX %s TO %s" % (old_name, new_name))
         self.execute()
         self.append("COMMIT")
@@ -293,8 +311,14 @@ class IBMDBConstraintDropper(ansisql.ANSIConstraintDropper,
                     constraint.exclude_nulls = True
                     break
         if getattr(constraint, 'exclude_nulls', None):
-            index_name = self.preparer.quote(
-                self._index_identifier(constraint.name), constraint.quote)
+            if hasattr(self, '_index_identifier'):
+                # SA >= 0.6.5, < 0.8
+                index_name = self.preparer.quote(
+                    self._index_identifier(constraint.name),
+                    constraint.quote)
+            else:
+                # SA >= 0.8
+                index_name = self._prepared_index_name(constraint)
             sql = 'DROP INDEX %s ' % index_name
         else:
             sql = self.process(DropConstraint(constraint,
