@@ -71,7 +71,7 @@ class TestConstraint(CommonTestConstraint):
         self.assertTrue(isinstance(self.table.primary_key, schema.PrimaryKeyConstraint))
         return pk
 
-    @fixture.usedb(not_supported='sqlite')
+    @fixture.usedb()
     def test_define_fk(self):
         """FK constraints can be defined, created, and dropped"""
         # FK target must be unique

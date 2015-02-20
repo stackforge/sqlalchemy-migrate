@@ -11,6 +11,7 @@ from copy import copy
 import re
 
 from sqlalchemy.databases import sqlite as sa_base
+from sqlalchemy.schema import ForeignKeyConstraint
 from sqlalchemy.schema import UniqueConstraint
 
 from migrate import exceptions
@@ -57,6 +58,20 @@ class SQLiteHelper(SQLiteCommon):
                     columns.extend(c.strip(' "'))
             if columns:
                 constraints.extend(UniqueConstraint(*columns, name=name))
+
+        FKEY_PATTERN = "CONSTRAINT (\w+) FOREIGN KEY \(([^\)]+)\)"
+        for name, cols in re.findall(FKEY_PATTERN, data):
+            # Filter out any columns that were dropped from the table.
+            columns = []
+            for c in cols.split(","):
+                if c in table.columns:
+                    # There was a bug in reflection of SQLite columns with
+                    # reserved identifiers as names (SQLite can return them
+                    # wrapped with double quotes), so strip double quotes.
+                    columns.extend(c.strip(' "'))
+            if columns:
+                constraints.extend(ForeignKeyConstraint(*columns, name=name))
+
         return constraints
 
     def recreate_table(self, table, column=None, delta=None,
@@ -182,7 +197,7 @@ class SQLiteConstraintDropper(ansisql.ANSIColumnDropper,
         self.execute()
 
     def visit_migrate_foreign_key_constraint(self, *p, **k):
-        self._not_supported('ALTER TABLE DROP CONSTRAINT')
+        self.recreate_table(p[0].table, omit_uniques=[p[0].name])
 
     def visit_migrate_check_constraint(self, *p, **k):
         self._not_supported('ALTER TABLE DROP CONSTRAINT')
