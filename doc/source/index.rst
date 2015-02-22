@@ -125,7 +125,7 @@ Dialect support
 .. [#1] Table is renamed to temporary table, new table is created followed by
         INSERT statements.
 .. [#2] See http://www.sqlite.org/lang_altertable.html for more information.
-        In cases not supported my sqlite, table is renamed to temporary table,
+        In cases not supported by sqlite, table is renamed to temporary table,
         new table is created followed by INSERT statements.
 .. [#3] You can not change datatype or rename column if table has NOT NULL
         data, see http://blogs.x2line.com/al/archive/2005/08/30/1231.aspx for
