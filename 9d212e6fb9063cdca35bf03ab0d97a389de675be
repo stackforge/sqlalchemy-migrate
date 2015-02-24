@@ -1,0 +1,8 @@
+Verified+2: Jenkins
+Code-Review+2: Thomas Goirand <thomas@goirand.fr>
+Workflow+1: Thomas Goirand <thomas@goirand.fr>
+Submitted-by: Jenkins
+Submitted-at: Tue, 24 Feb 2015 19:30:30 +0000
+Reviewed-on: https://review.openstack.org/157902
+Project: stackforge/sqlalchemy-migrate
+Branch: refs/heads/master
