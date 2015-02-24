@@ -1,0 +1,11 @@
+Verified+2: Jenkins
+Code-Review+2: Michael Still <mikal@stillhq.com>
+Workflow+1: Michael Still <mikal@stillhq.com>
+Code-Review+1: Davanum Srinivas (dims) <davanum@gmail.com>
+Code-Review+2: Matt Riedemann <mriedem@us.ibm.com>
+Code-Review+1: Ian Cordasco <ian.cordasco@rackspace.com>
+Submitted-by: Jenkins
+Submitted-at: Tue, 24 Feb 2015 23:05:33 +0000
+Reviewed-on: https://review.openstack.org/147013
+Project: stackforge/sqlalchemy-migrate
+Branch: refs/heads/master
