@@ -14,8 +14,8 @@ well as from inside python code.
 Help
 ----
 
-Sphinx documentation is available at the project page `packages.python.org
-<http://packages.python.org/sqlalchemy-migrate/>`_.
+Documentation is available at `https://sqlalchemy-migrate.readthedocs.org/
+<https://sqlalchemy-migrate.readthedocs.org/>`_.
 
 Users and developers can be found at #sqlalchemy-migrate on Freenode IRC
 network and at the public users mailing list `migrate-users
