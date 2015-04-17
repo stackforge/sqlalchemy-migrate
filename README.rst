@@ -14,8 +14,8 @@ well as from inside python code.
 Help
 ----
 
-Sphinx documentation is available at the project page `packages.python.org
-<http://packages.python.org/sqlalchemy-migrate/>`_.
+Sphinx documentation is available at the project page `readthedocs.org
+<https://sqlalchemy-migrate.readthedocs.org/>`_.
 
 Users and developers can be found at #sqlalchemy-migrate on Freenode IRC
 network and at the public users mailing list `migrate-users
@@ -40,9 +40,9 @@ To run automated tests:
 * Copy test_db.cfg.tmpl to test_db.cfg
 * Edit test_db.cfg with database connection strings suitable for running tests.
   (Use empty databases.)
-* $ pip install -r requirements.txt -r test-requirements.txt
-* $ python setup.py develop
-* $ testr run --parallel
+* ``pip install -r requirements.txt -r test-requirements.txt``
+* ``python setup.py develop``
+* ``testr run --parallel``
 
 Please report any issues with sqlalchemy-migrate to the issue tracker at
 `code.google.com issues
