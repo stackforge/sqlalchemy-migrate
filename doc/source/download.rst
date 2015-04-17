@@ -26,7 +26,6 @@ are released, subscribe to `migrate-announce`_.
 .. _pip: http://pip.openplans.org/
 .. _easy_install: http://peak.telecommunity.com/DevCenter/EasyInstall#installing-easy-install
 .. _sqlalchemy: http://www.sqlalchemy.org/download.html
-.. _`project's download page`: http://code.google.com/p/sqlalchemy-migrate/downloads/list
 .. _`cheese shop`: http://pypi.python.org/pypi/sqlalchemy-migrate
 .. _`migrate-announce`: http://groups.google.com/group/migrate-announce
 
