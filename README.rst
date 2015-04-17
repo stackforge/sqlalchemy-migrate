@@ -14,15 +14,16 @@ well as from inside python code.
 Help
 ----
 
-Sphinx documentation is available at the project page `packages.python.org
-<http://packages.python.org/sqlalchemy-migrate/>`_.
+Sphinx documentation is available at the project page `readthedocs.org
+<https://sqlalchemy-migrate.readthedocs.org/>`_.
 
-Users and developers can be found at #sqlalchemy-migrate on Freenode IRC
+Users and developers can be found at #openstack-dev on Freenode IRC
 network and at the public users mailing list `migrate-users
 <http://groups.google.com/group/migrate-users>`_.
 
 New releases and major changes are announced at the public announce mailing
-list `migrate-announce <http://groups.google.com/group/migrate-announce>`_
+list `openstack-dev
+<http://lists.openstack.org/cgi-bin/mailman/listinfo/openstack-dev>`_
 and at the Python package index `sqlalchemy-migrate
 <http://pypi.python.org/pypi/sqlalchemy-migrate>`_.
 
@@ -37,13 +38,10 @@ Tests and Bugs
 
 To run automated tests:
 
-* Copy test_db.cfg.tmpl to test_db.cfg
-* Edit test_db.cfg with database connection strings suitable for running tests.
-  (Use empty databases.)
-* $ pip install -r requirements.txt -r test-requirements.txt
-* $ python setup.py develop
-* $ testr run --parallel
+* install tox: ``pip install -U tox``
+* run tox: ``tox``
+* to test only a specific Python version: ``tox -e py27`` (Python 2.7)
 
 Please report any issues with sqlalchemy-migrate to the issue tracker at
-`code.google.com issues
-<http://code.google.com/p/sqlalchemy-migrate/issues/list>`_
+`Launchpad issues
+<https://bugs.launchpad.net/sqlalchemy-migrate>`_

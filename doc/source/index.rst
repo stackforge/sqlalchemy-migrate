@@ -7,9 +7,9 @@
 :Author: Evan Rosson
 :Maintainer: Domen Kožar <domenNO@SPAMdev.si>
 :Maintainer: Jan Dittberner <jan.dittbernerNO@SPAMgooglemail.com>
-:Issues: http://code.google.com/p/sqlalchemy-migrate/issues/list
-:Source Code: http://code.google.com/p/sqlalchemy-migrate/
-:CI Tool: http://jenkins.gnuviech-server.de/job/sqlalchemy-migrate-all/
+:Source Code: https://github.com/stackforge/sqlalchemy-migrate
+:Documentation: https://sqlalchemy-migrate.readthedocs.org/
+:Issues: https://bugs.launchpad.net/sqlalchemy-migrate
 :Generated: |today|
 :License: MIT
 :Version: |release|
@@ -24,7 +24,7 @@
     mentored by Jonathan LaCour.
 
     The project was taken over by a small group of volunteers when Evan had no
-    free time for the project. It is now hosted as a `Google Code project`_.
+    free time for the project. It is now hosted as a `Github project`_.
     During the hosting change the project was renamed to SQLAlchemy Migrate.
 
     Currently, sqlalchemy-migrate supports Python versions from 2.6 to 2.7.
@@ -64,6 +64,7 @@ Dialect support
       - :ref:`oracle  <oracle-d>`
       - :ref:`firebird <firebird-d>`
       - mssql
+      - DB2
     * - :ref:`ALTER TABLE RENAME TABLE <table-rename>`
       - yes
       - yes
@@ -160,7 +161,7 @@ SQLAlchemy Migrate is split into two parts, database schema versioning
    glossary
 
 .. _`google's summer of code`: http://code.google.com/soc
-.. _`Google Code project`: http://code.google.com/p/sqlalchemy-migrate
+.. _`Github project`: https://github.com/stackforge/sqlalchemy-migrate
 .. _sqlalchemy: http://www.sqlalchemy.org
 
 
