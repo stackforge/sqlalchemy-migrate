@@ -1,7 +1,10 @@
+# The order of packages is significant, because pip processes them in the order
+# of appearance. Changing the order has an impact on the overall integration
+# process, which may cause wedges in the gate later.
 # Install bounded pep8/pyflakes first, then let flake8 install
-pep8==1.4.5
-pyflakes>=0.7.2,<0.7.4
-flake8==2.0
+pep8==1.5.7
+pyflakes==0.8.1
+flake8>=2.2.4,<=2.4.1
 hacking>=0.8.0,<0.9
 
 coverage>=3.6
@@ -12,14 +15,14 @@ mock>=1.0
 mox>=0.5.3
 psycopg2
 python-subunit>=0.0.18
-sphinx>=1.1.2,<1.2
+sphinx>=1.1.2,!=1.2.0,!=1.3b1,<1.3
 sphinxcontrib_issuetracker
-testrepository>=0.0.17
-testtools>=0.9.34,<0.9.36
-tempest-lib>=0.1.0
+testrepository>=0.0.18
+testtools>=0.9.36,!=1.2.0
+tempest-lib>=0.5.0
 
 scripttest
 # NOTE(rpodolyaka): This version identifier is currently necessary as
 #                   pytz otherwise does not install on pip 1.4 or higher
-pylint
-pytz>=2010h
+pylint==1.4.1  # GNU GPL v2
+pytz>=2013.6
