@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, text
 from migrate.tests import fixture
 
 class TestConnect(fixture.DB):
@@ -8,4 +8,6 @@ class TestConnect(fixture.DB):
     def test_connect(self):
         """Connect to the database successfully"""
         # Connection is done in fixture.DB setup; make sure we can do stuff
-        select(['42'],bind=self.engine).execute()
+        self.engine.execute(
+            select([text('42')])
+        )

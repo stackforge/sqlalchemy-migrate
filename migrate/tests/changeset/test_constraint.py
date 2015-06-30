@@ -5,6 +5,7 @@ from sqlalchemy import *
 from sqlalchemy.util import *
 from sqlalchemy.exc import *
 
+from migrate.changeset.util import fk_column_names
 from migrate.exceptions import *
 from migrate.changeset import *
 
@@ -91,7 +92,7 @@ class TestConstraint(CommonTestConstraint):
             self.assertTrue(list(self.table.c.fkey.foreign_keys) is not [])
         else:
             self.assertTrue(self.table.c.fkey.foreign_keys._list is not [])
-        for key in fk.columns:
+        for key in fk_column_names(fk):
             self.assertEqual(key, self.table.c.fkey.name)
         self.assertEqual([e.column for e in fk.elements], [self.table.c.id])
         self.assertEqual(list(fk.referenced), [self.table.c.id])
