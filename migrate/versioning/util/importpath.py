@@ -1,7 +1,8 @@
 import os
 import sys
 
-from six.moves import reload_module as reload
+py33 = sys.version_info >= (3, 3)
+
 
 def import_path(fullpath):
     """ Import a file with full path specification. Allows one to
@@ -10,9 +11,16 @@ def import_path(fullpath):
     # http://zephyrfalcon.org/weblog/arch_d7_2002_08_31.html
     path, filename = os.path.split(fullpath)
     filename, ext = os.path.splitext(filename)
-    sys.path.append(path)
-    module = __import__(filename)
-    reload(module) # Might be out of date during tests
-    del sys.path[-1]
-    return module
-
+    if py33:
+        from importlib import machinery
+        return machinery.SourceFileLoader(
+            filename, path).load_module(filename)
+    else:
+        from six.moves import reload_module as reload
+        sys.path.append(path)
+        try:
+            module = __import__(filename)
+            reload(module)  # Might be out of date during tests
+            return module
+        finally:
+            del sys.path[-1]
