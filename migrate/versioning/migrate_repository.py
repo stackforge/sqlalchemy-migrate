@@ -13,13 +13,9 @@ log = logging.getLogger(__name__)
 
 def usage():
     """Gives usage information."""
-    print """Usage: %(prog)s repository-to-migrate
-
-    Upgrade your repository to the new flat format.
-
-    NOTE: You should probably make a backup before running this.
-    """ % {'prog': sys.argv[0]}
-
+    print("Usage: %s repository-to-migrate" % sys.argv[0])
+    print("Upgrade your repository to the new flat format.")
+    print("NOTE: You should probably make a backup before running this.")
     sys.exit(1)
 
 
