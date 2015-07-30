@@ -1,0 +1,11 @@
+Verified+2: Jenkins
+Code-Review+2: Sean Dague <sean@dague.net>
+Workflow+1: Sean Dague <sean@dague.net>
+Code-Review+1: Brant Knudson <bknudson@us.ibm.com>
+Code-Review+2: Matt Riedemann <mriedem@us.ibm.com>
+Code-Review+1: Victor Stinner <vstinner@redhat.com>
+Submitted-by: Jenkins
+Submitted-at: Thu, 30 Jul 2015 19:32:16 +0000
+Reviewed-on: https://review.openstack.org/202009
+Project: stackforge/sqlalchemy-migrate
+Branch: refs/heads/master
