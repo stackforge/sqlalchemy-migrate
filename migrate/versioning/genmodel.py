@@ -11,6 +11,7 @@ import logging
 
 import six
 import sqlalchemy
+from oslo_utils import reflection
 
 import migrate
 import migrate.changeset
@@ -137,8 +138,10 @@ class ModelGenerator(object):
             for col in table.columns:
                 if "dialects" in col.type.__module__ and \
                    col.type.__class__ not in import_index:
+                    col_type_name = reflection.get_class_name(
+                        col.type, fully_qualified=False)
                     out.append("from " + col.type.__module__ +
-                               " import " + col.type.__class__.__name__)
+                               " import " + col_type_name)
                     import_index.append(col.type.__class__)
 
         out.append("")
