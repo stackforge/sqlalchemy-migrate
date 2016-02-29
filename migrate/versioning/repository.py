@@ -7,6 +7,7 @@ import string
 import logging
 
 from pkg_resources import resource_filename
+from six.moves import range
 from tempita import Template as TempitaTemplate
 
 from migrate import exceptions
