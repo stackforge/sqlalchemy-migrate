@@ -27,6 +27,10 @@ class InvalidVersionError(ControlledSchemaError):
     """Invalid version number."""
 
 
+class VersionNotFoundError(Error):
+    """Specified version is not present."""
+
+
 class DatabaseNotControlledError(ControlledSchemaError):
     """Database should be under version control, but it's not."""
 

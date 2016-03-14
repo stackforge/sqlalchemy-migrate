@@ -160,6 +160,12 @@ class Collection(pathed.Pathed):
         Otherwise, returns wanted version"""
         if vernum is None:
             vernum = self.latest
+
+        if not VerNum(vernum) in self.versions:
+            raise exceptions.VersionNotFoundError(
+                ("Database schema file with version %(args)s doesn't "
+                 "exist.") % {'args': VerNum(vernum)})
+
         return self.versions[VerNum(vernum)]
 
     @classmethod

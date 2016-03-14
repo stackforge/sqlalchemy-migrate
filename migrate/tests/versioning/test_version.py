@@ -103,6 +103,10 @@ class TestVersion(fixture.Pathed):
         self.assertEqual(coll.latest, 4)
         self.assertEqual(len(coll.versions), 4)
         self.assertEqual(coll.version(4), coll.version(coll.latest))
+        # Check for non-existing version
+        self.assertRaises(VersionNotFoundError, coll.version, 5)
+        # Check for the current version
+        self.assertEqual('4', coll.version(4).version)
 
         coll2 = Collection(self.temp_usable_dir)
         self.assertEqual(coll.versions, coll2.versions)
