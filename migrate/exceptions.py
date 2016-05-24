@@ -23,10 +23,6 @@ class ControlledSchemaError(Error):
     """Base class for controlled schema errors."""
 
 
-class InvalidVersionError(ControlledSchemaError):
-    """Invalid version number."""
-
-
 class VersionNotFoundError(KeyError):
     """Specified version is not present."""
 
