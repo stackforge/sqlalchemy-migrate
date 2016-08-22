@@ -48,10 +48,10 @@ class ControlledSchema(object):
                 self.table.c.repository_id == str(self.repository.id)))
 
             data = list(result)[0]
-        except:
-            cls, exc, tb = sys.exc_info()
-            six.reraise(exceptions.DatabaseNotControlledError,
-                        exceptions.DatabaseNotControlledError(str(exc)), tb)
+        except sa_exceptions.NoSuchTableError:
+            # We only need to create the schema version table if it does
+            # not exist. All other error should let bubble up.
+            raise exceptions.DatabaseNotControlledError(tname)
 
         self.version = data['version']
         return data

@@ -4,12 +4,14 @@
 import os
 import shutil
 
+import mock
 import six
 
 from migrate import exceptions
 from migrate.versioning.schema import *
 from migrate.versioning import script, schemadiff
 
+import sqlalchemy
 from sqlalchemy import *
 
 from migrate.tests import fixture
@@ -78,6 +80,27 @@ class TestControlledSchema(fixture.Pathed, fixture.DB):
         # No table defined should raise error
         self.assertRaises(exceptions.DatabaseNotControlledError,
             ControlledSchema, self.engine, self.repos)
+
+    @fixture.usedb()
+    def test_version_control_handle_errors_appropriately(self):
+        """Make sure we let operational errors bubble up"""
+        # Establish version control on this database
+        dbcontrol = ControlledSchema.create(self.engine, self.repos)
+
+        class FooException(Exception):
+            pass
+
+        with mock.patch('sqlalchemy.engine.Engine.execute') as mocked_engine:
+            mocked_engine.side_effect = sqlalchemy.exc.NoSuchTableError()
+            # sqlalchemy.exc.NoSuchTableError should result in
+            # exceptions.DatabaseNotControlledError
+            self.assertRaises(exceptions.DatabaseNotControlledError,
+                              ControlledSchema, self.engine, self.repos)
+
+            # all other operational errors should bubble up
+            mocked_engine.side_effect = FooException()
+            self.assertRaises(FooException,
+                              ControlledSchema, self.engine, self.repos)
 
     @fixture.usedb()
     def test_version_control_specified(self):
