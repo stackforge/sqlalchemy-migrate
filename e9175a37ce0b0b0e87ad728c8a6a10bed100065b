@@ -1,0 +1,9 @@
+Code-Review+1: Roman Podoliaka <rpodolyaka@mirantis.com>
+Code-Review+2: Matt Riedemann <mriedem@us.ibm.com>
+Workflow+1: Matt Riedemann <mriedem@us.ibm.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Wed, 23 Nov 2016 22:13:53 +0000
+Reviewed-on: https://review.openstack.org/389363
+Project: openstack/sqlalchemy-migrate
+Branch: refs/heads/master
