@@ -30,7 +30,7 @@ import inspect
 import logging
 
 from migrate import exceptions
-from migrate.versioning import (repository, schema, version,
+from migrate.versioning import (repository, schema, version as version_,
     script as script_) # command name conflict
 from migrate.versioning.util import catch_known_errors, with_engine
 
@@ -59,7 +59,7 @@ __all__ = command_desc.keys()
 
 Repository = repository.Repository
 ControlledSchema = schema.ControlledSchema
-VerNum = version.VerNum
+VerNum = version_.VerNum
 PythonScript = script_.PythonScript
 SqlScript = script_.SqlScript
 
