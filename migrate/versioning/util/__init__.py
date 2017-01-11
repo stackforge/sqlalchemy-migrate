@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """.. currentmodule:: migrate.versioning.util"""
 
 import warnings

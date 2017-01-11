@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # SQLAlchemy Migrate documentation build configuration file, created by
 # sphinx-quickstart on Fri Feb 13 12:58:57 2009.
 #

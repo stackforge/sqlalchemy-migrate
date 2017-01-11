@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 from migrate.versioning import cfgparse
 from migrate.versioning.repository import *

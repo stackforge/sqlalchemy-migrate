@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 from migrate.tests import fixture
 from migrate.versioning.util.keyedinstance import *
