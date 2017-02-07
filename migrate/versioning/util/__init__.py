@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """.. currentmodule:: migrate.versioning.util"""
 
+import inspect
 import warnings
 import logging
 from decorator import decorator
@@ -185,3 +186,9 @@ class Memoize(object):
         if args not in self.memo:
             self.memo[args] = self.fn(*args)
         return self.memo[args]
+
+
+if getattr(inspect, "getfullargspec", None):
+    getargspec = inspect.getfullargspec
+else:
+    getargspec = inspect.getargspec

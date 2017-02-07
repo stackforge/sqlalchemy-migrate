@@ -11,7 +11,7 @@ from optparse import OptionParser, BadOptionError
 from migrate import exceptions
 from migrate.versioning import api
 from migrate.versioning.config import *
-from migrate.versioning.util import asbool
+from migrate.versioning.util import asbool, getargspec
 import six
 
 
@@ -108,7 +108,7 @@ def main(argv=None, **kwargs):
         parser.error("Invalid command %s" % command)
 
     parser.set_usage(inspect.getdoc(command_func))
-    f_args, f_varargs, f_kwargs, f_defaults = inspect.getargspec(command_func)
+    f_args, f_varargs, f_kwargs, f_defaults = getargspec(command_func)
     for arg in f_args:
         parser.add_option(
             "--%s" % arg,
