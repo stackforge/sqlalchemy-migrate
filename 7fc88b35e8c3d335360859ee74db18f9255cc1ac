@@ -1,0 +1,9 @@
+Code-Review+2: Michael Bayer <mike_mp@zzzcomputing.com>
+Code-Review+2: Matt Riedemann <mriedem@us.ibm.com>
+Workflow+1: Matt Riedemann <mriedem@us.ibm.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Thu, 09 Feb 2017 18:06:50 +0000
+Reviewed-on: https://review.openstack.org/427874
+Project: openstack/sqlalchemy-migrate
+Branch: refs/heads/master
