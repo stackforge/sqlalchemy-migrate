@@ -3,8 +3,6 @@
 
 import mock
 
-import six
-
 from migrate.changeset.databases import ibmdb2
 from migrate.tests import fixture
 
@@ -22,7 +20,7 @@ class TestIBMDBDialect(fixture.Base):
             '10.5': True,
             '10.5.1': True
         }
-        for version, supported in six.iteritems(test_values):
+        for version, supported in test_values.items():
             mock_dialect = mock.MagicMock()
             mock_dialect.dbms_ver = version
             self.assertEqual(

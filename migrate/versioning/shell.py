@@ -12,7 +12,6 @@ from migrate import exceptions
 from migrate.versioning import api
 from migrate.versioning.config import *
 from migrate.versioning.util import asbool
-import six
 
 
 alias = dict(
@@ -24,7 +23,7 @@ alias = dict(
 
 def alias_setup():
     global alias
-    for key, val in six.iteritems(alias):
+    for key, val in alias.items():
         setattr(api, key, val)
 alias_setup()
 
@@ -136,7 +135,7 @@ def main(argv=None, **kwargs):
             override_kwargs[opt] = value
 
     # override kwargs with options if user is overwriting
-    for key, value in six.iteritems(options.__dict__):
+    for key, value in options.__dict__.items():
         if value is not None:
             override_kwargs[key] = value
 
@@ -144,7 +143,7 @@ def main(argv=None, **kwargs):
     f_required = list(f_args)
     candidates = dict(kwargs)
     candidates.update(override_kwargs)
-    for key, value in six.iteritems(candidates):
+    for key, value in candidates.items():
         if key in f_args:
             f_required.remove(key)
 
@@ -161,7 +160,7 @@ def main(argv=None, **kwargs):
     kwargs.update(override_kwargs)
 
     # configure options
-    for key, value in six.iteritems(options.__dict__):
+    for key, value in options.__dict__.items():
         kwargs.setdefault(key, value)
 
     # configure logging

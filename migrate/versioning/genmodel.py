@@ -196,7 +196,7 @@ class ModelGenerator(object):
             downgradeCommands.append(
                 "post_meta.tables[%(table)r].drop()" % {'table': tn})
 
-        for (tn, td) in six.iteritems(self.diff.tables_different):
+        for (tn, td) in self.diff.tables_different.items():
             if td.columns_missing_from_A or td.columns_different:
                 pre_table = self.diff.metadataB.tables[tn]
                 decls.extend(self._getTableDefn(

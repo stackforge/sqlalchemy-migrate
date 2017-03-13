@@ -2,12 +2,10 @@
 from migrate.versioning.shell import main
 
 {{py:
-import six
 _vars = locals().copy()
 del _vars['__template_name__']
-del _vars['six']
 _vars.pop('repository_name', None)
-defaults = ", ".join(["%s='%s'" % var for var in six.iteritems(_vars)])
+defaults = ", ".join(["%s='%s'" % var for var in _vars.items()])
 }}
 
 if __name__ == '__main__':
