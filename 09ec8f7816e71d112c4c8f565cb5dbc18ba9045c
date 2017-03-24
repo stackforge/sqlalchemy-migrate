@@ -1,0 +1,8 @@
+Code-Review+2: Matt Riedemann <mriedem.os@gmail.com>
+Workflow+1: Matt Riedemann <mriedem.os@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Fri, 24 Mar 2017 21:23:38 +0000
+Reviewed-on: https://review.openstack.org/390873
+Project: openstack/sqlalchemy-migrate
+Branch: refs/heads/master
