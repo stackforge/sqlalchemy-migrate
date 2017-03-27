@@ -25,7 +25,7 @@ class TestBaseScript(fixture.Pathed):
         open(src, 'w').close()
         bscript = BaseScript(src)
         BaseScript.verify(src)
-        self.assertEqual(bscript.source(), '')
+        self.assertEqual('', bscript.source())
         self.assertRaises(NotImplementedError, bscript.run, 'foobar')
 
 

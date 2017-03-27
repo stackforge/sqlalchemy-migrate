@@ -41,7 +41,7 @@ class CommonTestConstraint(fixture.DB):
         self.table.create()
 
         # make sure we start at zero
-        self.assertEqual(len(self.table.primary_key), 0)
+        self.assertEqual(0, len(self.table.primary_key))
         self.assertTrue(isinstance(self.table.primary_key,
             schema.PrimaryKeyConstraint), self.table.primary_key.__class__)
 
@@ -68,7 +68,7 @@ class TestConstraint(CommonTestConstraint):
         #    pk.name = self.table.primary_key.name
         pk.drop()
         self.refresh_table()
-        self.assertEqual(len(self.table.primary_key), 0)
+        self.assertEqual(0, len(self.table.primary_key))
         self.assertTrue(isinstance(self.table.primary_key, schema.PrimaryKeyConstraint))
         return pk
 
@@ -81,9 +81,9 @@ class TestConstraint(CommonTestConstraint):
 
         # Add a FK by creating a FK constraint
         if SQLA_07:
-            self.assertEqual(list(self.table.c.fkey.foreign_keys), [])
+            self.assertEqual([], list(self.table.c.fkey.foreign_keys))
         else:
-            self.assertEqual(self.table.c.fkey.foreign_keys._list, [])
+            self.assertEqual([], self.table.c.fkey.foreign_keys._list)
         fk = ForeignKeyConstraint([self.table.c.fkey],
                                   [self.table.c.id],
                                   name="fk_id_fkey",
@@ -93,9 +93,9 @@ class TestConstraint(CommonTestConstraint):
         else:
             self.assertTrue(self.table.c.fkey.foreign_keys._list is not [])
         for key in fk_column_names(fk):
-            self.assertEqual(key, self.table.c.fkey.name)
-        self.assertEqual([e.column for e in fk.elements], [self.table.c.id])
-        self.assertEqual(list(fk.referenced), [self.table.c.id])
+            self.assertEqual(self.table.c.fkey.name, key)
+        self.assertEqual([self.table.c.id], [e.column for e in fk.elements])
+        self.assertEqual([self.table.c.id], list(fk.referenced))
 
         if self.url.startswith('mysql'):
             # MySQL FKs need an index
@@ -108,7 +108,7 @@ class TestConstraint(CommonTestConstraint):
             fkey = list(self.table.c.fkey.foreign_keys)[0]
         else:
             fkey = self.table.c.fkey.foreign_keys._list[0]
-        self.assertEqual(fkey.ondelete, "CASCADE")
+        self.assertEqual("CASCADE", fkey.ondelete)
         # TODO: test on real db if it was set
 
         self.refresh_table()
@@ -120,9 +120,9 @@ class TestConstraint(CommonTestConstraint):
         fk.drop()
         self.refresh_table()
         if SQLA_07:
-            self.assertEqual(list(self.table.c.fkey.foreign_keys), [])
+            self.assertEqual([], list(self.table.c.fkey.foreign_keys))
         else:
-            self.assertEqual(self.table.c.fkey.foreign_keys._list, [])
+            self.assertEqual([], self.table.c.fkey.foreign_keys._list)
 
     @fixture.usedb()
     def test_define_pk(self):
@@ -204,7 +204,7 @@ class TestAutoname(CommonTestConstraint):
         cons.name = None
         cons.drop()
         self.refresh_table()
-        self.assertEqual(list(), list(self.table.primary_key))
+        self.assertEqual(list(self.table.primary_key), list())
 
         # test string names
         cons = PrimaryKeyConstraint('id', table=self.table)
@@ -235,9 +235,9 @@ class TestAutoname(CommonTestConstraint):
         cons.drop()
         self.refresh_table()
         if SQLA_07:
-            self.assertEqual(list(self.table.c.fkey.foreign_keys), list())
+            self.assertEqual(list(), list(self.table.c.fkey.foreign_keys))
         else:
-            self.assertEqual(self.table.c.fkey.foreign_keys._list, list())
+            self.assertEqual(list(), self.table.c.fkey.foreign_keys._list)
 
         # test string names
         cons = ForeignKeyConstraint(['fkey'], ['%s.id' % self.tablename], table=self.table)

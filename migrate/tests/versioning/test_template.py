@@ -62,9 +62,9 @@ class TestTemplate(fixture.Pathed):
         api.manage(new_manage_dest, **kw)
 
         # assert changes
-        self.assertEqual(open(new_manage_dest).read(), MANAGE_CONTENTS)
-        self.assertEqual(open(os.path.join(new_repo_dest, 'manage.py')).read(), MANAGE_CONTENTS)
-        self.assertEqual(open(os.path.join(new_repo_dest, 'README')).read(), README_CONTENTS)
-        self.assertEqual(open(os.path.join(new_repo_dest, 'versions/001_test.py')).read(), SCRIPT_FILE_CONTENTS)
-        self.assertEqual(open(os.path.join(new_repo_dest, 'versions/002_foo_postgres_downgrade.sql')).read(), SCRIPT_FILE_CONTENTS)
-        self.assertEqual(open(os.path.join(new_repo_dest, 'versions/002_foo_postgres_upgrade.sql')).read(), SCRIPT_FILE_CONTENTS)
+        self.assertEqual(MANAGE_CONTENTS, open(new_manage_dest).read())
+        self.assertEqual(MANAGE_CONTENTS, open(os.path.join(new_repo_dest, 'manage.py')).read())
+        self.assertEqual(README_CONTENTS, open(os.path.join(new_repo_dest, 'README')).read())
+        self.assertEqual(SCRIPT_FILE_CONTENTS, open(os.path.join(new_repo_dest, 'versions/001_test.py')).read())
+        self.assertEqual(SCRIPT_FILE_CONTENTS, open(os.path.join(new_repo_dest, 'versions/002_foo_postgres_downgrade.sql')).read())
+        self.assertEqual(SCRIPT_FILE_CONTENTS, open(os.path.join(new_repo_dest, 'versions/002_foo_postgres_upgrade.sql')).read())

@@ -87,15 +87,15 @@ class TestSchemaAPI(fixture.DB, Pathed):
 
     @fixture.usedb()
     def test_workflow(self):
-        self.assertEqual(api.db_version(self.url, self.repo), 0)
+        self.assertEqual(0, api.db_version(self.url, self.repo))
         api.script('First Version', self.repo)
-        self.assertEqual(api.db_version(self.url, self.repo), 0)
+        self.assertEqual(0, api.db_version(self.url, self.repo))
         api.upgrade(self.url, self.repo, 1)
-        self.assertEqual(api.db_version(self.url, self.repo), 1)
+        self.assertEqual(1, api.db_version(self.url, self.repo))
         api.downgrade(self.url, self.repo, 0)
-        self.assertEqual(api.db_version(self.url, self.repo), 0)
+        self.assertEqual(0, api.db_version(self.url, self.repo))
         api.test(self.url, self.repo)
-        self.assertEqual(api.db_version(self.url, self.repo), 0)
+        self.assertEqual(0, api.db_version(self.url, self.repo))
 
         # preview
         # TODO: test output
@@ -108,7 +108,7 @@ class TestSchemaAPI(fixture.DB, Pathed):
         out = api.upgrade(self.url, self.repo, 2, preview_sql=True)
 
         # cant upgrade to version 1, already at version 1
-        self.assertEqual(api.db_version(self.url, self.repo), 1)
+        self.assertEqual(1, api.db_version(self.url, self.repo))
         self.assertRaises(KnownError, api.upgrade, self.url, self.repo, 0)
 
     @fixture.usedb()

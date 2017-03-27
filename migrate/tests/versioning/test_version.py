@@ -16,8 +16,8 @@ class TestVerNum(fixture.Base):
 
     def test_str(self):
         """Test str and repr version numbers"""
-        self.assertEqual(str(VerNum(2)), '2')
-        self.assertEqual(repr(VerNum(2)), '<VerNum(2)>')
+        self.assertEqual('2', str(VerNum(2)))
+        self.assertEqual('<VerNum(2)>', repr(VerNum(2)))
 
     def test_is(self):
         """Two version with the same number should be equal"""
@@ -25,24 +25,24 @@ class TestVerNum(fixture.Base):
         b = VerNum(1)
         self.assertTrue(a is b)
 
-        self.assertEqual(VerNum(VerNum(2)), VerNum(2))
+        self.assertEqual(VerNum(2), VerNum(VerNum(2)))
 
     def test_add(self):
-        self.assertEqual(VerNum(1) + VerNum(1), VerNum(2))
-        self.assertEqual(VerNum(1) + 1, 2)
-        self.assertEqual(VerNum(1) + 1, '2')
+        self.assertEqual(VerNum(2), VerNum(1) + VerNum(1))
+        self.assertEqual(2, VerNum(1) + 1)
+        self.assertEqual('2', VerNum(1) + 1)
         self.assertTrue(isinstance(VerNum(1) + 1, VerNum))
 
     def test_sub(self):
-        self.assertEqual(VerNum(1) - 1, 0)
+        self.assertEqual(0, VerNum(1) - 1)
         self.assertTrue(isinstance(VerNum(1) - 1, VerNum))
         self.assertRaises(ValueError, lambda: VerNum(0) - 1)
 
     def test_eq(self):
         """Two versions are equal"""
-        self.assertEqual(VerNum(1), VerNum('1'))
-        self.assertEqual(VerNum(1), 1)
-        self.assertEqual(VerNum(1), '1')
+        self.assertEqual(VerNum('1'), VerNum(1))
+        self.assertEqual(1, VerNum(1))
+        self.assertEqual('1', VerNum(1))
         self.assertNotEqual(VerNum(1), 2)
 
     def test_ne(self):
@@ -72,9 +72,9 @@ class TestVerNum(fixture.Base):
     def test_int_cast(self):
         ver = VerNum(3)
         # test __int__
-        self.assertEqual(int(ver), 3)
+        self.assertEqual(3, int(ver))
         # test __index__: range() doesn't call __int__
-        self.assertEqual(list(range(ver, ver)), [])
+        self.assertEqual([], list(range(ver, ver)))
 
 
 class TestVersion(fixture.Pathed):
@@ -83,14 +83,14 @@ class TestVersion(fixture.Pathed):
         super(TestVersion, self).setUp()
 
     def test_str_to_filename(self):
-        self.assertEqual(str_to_filename(''), '')
-        self.assertEqual(str_to_filename('__'), '_')
-        self.assertEqual(str_to_filename('a'), 'a')
-        self.assertEqual(str_to_filename('Abc Def'), 'Abc_Def')
-        self.assertEqual(str_to_filename('Abc "D" Ef'), 'Abc_D_Ef')
-        self.assertEqual(str_to_filename("Abc's Stuff"), 'Abc_s_Stuff')
-        self.assertEqual(str_to_filename("a      b"), 'a_b')
-        self.assertEqual(str_to_filename("a.b to c"), 'a_b_to_c')
+        self.assertEqual('', str_to_filename(''))
+        self.assertEqual('_', str_to_filename('__'))
+        self.assertEqual('a', str_to_filename('a'))
+        self.assertEqual('Abc_Def', str_to_filename('Abc Def'))
+        self.assertEqual('Abc_D_Ef', str_to_filename('Abc "D" Ef'))
+        self.assertEqual('Abc_s_Stuff', str_to_filename("Abc's Stuff"))
+        self.assertEqual('a_b', str_to_filename("a      b"))
+        self.assertEqual('a_b_to_c', str_to_filename("a.b to c"))
 
     def test_collection(self):
         """Let's see how we handle versions collection"""
@@ -100,16 +100,16 @@ class TestVersion(fixture.Pathed):
         coll.create_new_sql_version("sqlite", "foo bar")
         coll.create_new_python_version("")
 
-        self.assertEqual(coll.latest, 4)
-        self.assertEqual(len(coll.versions), 4)
-        self.assertEqual(coll.version(4), coll.version(coll.latest))
+        self.assertEqual(4, coll.latest)
+        self.assertEqual(4, len(coll.versions))
+        self.assertEqual(coll.version(coll.latest), coll.version(4))
         # Check for non-existing version
         self.assertRaises(VersionNotFoundError, coll.version, 5)
         # Check for the current version
-        self.assertEqual('4', coll.version(4).version)
+        self.assertEqual(coll.version(4).version, '4')
 
         coll2 = Collection(self.temp_usable_dir)
-        self.assertEqual(coll.versions, coll2.versions)
+        self.assertEqual(coll2.versions, coll.versions)
 
         Collection.clear()
 
@@ -153,19 +153,19 @@ class TestVersion(fixture.Pathed):
             open(filepath, 'w').close()
 
         ver = Version(1, path, [sqlite_upgrade_file])
-        self.assertEqual(os.path.basename(ver.script('sqlite', 'upgrade').path), sqlite_upgrade_file)
+        self.assertEqual(sqlite_upgrade_file, os.path.basename(ver.script('sqlite', 'upgrade').path))
 
         ver = Version(1, path, [default_upgrade_file])
-        self.assertEqual(os.path.basename(ver.script('default', 'upgrade').path), default_upgrade_file)
+        self.assertEqual(default_upgrade_file, os.path.basename(ver.script('default', 'upgrade').path))
 
         ver = Version(1, path, [sqlite_upgrade_file, default_upgrade_file])
-        self.assertEqual(os.path.basename(ver.script('sqlite', 'upgrade').path), sqlite_upgrade_file)
+        self.assertEqual(sqlite_upgrade_file, os.path.basename(ver.script('sqlite', 'upgrade').path))
 
         ver = Version(1, path, [sqlite_upgrade_file, default_upgrade_file, python_file])
-        self.assertEqual(os.path.basename(ver.script('postgres', 'upgrade').path), default_upgrade_file)
+        self.assertEqual(default_upgrade_file, os.path.basename(ver.script('postgres', 'upgrade').path))
 
         ver = Version(1, path, [sqlite_upgrade_file, python_file])
-        self.assertEqual(os.path.basename(ver.script('postgres', 'upgrade').path), python_file)
+        self.assertEqual(python_file, os.path.basename(ver.script('postgres', 'upgrade').path))
 
     def test_bad_version(self):
         ver = Version(1, self.temp_usable_dir, [])

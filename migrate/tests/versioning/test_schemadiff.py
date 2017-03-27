@@ -26,12 +26,12 @@ class SchemaDiffBase(fixture.DB):
         diff = self._run_diff()
         # print diff
         self.assertTrue(diff)
-        self.assertEqual(1,len(diff.tables_different))
+        self.assertEqual(len(diff.tables_different),1)
         td = list(diff.tables_different.values())[0]
-        self.assertEqual(1,len(td.columns_different))
+        self.assertEqual(len(td.columns_different),1)
         cd = list(td.columns_different.values())[0]
         label_width = max(len(self.name1), len(self.name2))
-        self.assertEqual(('Schema diffs:\n'
+        self.assertEqual(str(diff),('Schema diffs:\n'
              '  table with differences: xtable\n'
              '    column with differences: data\n'
              '      %*s: %r\n'
@@ -42,7 +42,7 @@ class SchemaDiffBase(fixture.DB):
                 label_width,
                 self.name2,
                 cd.col_B
-                ),str(diff))
+                ))
 
 class Test_getDiffOfModelAgainstDatabase(SchemaDiffBase):
     name1 = 'model'
@@ -58,8 +58,7 @@ class Test_getDiffOfModelAgainstDatabase(SchemaDiffBase):
         self._make_table(create=False)
         diff = self._run_diff()
         self.assertTrue(diff)
-        self.assertEqual('Schema diffs:\n  tables missing from %s: xtable' % self.name2,
-            str(diff))
+        self.assertEqual(str(diff), 'Schema diffs:\n  tables missing from %s: xtable' % self.name2)
 
     @fixture.usedb()
     def test_table_missing_in_model(self):
@@ -67,8 +66,7 @@ class Test_getDiffOfModelAgainstDatabase(SchemaDiffBase):
         self.meta.clear()
         diff = self._run_diff()
         self.assertTrue(diff)
-        self.assertEqual('Schema diffs:\n  tables missing from %s: xtable' % self.name1,
-            str(diff))
+        self.assertEqual(str(diff), 'Schema diffs:\n  tables missing from %s: xtable' % self.name1)
 
     @fixture.usedb()
     def test_column_missing_in_db(self):
@@ -85,10 +83,9 @@ class Test_getDiffOfModelAgainstDatabase(SchemaDiffBase):
         # run diff
         diff = self._run_diff()
         self.assertTrue(diff)
-        self.assertEqual('Schema diffs:\n'
+        self.assertEqual(str(diff), 'Schema diffs:\n'
             '  table with differences: xtable\n'
-            '    %s missing these columns: xcol' % self.name2,
-            str(diff))
+            '    %s missing these columns: xcol' % self.name2)
 
     @fixture.usedb()
     def test_column_missing_in_model(self):
@@ -104,10 +101,9 @@ class Test_getDiffOfModelAgainstDatabase(SchemaDiffBase):
         # run diff
         diff = self._run_diff()
         self.assertTrue(diff)
-        self.assertEqual('Schema diffs:\n'
+        self.assertEqual(str(diff), 'Schema diffs:\n'
             '  table with differences: xtable\n'
-            '    %s missing these columns: xcol' % self.name1,
-            str(diff))
+            '    %s missing these columns: xcol' % self.name1)
 
     @fixture.usedb()
     def test_exclude_tables(self):
@@ -133,14 +129,14 @@ class Test_getDiffOfModelAgainstDatabase(SchemaDiffBase):
         # ztable identical on both
         # ...so we expect no diff!
         self.assertFalse(diff)
-        self.assertEqual('No schema diffs',str(diff))
+        self.assertEqual(str(diff),'No schema diffs')
 
     @fixture.usedb()
     def test_identical_just_pk(self):
         self._make_table()
         diff = self._run_diff()
         self.assertFalse(diff)
-        self.assertEqual('No schema diffs',str(diff))
+        self.assertEqual(str(diff),'No schema diffs')
 
 
     @fixture.usedb()
@@ -194,7 +190,7 @@ class Test_getDiffOfModelAgainstDatabase(SchemaDiffBase):
             Column('data', Integer()),
             )
         diff = self._run_diff()
-        self.assertEqual('No schema diffs',str(diff))
+        self.assertEqual(str(diff),'No schema diffs')
         self.assertFalse(diff)
 
     @fixture.usedb()
@@ -203,7 +199,7 @@ class Test_getDiffOfModelAgainstDatabase(SchemaDiffBase):
             Column('data', String(10)),
             )
         diff = self._run_diff()
-        self.assertEqual('No schema diffs',str(diff))
+        self.assertEqual(str(diff),'No schema diffs')
         self.assertFalse(diff)
 
     @fixture.usedb()
@@ -212,7 +208,7 @@ class Test_getDiffOfModelAgainstDatabase(SchemaDiffBase):
             Column('data', Text),
             )
         diff = self._run_diff()
-        self.assertEqual('No schema diffs',str(diff))
+        self.assertEqual(str(diff),'No schema diffs')
         self.assertFalse(diff)
 
 class Test_getDiffOfModelAgainstModel(Test_getDiffOfModelAgainstDatabase):

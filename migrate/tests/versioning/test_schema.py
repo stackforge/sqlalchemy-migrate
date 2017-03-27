@@ -58,16 +58,16 @@ class TestControlledSchema(fixture.Pathed, fixture.DB):
 
         # We can load a controlled DB this way, too
         dbcontrol0 = ControlledSchema(self.engine, self.repos)
-        self.assertEqual(dbcontrol, dbcontrol0)
+        self.assertEqual(dbcontrol0, dbcontrol)
 
         # We can also use a repository path, instead of a repository
         dbcontrol0 = ControlledSchema(self.engine, self.repos.path)
-        self.assertEqual(dbcontrol, dbcontrol0)
+        self.assertEqual(dbcontrol0, dbcontrol)
 
         # We don't have to use the same connection
         engine = create_engine(self.url)
         dbcontrol0 = ControlledSchema(engine, self.repos.path)
-        self.assertEqual(dbcontrol, dbcontrol0)
+        self.assertEqual(dbcontrol0, dbcontrol)
 
         # Clean up:
         dbcontrol.drop()
@@ -85,11 +85,11 @@ class TestControlledSchema(fixture.Pathed, fixture.DB):
         # Establish version control on this database
         version = 0
         dbcontrol = ControlledSchema.create(self.engine, self.repos, version)
-        self.assertEqual(dbcontrol.version, version)
+        self.assertEqual(version, dbcontrol.version)
 
         # Correct when we load it, too
         dbcontrol = ControlledSchema(self.engine, self.repos)
-        self.assertEqual(dbcontrol.version, version)
+        self.assertEqual(version, dbcontrol.version)
 
         dbcontrol.drop()
 
@@ -97,16 +97,16 @@ class TestControlledSchema(fixture.Pathed, fixture.DB):
         version = 10
         for i in range(version):
             self.repos.create_script('')
-        self.assertEqual(self.repos.latest, version)
+        self.assertEqual(version, self.repos.latest)
 
         # Test with some mid-range value
         dbcontrol = ControlledSchema.create(self.engine,self.repos, 5)
-        self.assertEqual(dbcontrol.version, 5)
+        self.assertEqual(5, dbcontrol.version)
         dbcontrol.drop()
 
         # Test with max value
         dbcontrol = ControlledSchema.create(self.engine, self.repos, version)
-        self.assertEqual(dbcontrol.version, version)
+        self.assertEqual(version, dbcontrol.version)
         dbcontrol.drop()
 
     @fixture.usedb()
@@ -130,14 +130,14 @@ class TestControlledSchema(fixture.Pathed, fixture.DB):
 
         # empty schema doesn't have changesets
         cs = dbschema.changeset()
-        self.assertEqual(cs, {})
+        self.assertEqual({}, cs)
 
         for i in range(5):
             self.repos.create_script('')
-        self.assertEqual(self.repos.latest, 5)
+        self.assertEqual(5, self.repos.latest)
 
         cs = dbschema.changeset(5)
-        self.assertEqual(len(cs), 5)
+        self.assertEqual(5, len(cs))
 
         # cleanup
         dbschema.drop()
@@ -149,7 +149,7 @@ class TestControlledSchema(fixture.Pathed, fixture.DB):
         for i in range(10):
             self.repos.create_script('')
 
-        self.assertEqual(self.repos.latest, 10)
+        self.assertEqual(10, self.repos.latest)
 
         dbschema.upgrade(10)
 

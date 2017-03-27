@@ -35,7 +35,7 @@ class TestKeydInstance(fixture.Base):
         self.assertTrue(a10 is a11)
 
         # __init__ is called
-        self.assertEqual(a10.value,'a')
+        self.assertEqual('a',a10.value)
 
         # clear() causes us to forget all existing instances
         Uniq1.clear()
