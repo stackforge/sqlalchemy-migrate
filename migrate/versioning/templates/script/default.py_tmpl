@@ -1,5 +1,6 @@
 from sqlalchemy import *
 from migrate import *
+from migrations.versions import *
 
 
 def upgrade(migrate_engine):
