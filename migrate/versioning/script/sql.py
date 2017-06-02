@@ -55,11 +55,13 @@ class SqlScript(base.BaseScript):
                 # commands passed to .execute(), so split them and execute one
                 # by one
                 text = sqlparse.format(text, strip_comments=True, strip_whitespace=True)
-                for statement in sqlparse.split(text):
+                for statement in sqlparse.split(text): # type: str
                     if statement:
                         if re.match(ignored_regex, statement):
                             log.warning('"%s" found in SQL script; ignoring' % statement)
                         else:
+                            # some dialects (oracle) doesn't like ; in the end of the statement, others just ignore it
+                            statement = statement.rstrip(';')
                             conn.execute(statement)
                 trans.commit()
             except Exception as e:
