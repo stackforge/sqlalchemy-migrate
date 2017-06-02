@@ -2,8 +2,8 @@
 from migrate.versioning.shell import main
 
 {{py:
-import six
 _vars = locals().copy()
+import six
 del _vars['__template_name__']
 del _vars['six']
 _vars.pop('repository_name', None)
