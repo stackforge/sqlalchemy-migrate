@@ -3,7 +3,7 @@ Code to generate a Python model from a database or differences
 between a model and database.
 
 Some of this is borrowed heavily from the AutoCode project at:
-http://code.google.com/p/sqlautocode/
+https://code.google.com/p/sqlautocode/
 """
 
 import sys
