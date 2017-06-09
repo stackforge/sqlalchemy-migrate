@@ -170,13 +170,13 @@ class IBMDBSchemaChanger(IBMDBSchemaGenerator, ansisql.ANSISchemaChanger):
             try:
                 self._run_subvisit(delta, self._visit_column_change, False)
             except Exception as e:
-                LOG.warn("Unable to change the column type. Error: %s" % e)
+                LOG.warning("Unable to change the column type. Error: %s", e)
 
             if column.primary_key and 'primary_key' not in keys:
                 try:
                     self._run_subvisit(delta, self._visit_primary_key)
                 except Exception as e:
-                    LOG.warn("Unable to add primary key. Error: %s" % e)
+                    LOG.warning("Unable to add primary key. Error: %s", e)
 
         if 'nullable' in keys:
             self._run_subvisit(delta, self._visit_column_nullable)
@@ -192,7 +192,7 @@ class IBMDBSchemaChanger(IBMDBSchemaGenerator, ansisql.ANSISchemaChanger):
             try:
                 self._run_subvisit(delta, self._visit_column_name, False)
             except Exception as e:
-                LOG.warn("Unable to change column %(name)s. Error: %(error)s" %
+                LOG.warning("Unable to change column %(name)s. Error: %(error)s",
                          {'name': delta.current_name, 'error': e})
 
         self._reorg_table(self.preparer.format_table(delta.table))
