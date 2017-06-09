@@ -174,7 +174,7 @@ class ControlledSchema(object):
 
         table = Table(
             tname, meta,
-            Column('repository_id', String(250), primary_key=True),
+            Column('repository_id', String(128), primary_key=True),
             Column('repository_path', Text),
             Column('version', Integer), )
 
