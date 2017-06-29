@@ -540,7 +540,8 @@ class ChangesetColumn(object):
         return alter_column(self, *p, **k)
 
     def create(self, table=None, index_name=None, unique_name=None,
-               primary_key_name=None, populate_default=True, connection=None, **kwargs):
+               primary_key_name=None, populate_default=True, connection=None, 
+	       engine=None, **kwargs):
         """Create this column in the database.
 
         Assumes the given table exists. ``ALTER TABLE ADD COLUMN``,
@@ -572,7 +573,8 @@ populated with defaults
             self._check_sanity_constraints(cons)
 
         self.add_to_table(table)
-        engine = self.table.bind
+	if engine is None:
+            engine = self.table.bind
         visitorcallable = get_engine_visitor(engine, 'columngenerator')
         engine._run_visitor(visitorcallable, self, connection, **kwargs)
 
