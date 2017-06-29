@@ -17,6 +17,7 @@ DIALECTS = {
     "sqlite": sqlite.SQLiteDialect,
     "postgres": postgres.PGDialect,
     "postgresql": postgres.PGDialect,
+    "redshift": postgres.PGDialect,
     "mysql": mysql.MySQLDialect,
     "oracle": oracle.OracleDialect,
     "firebird": firebird.FBDialect,
