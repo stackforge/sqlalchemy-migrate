@@ -283,7 +283,7 @@ class TestAddDropColumn(fixture.DB):
         reflected = Table(self.table_idx.name, MetaData(), autoload=True,
                           autoload_with=self.engine)
         index = next(iter(reflected.indexes))
-        self.assertEquals(['a'], [c.name for c in index.columns])
+        self.assertEqual(['a'], [c.name for c in index.columns])
 
     @fixture.usedb()
     def test_drop_all_columns_of_composite_index(self):
@@ -292,7 +292,7 @@ class TestAddDropColumn(fixture.DB):
 
         reflected = Table(self.table_idx.name, MetaData(), autoload=True,
                           autoload_with=self.engine)
-        self.assertEquals(0, len(reflected.indexes))
+        self.assertEqual(0, len(reflected.indexes))
 
     def _check_index(self,expected):
         if 'mysql' in self.engine.name or 'postgres' in self.engine.name:
