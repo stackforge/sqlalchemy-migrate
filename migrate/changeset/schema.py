@@ -200,7 +200,7 @@ class MyMeta(sqlalchemy.sql.visitors.VisitableType, abc.ABCMeta, object):
 
 
 class ColumnDelta(six.with_metaclass(MyMeta, DictMixin, sqlalchemy.schema.SchemaItem)):
-    """Extracts the differences between two columns/column-parameters
+    r"""Extracts the differences between two columns/column-parameters
 
         May receive parameters arranged in several different ways:
 
