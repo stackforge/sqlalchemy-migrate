@@ -9,7 +9,7 @@ import re
 import sqlalchemy
 from sqlalchemy import __version__ as _sa_version
 
-_sa_version = tuple(int(re.match("\d+", x).group(0)) for x in _sa_version.split("."))
+_sa_version = tuple(int(re.match(r"\d+", x).group(0)) for x in _sa_version.split("."))
 SQLA_07 = _sa_version >= (0, 7)
 SQLA_08 = _sa_version >= (0, 8)
 SQLA_09 = _sa_version >= (0, 9)
