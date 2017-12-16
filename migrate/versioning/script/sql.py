@@ -47,7 +47,7 @@ class SqlScript(base.BaseScript):
                 # (and committing transaction, which is contradictory to
                 # the whole idea of ROLLBACK)
                 ignored_statements = ('BEGIN', 'END', 'COMMIT')
-                ignored_regex = re.compile('^\s*(%s).*;?$' % '|'.join(ignored_statements),
+                ignored_regex = re.compile(r'^\s*(%s).*;?$' % '|'.join(ignored_statements),
                                            re.IGNORECASE)
 
                 # NOTE(ihrachys): script may contain multiple statements, and
