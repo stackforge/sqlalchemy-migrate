@@ -55,7 +55,7 @@ Dialect support
 
 .. list-table::
     :header-rows: 1
-    :widths: 25 10 10 10 10 10 11
+    :widths: 25 10 10 10 10 10 11 10
 
     * - Operation / Dialect
       - :ref:`sqlite <sqlite-d>`
@@ -72,6 +72,7 @@ Dialect support
       - yes
       - no
       - not supported
+      - unknown
     * - :ref:`ALTER TABLE RENAME COLUMN <column-alter>`
       - yes (workaround) [#1]_
       - yes
@@ -79,6 +80,7 @@ Dialect support
       - yes
       - yes
       - not supported
+      - unknown
     * - :ref:`ALTER TABLE ADD COLUMN <column-create>`
       - yes (workaround) [#2]_
       - yes
@@ -86,6 +88,7 @@ Dialect support
       - yes
       - yes
       - not supported
+      - unknown
     * - :ref:`ALTER TABLE DROP COLUMN <column-drop>`
       - yes (workaround) [#1]_
       - yes
@@ -93,6 +96,7 @@ Dialect support
       - yes
       - yes
       - not supported
+      - unknown
     * - :ref:`ALTER TABLE ALTER COLUMN <column-alter>`
       - yes (workaround) [#1]_
       - yes
@@ -100,6 +104,7 @@ Dialect support
       - yes (with limitations) [#3]_
       - yes [#4]_
       - not supported
+      - unknown
     * - :ref:`ALTER TABLE ADD CONSTRAINT <constraint-tutorial>`
       - partial (workaround) [#1]_
       - yes
@@ -107,6 +112,7 @@ Dialect support
       - yes
       - yes
       - not supported
+      - unknown
     * - :ref:`ALTER TABLE DROP CONSTRAINT <constraint-tutorial>`
       - partial (workaround) [#1]_
       - yes
@@ -114,6 +120,7 @@ Dialect support
       - yes
       - yes
       - not supported
+      - unknown
     * - :ref:`RENAME INDEX <index-rename>`
       - no
       - yes
@@ -121,6 +128,7 @@ Dialect support
       - yes
       - yes
       - not supported
+      - unknown
 
 
 .. [#1] Table is renamed to temporary table, new table is created followed by

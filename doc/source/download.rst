@@ -2,7 +2,7 @@ Download
 --------
 
 You can get the latest version of SQLAlchemy Migrate from the
-`project's download page`_, the `cheese shop`_, pip_ or via easy_install_::
+the `cheese shop`_, pip_ or via easy_install_::
 
  $ easy_install sqlalchemy-migrate
 

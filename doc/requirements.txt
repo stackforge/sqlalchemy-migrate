@@ -1,0 +1,7 @@
+psycopg2
+sphinx>=1.1.2,<1.2
+sphinxcontrib_issuetracker
+
+sqlalchemy>=0.9
+ibm_db_sa>=0.3.0
+MySQL-python
