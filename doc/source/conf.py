@@ -28,7 +28,8 @@ sys.path.append(os.path.dirname(os.path.abspath('.')))
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx', 'sphinxcontrib.issuetracker']
+extensions = ['sphinx.ext.autodoc',
+              'sphinx.ext.intersphinx']
 
 # link to sqlalchemy docs
 intersphinx_mapping = {
@@ -128,7 +129,7 @@ html_style = 'default.css'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+# html_static_path = ['_static']
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
