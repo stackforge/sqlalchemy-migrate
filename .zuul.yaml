@@ -1,0 +1,17 @@
+- project:
+    check:
+      jobs:
+        - sqlalchemy-migrate-tox-py27sa07
+    gate:
+      jobs:
+        - sqlalchemy-migrate-tox-py27sa07
+
+- job:
+    name: sqlalchemy-migrate-tox-py27sa07
+    parent: tox
+    description: |
+      Run tests for sqlalchemy-migrate project.
+
+      Uses tox with the ``py27sa07`` environment.
+    vars:
+      tox_envlist: py27sa07
