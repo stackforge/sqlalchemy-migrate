@@ -63,7 +63,7 @@ def asbool(obj):
 def guess_obj_type(obj):
     """Do everything to guess object type from string
 
-    Tries to convert to `int`, `bool` and finally returns if not succeded.
+    Tries to convert to `int`, `bool` and finally returns if not succeeded.
 
     .. versionadded: 0.5.4
     """
