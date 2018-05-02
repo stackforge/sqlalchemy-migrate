@@ -77,7 +77,7 @@ class ControlledSchema(object):
         Uses self.version for start version and engine.name
         to get database name.
         """
-        database = self.engine.name
+        database = self.repository
         start_ver = self.version
         changeset = self.repository.changeset(database, start_ver, version)
         return changeset

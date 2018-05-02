@@ -207,7 +207,7 @@ class Version(object):
         for db in (database, 'default'):
             # Try to return a .sql script first
             try:
-                return self.sql[db][operation]
+                return self.sql[str(db)][operation]
             except KeyError:
                 continue  # No .sql script exists
 
