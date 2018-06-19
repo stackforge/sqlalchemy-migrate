@@ -2,6 +2,7 @@
    SQLAlchemy migrate repository management.
 """
 import os
+import stat
 import shutil
 import string
 import logging
@@ -138,9 +139,13 @@ class Repository(pathed.Pathed):
 
         # Edit config defaults
         config_text = cls.prepare_config(tmpl_dir, name, options=opts)
-        fd = open(os.path.join(path, cls._config), 'w')
-        fd.write(config_text)
-        fd.close()
+        
+        
+        new_config = os.path.join(path, cls._config)
+        os.chmod( new_config, stat.S_IWRITE )
+        with open(new_config, 'w') as fd:
+            fd.write(config_text)
+        
 
         opts['repository_name'] = name
 
