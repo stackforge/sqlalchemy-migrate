@@ -1,12 +1,8 @@
 Download
 --------
 
-You can get the latest version of SQLAlchemy Migrate from the
-`project's download page`_, the `cheese shop`_, pip_ or via easy_install_::
-
- $ easy_install sqlalchemy-migrate
-
-or::
+You can get the latest version of SQLAlchemy Migrate from its
+`GitHub repository`_, `PyPI project page`_, or via pip_::
 
  $ pip install sqlalchemy-migrate
 
@@ -24,9 +20,9 @@ If you'd like to be notified when new versions of SQLAlchemy Migrate
 are released, subscribe to `openstack-dev`_.
 
 .. _pip: http://pip.openplans.org/
-.. _easy_install: http://peak.telecommunity.com/DevCenter/EasyInstall#installing-easy-install
 .. _sqlalchemy: http://www.sqlalchemy.org/download.html
-.. _`cheese shop`: http://pypi.python.org/pypi/sqlalchemy-migrate
+.. _`GitHub repository`: https://github.com/openstack/sqlalchemy-migrate
+.. _`PyPI project page`: https://pypi.org/project/sqlalchemy-migrate/
 .. _`openstack-dev`: http://lists.openstack.org/cgi-bin/mailman/listinfo/openstack-dev
 
 .. _development:
