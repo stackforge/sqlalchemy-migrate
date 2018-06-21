@@ -13,8 +13,8 @@ def getDiffOfModelAgainstDatabase(metadata, engine, excludeTables=None):
     """
     Return differences of model against database.
 
-    :return: object which will evaluate to :keyword:`True` if there \
-      are differences else :keyword:`False`.
+    :return: object which will evaluate to :const:`True` if there \
+      are differences else :const:`False`.
     """
     db_metadata = sqlalchemy.MetaData(engine)
     db_metadata.reflect()
@@ -36,8 +36,8 @@ def getDiffOfModelAgainstModel(metadataA, metadataB, excludeTables=None):
     """
     Return differences of model against another model.
 
-    :return: object which will evaluate to :keyword:`True` if there \
-      are differences else :keyword:`False`.
+    :return: object which will evaluate to :const:`True` if there \
+      are differences else :const:`False`.
     """
     return SchemaDiff(metadataA, metadataB, excludeTables=excludeTables)
 

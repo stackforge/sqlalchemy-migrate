@@ -34,8 +34,8 @@ class ConstraintChangeset(object):
     def create(self, *a, **kw):
         """Create the constraint in the database.
 
-        :param engine: the database engine to use. If this is \
-        :keyword:`None` the instance's engine will be used
+        :param engine: the database engine to use. If this is
+          :const:`None`, the instance's engine will be used
         :type engine: :class:`sqlalchemy.engine.base.Engine`
         :param connection: reuse connection istead of creating new one.
         :type connection: :class:`sqlalchemy.engine.base.Connection` instance
@@ -47,7 +47,7 @@ class ConstraintChangeset(object):
         """Drop the constraint from the database.
 
         :param engine: the database engine to use. If this is
-          :keyword:`None` the instance's engine will be used
+          :const:`None`, the instance's engine will be used
         :param cascade: Issue CASCADE drop if database supports it
         :type engine: :class:`sqlalchemy.engine.base.Engine`
         :type cascade: bool
