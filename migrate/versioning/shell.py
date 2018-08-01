@@ -59,7 +59,7 @@ class PassiveOptionParser(OptionParser):
 def main(argv=None, **kwargs):
     """Shell interface to :mod:`migrate.versioning.api`.
 
-    kwargs are default options that can be overriden with passing
+    kwargs are default options that can be overridden with passing
     --some_option as command line option
 
     :param disable_logging: Let migrate configure logging
