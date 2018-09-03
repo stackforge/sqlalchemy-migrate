@@ -61,7 +61,7 @@ class SQLiteHelper(SQLiteCommon):
             table_name=table.name
         ).fetchone()[0]
 
-        UNIQUE_PATTERN = "CONSTRAINT (\w+) UNIQUE \(([^\)]+)\)"
+        UNIQUE_PATTERN = r"CONSTRAINT (\w+) UNIQUE \(([^\)]+)\)"
         constraints = []
         for name, cols in re.findall(UNIQUE_PATTERN, data):
             # Filter out any columns that were dropped from the table.
@@ -69,7 +69,7 @@ class SQLiteHelper(SQLiteCommon):
             if columns:
                 constraints.extend(UniqueConstraint(*columns, name=name))
 
-        FKEY_PATTERN = "CONSTRAINT (\w+) FOREIGN KEY \(([^\)]+)\)"
+        FKEY_PATTERN = r"CONSTRAINT (\w+) FOREIGN KEY \(([^\)]+)\)"
         for name, cols in re.findall(FKEY_PATTERN, data):
             # Filter out any columns that were dropped from the table.
             columns = self._filter_columns(cols, table)
