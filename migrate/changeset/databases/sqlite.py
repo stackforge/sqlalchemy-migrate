@@ -96,8 +96,17 @@ class SQLiteHelper(SQLiteCommon):
             if omit_constraints is None or cons.name not in omit_constraints
         ])
 
+        # Use "PRAGMA legacy_alter_table = ON" with sqlite >= 3.26 when
+        # using "ALTER TABLE RENAME TO migration_tmp" to maintain legacy
+        # behavior. See: https://www.sqlite.org/src/info/ae9638e9c0ad0c36
+        if self.connection.engine.dialect.server_version_info >= (3, 26):
+            self.append('PRAGMA legacy_alter_table = ON')
+            self.execute()
         self.append('ALTER TABLE %s RENAME TO migration_tmp' % table_name)
         self.execute()
+        if self.connection.engine.dialect.server_version_info >= (3, 26):
+            self.append('PRAGMA legacy_alter_table = OFF')
+            self.execute()
 
         insertion_string = self._modify_table(table, column, delta)
 
