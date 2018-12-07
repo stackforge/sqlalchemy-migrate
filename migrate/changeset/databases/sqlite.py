@@ -9,6 +9,7 @@ except ImportError:  # Python 2
     from UserDict import DictMixin
 from copy import copy
 import re
+import sqlite3
 
 from sqlalchemy.databases import sqlite as sa_base
 from sqlalchemy.schema import ForeignKeyConstraint
@@ -96,8 +97,15 @@ class SQLiteHelper(SQLiteCommon):
             if omit_constraints is None or cons.name not in omit_constraints
         ])
 
+        tup = sqlite3.sqlite_version_info
+        if tup[0] > 3 or (tup[0] == 3 and tup[1] >= 26):
+            self.append('PRAGMA legacy_alter_table = ON')
+            self.execute()
         self.append('ALTER TABLE %s RENAME TO migration_tmp' % table_name)
         self.execute()
+        if tup[0] > 3 or (tup[0] == 3 and tup[1] >= 26):
+            self.append('PRAGMA legacy_alter_table = OFF')
+            self.execute()
 
         insertion_string = self._modify_table(table, column, delta)
 
