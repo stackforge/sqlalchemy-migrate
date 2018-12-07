@@ -96,8 +96,15 @@ class SQLiteHelper(SQLiteCommon):
             if omit_constraints is None or cons.name not in omit_constraints
         ])
 
+        import sqlite3
+        if sqlite3.sqlite_version_info >= (3, 26):
+            self.append('PRAGMA legacy_alter_table = ON')
+            self.execute()
         self.append('ALTER TABLE %s RENAME TO migration_tmp' % table_name)
         self.execute()
+        if sqlite3.sqlite_version_info >= (3, 26):
+            self.append('PRAGMA legacy_alter_table = OFF')
+            self.execute()
 
         insertion_string = self._modify_table(table, column, delta)
 
