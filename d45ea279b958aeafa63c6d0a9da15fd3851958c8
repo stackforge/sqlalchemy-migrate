@@ -1,0 +1,8 @@
+Code-Review+2: Matt Riedemann <mriedem.os@gmail.com>
+Workflow+1: Matt Riedemann <mriedem.os@gmail.com>
+Verified+2: Zuul
+Submitted-by: Zuul
+Submitted-at: Tue, 15 Jan 2019 20:14:08 +0000
+Reviewed-on: https://review.openstack.org/577001
+Project: openstack/sqlalchemy-migrate
+Branch: refs/heads/master
