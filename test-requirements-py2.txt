@@ -1,2 +1,1 @@
 ibm_db_sa>=0.3.0
-MySQL-python

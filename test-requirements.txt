@@ -10,6 +10,7 @@ feedparser
 fixtures>=0.3.14
 mock>=1.2
 mox>=0.5.3
+mysqlclient
 psycopg2
 python-subunit>=0.0.18
 sphinx>=1.1.2,<1.2
