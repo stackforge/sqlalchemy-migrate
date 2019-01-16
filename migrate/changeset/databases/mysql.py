@@ -37,8 +37,7 @@ class MySQLSchemaChanger(MySQLSchemaGenerator, ansisql.ANSISchemaChanger):
                 first = primary_keys.pop(0)
                 if first.name == delta.current_name:
                     colspec += " AUTO_INCREMENT"
-        q = util.safe_quote(table)
-        old_col_name = self.preparer.quote(delta.current_name, q)
+        old_col_name = self.preparer.quote(delta.current_name)
 
         self.start_alter_table(table)
 

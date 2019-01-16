@@ -650,12 +650,10 @@ populated with defaults
     # TODO: this is fixed in 0.6
     def copy_fixed(self, **kw):
         """Create a copy of this ``Column``, with all attributes."""
-        q = util.safe_quote(self)
         return sqlalchemy.Column(self.name, self.type, self.default,
             key=self.key,
             primary_key=self.primary_key,
             nullable=self.nullable,
-            quote=q,
             index=self.index,
             unique=self.unique,
             onupdate=self.onupdate,

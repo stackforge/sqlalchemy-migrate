@@ -61,7 +61,7 @@ class FBSchemaChanger(ansisql.ANSISchemaChanger):
 
     def _visit_column_name(self, table, column, delta):
         self.start_alter_table(table)
-        col_name = self.preparer.quote(delta.current_name, table.quote)
+        col_name = self.preparer.quote(delta.current_name)
         new_name = self.preparer.format_column(delta.result_column)
         self.append('ALTER COLUMN %s TO %s' % (col_name, new_name))
 

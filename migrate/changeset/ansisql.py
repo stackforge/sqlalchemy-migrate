@@ -159,8 +159,7 @@ class ANSISchemaChanger(AlterTableVisitor, SchemaGenerator):
     def visit_table(self, table):
         """Rename a table. Other ops aren't supported."""
         self.start_alter_table(table)
-        q = util.safe_quote(table)
-        self.append("RENAME TO %s" % self.preparer.quote(table.new_name, q))
+        self.append("RENAME TO %s" % self.preparer.quote(table.new_name))
         self.execute()
 
     def visit_index(self, index):
@@ -170,19 +169,19 @@ class ANSISchemaChanger(AlterTableVisitor, SchemaGenerator):
             self.append("ALTER INDEX %s RENAME TO %s" % (
                     self.preparer.quote(
                         self._validate_identifier(
-                            index.name, True), index.quote),
+                            index.name, True)),
                     self.preparer.quote(
                         self._validate_identifier(
-                            index.new_name, True), index.quote)))
+                            index.new_name, True))))
         elif hasattr(self, '_index_identifier'):
             # SA >= 0.6.5, < 0.8
             self.append("ALTER INDEX %s RENAME TO %s" % (
                     self.preparer.quote(
                         self._index_identifier(
-                            index.name), index.quote),
+                            index.name)),
                     self.preparer.quote(
                         self._index_identifier(
-                            index.new_name), index.quote)))
+                            index.new_name))))
         else:
             # SA >= 0.8
             class NewName(object):
@@ -229,8 +228,7 @@ class ANSISchemaChanger(AlterTableVisitor, SchemaGenerator):
     def start_alter_column(self, table, col_name):
         """Starts ALTER COLUMN"""
         self.start_alter_table(table)
-        q = util.safe_quote(table)
-        self.append("ALTER COLUMN %s " % self.preparer.quote(col_name, q))
+        self.append("ALTER COLUMN %s " % self.preparer.quote(col_name))
 
     def _visit_column_nullable(self, table, column, delta):
         nullable = delta['nullable']
@@ -254,7 +252,7 @@ class ANSISchemaChanger(AlterTableVisitor, SchemaGenerator):
     def _visit_column_name(self, table, column, delta):
         self.start_alter_table(table)
         q = util.safe_quote(table)
-        col_name = self.preparer.quote(delta.current_name, q)
+        col_name = self.preparer.quote(delta.current_name)
         new_name = self.preparer.format_column(delta.result_column)
         self.append('RENAME COLUMN %s TO %s' % (col_name, new_name))
 

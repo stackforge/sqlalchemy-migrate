@@ -108,8 +108,7 @@ class IBMDBSchemaChanger(IBMDBSchemaGenerator, ansisql.ANSISchemaChanger):
         """Rename a table; #38. Other ops aren't supported."""
 
         self._rename_table(table)
-        q = util.safe_quote(table)
-        self.append("TO %s" % self.preparer.quote(table.new_name, q))
+        self.append("TO %s" % self.preparer.quote(table.new_name))
         self.execute()
         self.append("COMMIT")
         self.execute()
@@ -121,9 +120,9 @@ class IBMDBSchemaChanger(IBMDBSchemaGenerator, ansisql.ANSISchemaChanger):
         if hasattr(self, '_index_identifier'):
             # SA >= 0.6.5, < 0.8
             old_name = self.preparer.quote(
-                self._index_identifier(index.name), index.quote)
+                self._index_identifier(index.name))
             new_name = self.preparer.quote(
-                self._index_identifier(index.new_name), index.quote)
+                self._index_identifier(index.new_name))
         else:
             # SA >= 0.8
             class NewName(object):
@@ -148,11 +147,10 @@ class IBMDBSchemaChanger(IBMDBSchemaGenerator, ansisql.ANSISchemaChanger):
     def _run_subvisit(self, delta, func, start_alter=True):
         """Runs visit method based on what needs to be changed on column"""
         table = delta.table
-        q = util.safe_quote(table)
         if start_alter:
             self.start_alter_table(table)
         ret = func(table,
-                   self.preparer.quote(delta.current_name, q),
+                   self.preparer.quote(delta.current_name),
                    delta)
         self.execute()
         self._reorg_table(self.preparer.format_table(delta.table))
@@ -314,8 +312,7 @@ class IBMDBConstraintDropper(ansisql.ANSIConstraintDropper,
             if hasattr(self, '_index_identifier'):
                 # SA >= 0.6.5, < 0.8
                 index_name = self.preparer.quote(
-                    self._index_identifier(constraint.name),
-                    constraint.quote)
+                    self._index_identifier(constraint.name))
             else:
                 # SA >= 0.8
                 index_name = self._prepared_index_name(constraint)
