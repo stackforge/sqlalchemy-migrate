@@ -1,0 +1,11 @@
+Code-Review+1: sean mooney <work@seanmooney.info>
+Code-Review+2: Matt Riedemann <mriedem.os@gmail.com>
+Code-Review+1: YCH <yan12125@gmail.com>
+Code-Review+1: Stephen Finucane <stephenfin@redhat.com>
+Workflow+1: Matt Riedemann <mriedem.os@gmail.com>
+Verified+2: Zuul
+Submitted-by: Zuul
+Submitted-at: Mon, 21 Jan 2019 22:12:01 +0000
+Reviewed-on: https://review.openstack.org/623564
+Project: openstack/sqlalchemy-migrate
+Branch: refs/heads/master
