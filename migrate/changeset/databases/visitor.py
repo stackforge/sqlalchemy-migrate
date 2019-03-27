@@ -73,7 +73,7 @@ def run_single_visitor(engine, visitorcallable, element,
     with support for migrate visitors.
     """
     if connection is None:
-        conn = engine.contextual_connect(close_with_result=False)
+        conn = engine.connect(close_with_result=False)
     else:
         conn = connection
     visitor = visitorcallable(engine.dialect, conn)
