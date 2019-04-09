@@ -1,11 +1,8 @@
 SQLAlchemy Migrate
 ==================
 
-Fork from http://code.google.com/p/sqlalchemy-migrate/ to get it working with
-SQLAlchemy 0.8.
-
 Inspired by Ruby on Rails' migrations, Migrate provides a way to deal with
-database schema changes in `SQLAlchemy <http://sqlalchemy.org>`_ projects.
+database schema changes in `SQLAlchemy <https://www.sqlalchemy.org/>`_ projects.
 
 Migrate extends SQLAlchemy to have database changeset handling. It provides a
 database change repository mechanism which can be used from the command line as
@@ -15,7 +12,7 @@ Help
 ----
 
 Sphinx documentation is available at the project page `readthedocs.org
-<https://sqlalchemy-migrate.readthedocs.org/>`_.
+<https://sqlalchemy-migrate.readthedocs.io/>`_.
 
 Users and developers can be found at #openstack-dev on Freenode IRC
 network and at the public users mailing list `migrate-users
@@ -25,13 +22,10 @@ New releases and major changes are announced at the public announce mailing
 list `openstack-dev
 <http://lists.openstack.org/cgi-bin/mailman/listinfo/openstack-dev>`_
 and at the Python package index `sqlalchemy-migrate
-<http://pypi.python.org/pypi/sqlalchemy-migrate>`_.
-
-Homepage is located at `stackforge
-<http://github.com/stackforge/sqlalchemy-migrate/>`_
+<https://pypi.org/project/sqlalchemy-migrate/>`_.
 
 You can also clone a current `development version
-<http://github.com/stackforge/sqlalchemy-migrate>`_
+<https://github.com/openstack/sqlalchemy-migrate>`_
 
 Tests and Bugs
 --------------
